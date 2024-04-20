@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {FaFolderOpen as IconLoad} from 'react-icons/fa';
+import { FaFolderOpen as IconLoad } from 'react-icons/fa';
 import ToolbarButton from './toolbar-button';
-import {browserUpload}  from '../../utils/browser';
+import { browserUpload } from '../../utils/browser';
 
-export default function ToolbarLoadButton({state}, {translator, projectActions}) {
+export default function ToolbarLoadButton({ state }, { translator, projectActions }) {
 
   let loadProjectFromFile = event => {
     event.preventDefault();
