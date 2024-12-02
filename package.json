@@ -6,7 +6,7 @@
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "scripts": {
-    "start": "webpack-dev-server --inline --config demo/webpack.config.js --port 9000 --mode development",
+    "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack-dev-server --inline --config demo/webpack.config.js --port 9000 --mode development",
     "build-demo": "webpack --config demo/webpack.config.js --mode production",
     "build-commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
     "build-es": "cross-env BABEL_ENV=es babel src --copy-files --out-dir es",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cvdlab/react-planner.git"
+    "url": "git+https://github.com/TomaOkabayashi/dsm"
   },
   "keywords": [
     "floorplanner",
@@ -39,7 +39,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cvdlab/react-planner/issues"
+    "url": "https://github.com/TomaOkabayashi/dsm"
   },
   "maintainers": [
     {
@@ -63,7 +63,7 @@
       "name": "alessiocarrafa"
     }
   ],
-  "homepage": "https://github.com/cvdlab/react-planner#readme",
+  "homepage": "https://github.com/TomaOkabayashi/dsm#readme",
   "dependencies": {
     "@mapbox/react-range": "0.0.7",
     "area-polygon": "1.0.1",
