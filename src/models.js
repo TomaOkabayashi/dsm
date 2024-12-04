@@ -205,8 +205,8 @@ export class Scene extends Record({
   grids: new Map(),
   selectedLayer: null,
   groups: new Map(),
-  width: 3000,
-  height: 2000,
+  width: 15000, // default width
+  height: 9000, // default height
   meta: new Map(),   //additional info
   guides: new Map()
 }, 'Scene') {
@@ -259,6 +259,7 @@ export class Catalog extends Record({
       throw new Error(`Element ${type} does not exist in catalog ${catList}`);
     }
 
+    
     let element = this.elements.get(type);
     let properties = element.properties.map((value, key) => initialProperties && initialProperties.has(key) ? initialProperties.get(key) : value.get('defaultValue'));
 

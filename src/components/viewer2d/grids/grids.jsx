@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GridHorizontalStreak from './grid-horizontal-streak';
 import GridVerticalStreak from './grid-vertical-streak';
+import BackgroundImage from '../../backgrounds/background1.png';
 
 export default function Grids({scene}) {
 
@@ -20,7 +21,19 @@ export default function Grids({scene}) {
     }
   }).toList();
 
-  return (<g>{renderedGrids}</g>);
+  return (
+    <g>
+      <g transform={`translate(0,${height}) scale(1,-1)`}>
+        <image href={BackgroundImage}
+          x="0"
+          y="0"
+          width={width}
+          height={height}
+        />
+      </g>
+      {renderedGrids}
+    </g>);
+    
 }
 
 Grids.propTypes = {
