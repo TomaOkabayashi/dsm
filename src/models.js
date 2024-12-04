@@ -259,6 +259,7 @@ export class Catalog extends Record({
       throw new Error(`Element ${type} does not exist in catalog ${catList}`);
     }
 
+    
     let element = this.elements.get(type);
     let properties = element.properties.map((value, key) => initialProperties && initialProperties.has(key) ? initialProperties.get(key) : value.get('defaultValue'));
 

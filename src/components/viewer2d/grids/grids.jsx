@@ -33,6 +33,7 @@ export default function Grids({scene}) {
       </g>
       {renderedGrids}
     </g>);
+    
 }
 
 Grids.propTypes = {
