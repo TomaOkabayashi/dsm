@@ -1,9 +1,12 @@
 import { Layer, Group } from './export';
 import {
   IDBroker,
-  NameGenerator
+  NameGenerator,
+  GeometryUtils,
+  SnapUtils,
+  SnapSceneUtils
 } from '../utils/export';
-import { Map, fromJS } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 
 import {
   MODE_IDLE,
@@ -11,6 +14,7 @@ import {
   MODE_DRAGGING_ITEM,
   MODE_ROTATING_ITEM
 } from '../constants';
+
 
 class Item{
 
@@ -67,6 +71,14 @@ class Item{
   }
 
   static updateDrawingItem(state, layerID, x, y) {
+    // Add snap handling
+    let snap = null;
+    if (state.snapMask && !state.snapMask.isEmpty()) {
+      let snapElements = SnapSceneUtils.sceneSnapElements(state.scene, new List(), state.snapMask);
+      snap = SnapUtils.nearestSnap(snapElements, x, y, state.snapMask);
+      if (snap) ({x, y} = snap.point);
+    }
+
     if (state.hasIn(['drawingSupport','currentID'])) {
       state = state.updateIn(['scene', 'layers', layerID, 'items', state.getIn(['drawingSupport','currentID'])], item => item.merge({x, y}));
     }
@@ -75,6 +87,11 @@ class Item{
       state = Item.select( stateI, layerID, item.id ).updatedState;
       state = state.setIn(['drawingSupport','currentID'], item.id);
     }
+
+    // Update snap elements
+    state = state.merge({
+      activeSnapElement: snap ? snap.snap : null
+    });
 
     return { updatedState: state };
   }
@@ -93,11 +110,12 @@ class Item{
   }
 
   static beginDraggingItem(state, layerID, itemID, x, y) {
-
+    let snapElements = SnapSceneUtils.sceneSnapElements(state.scene, new List(), state.snapMask);
     let item = state.getIn(['scene', 'layers', layerID, 'items', itemID]);
 
     state = state.merge({
       mode: MODE_DRAGGING_ITEM,
+      snapElements,
       draggingSupport: Map({
         layerID,
         itemID,
@@ -124,10 +142,23 @@ class Item{
     let diffX = startPointX - x;
     let diffY = startPointY - y;
 
+    let newX = originalX - diffX;
+    let newY = originalY - diffY;
+
+    // Add snap handling
+    if (state.snapMask && !state.snapMask.isEmpty()) {
+      let snap = SnapUtils.nearestSnap(state.snapElements, newX, newY, state.snapMask);
+      if (snap) {
+        newX = snap.point.x;
+        newY = snap.point.y;
+        state = state.merge({ activeSnapElement: snap.snap });
+      }
+    }
+
     let item = scene.getIn(['layers', layerID, 'items', itemID]);
     item = item.merge({
-      x: originalX - diffX,
-      y: originalY - diffY
+      x: newX,
+      y: newY
     });
 
     state = state.merge({
@@ -139,7 +170,11 @@ class Item{
 
   static endDraggingItem(state, x, y) {
     state = this.updateDraggingItem(state, x, y).updatedState;
-    state = state.merge({ mode: MODE_IDLE });
+    state = state.merge({ 
+      mode: MODE_IDLE,
+      snapElements: new List(),
+      activeSnapElement: null
+    });
 
     return { updatedState: state };
   }
