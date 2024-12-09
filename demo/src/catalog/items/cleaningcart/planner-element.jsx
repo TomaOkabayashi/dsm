@@ -747,7 +747,12 @@ export default {
     tag: ['metal','plastic'],
     title: 'cleaning cart',
     description: 'cleaning cart',
-    image: require('./cleaning_cart.png')
+    image: require('./cleaning_cart.png'),
+    dimensions: {
+      width: WIDTH,
+      height: HEIGHT,
+      depth: DEPTH
+    }
   },
 
   properties: {

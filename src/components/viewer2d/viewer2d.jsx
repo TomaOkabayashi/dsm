@@ -122,7 +122,7 @@ export default function Viewer2D(
         break;
 
       case constants.MODE_DRAWING_ITEM:
-        itemsActions.updateDrawingItem(layerID, x, y);
+        itemsActions.updateDrawingItem(layerID, x, y, state.snapMask);
         break;
 
       case constants.MODE_DRAGGING_HOLE:
@@ -138,11 +138,11 @@ export default function Viewer2D(
         break;
 
       case constants.MODE_DRAGGING_ITEM:
-        itemsActions.updateDraggingItem(x, y);
+        itemsActions.updateDraggingItem(x, y, state.snapMask);
         break;
 
       case constants.MODE_ROTATING_ITEM:
-        itemsActions.updateRotatingItem(x, y);
+        itemsActions.updateRotatingItem(x, y, state.snapMask);
         break;
     }
 
@@ -254,7 +254,7 @@ export default function Viewer2D(
         break;
 
       case constants.MODE_DRAGGING_ITEM:
-        itemsActions.endDraggingItem(x, y);
+        itemsActions.endDraggingItem(x, y, state.snapMask);
         break;
 
       case constants.MODE_DRAGGING_HOLE:

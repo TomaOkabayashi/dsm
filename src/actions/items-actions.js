@@ -26,38 +26,38 @@ export function selectToolDrawingItem(sceneComponentType) {
   }
 }
 
-export function updateDrawingItem(layerID, x, y) {
+export function updateDrawingItem(layerID, x, y, snapMask) {
   return {
     type: UPDATE_DRAWING_ITEM,
-    layerID, x, y
+    layerID, x, y, snapMask
   }
 }
 
-export function endDrawingItem(layerID, x, y) {
+export function endDrawingItem(layerID, x, y, snapMask) {
   return {
     type: END_DRAWING_ITEM,
-    layerID, x, y
+    layerID, x, y, snapMask
   }
 }
 
-export function beginDraggingItem(layerID, itemID, x, y) {
+export function beginDraggingItem(layerID, itemID, x, y, snapMask) {
   return {
     type: BEGIN_DRAGGING_ITEM,
-    layerID, itemID, x, y
+    layerID, itemID, x, y, snapMask
   }
 }
 
-export function updateDraggingItem(x, y) {
+export function updateDraggingItem(x, y, snapMask) {
   return {
     type: UPDATE_DRAGGING_ITEM,
-    x, y
+    x, y, snapMask
   }
 }
 
-export function endDraggingItem(x, y) {
+export function endDraggingItem(x, y, snapMask) {
   return {
     type: END_DRAGGING_ITEM,
-    x, y
+    x, y, snapMask
   }
 }
 
