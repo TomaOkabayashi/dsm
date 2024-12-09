@@ -30,11 +30,6 @@ class Item{
       x,
       y,
       rotation,
-      // dimenstions: {
-      //   width: WIDTH,
-      //   height: HEIGHT,
-      //   depth: DEPTH
-      // }
     });
 
     state = state.setIn(['scene', 'layers', layerID, 'items', itemID], item);
@@ -74,21 +69,6 @@ class Item{
 
    
     return { updatedState: state };
-  }
-
-  static getEdgeMidpoints(state, centreX, centreY, width, height) {
-    // calculate midpoints
-    const leftMidpoint = {x: centreX - width/2, y: centreY}
-    const rightMidpoint = {x: centreX + width/2, y: centreY}
-    const topMidpoint = {x: centreX, y: centreY + height/2}
-    const bottomMidpoint = {x: centreX, y: centreY - height/2}
-
-    return {
-        left: leftMidpoint,
-        right: rightMidpoint,
-        top: topMidpoint,
-        bottom: bottomMidpoint
-    }
   }
 
   static updateDrawingItem(state, layerID, x, y) {
@@ -137,7 +117,6 @@ class Item{
     return { updatedState: state };
   }
 
-  // original
   static updateDraggingItem(state, x, y) {
     let {draggingSupport, scene} = state;
 
@@ -155,29 +134,6 @@ class Item{
 
     let newX = originalX - diffX;
     let newY = originalY - diffY;
-
-    // let itemElement = catalog.getElement(item.get('type'));
-    // let width = itemElement.WIDTH;
-
-    // console.log('Direct access:', {
-    //   x: item.x,
-    //   y: item.y,
-    //   width: item.width,
-    //   height: item.height
-    // });
-
-    // console.log('Get method:', {
-    //   x: item.get('x'),
-    //   y: item.get('y'),
-    //   width: item.get('width'),
-    //   height: item.get('height')
-    // });
-
-    // let itemType = item.get('type');
-    // let itemData = state.catalog.getIn(['elements', itemType]);
-    // let dimensions = itemData.get('dimensions');
-    // let width = dimensions.get('width');
-
     
     // Add snap handling
     if (state.snapMask && !state.snapMask.isEmpty()) {
@@ -230,13 +186,6 @@ class Item{
 
     return { updatedState: state };
   }
-    // if (state.snapMask && !state.snapMask.isEmpty()) {
-    //   const snapPoints = [
-    //     {x: newX - item.width/2, y: newY},  // left
-    //     {x: newX + item.width/2, y: newY},  // right
-    //     {x: newX, y: newY + item.height/2}, // top
-    //     {x: newX, y: newY - item.height/2}  // bottom
-    //   ];
     
   static endDraggingItem(state, x, y) {
     state = this.updateDraggingItem(state, x, y).updatedState;
