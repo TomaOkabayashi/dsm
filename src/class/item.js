@@ -29,7 +29,12 @@ class Item{
       width,
       x,
       y,
-      rotation
+      rotation,
+      // dimenstions: {
+      //   width: WIDTH,
+      //   height: HEIGHT,
+      //   depth: DEPTH
+      // }
     });
 
     state = state.setIn(['scene', 'layers', layerID, 'items', itemID], item);
@@ -67,18 +72,26 @@ class Item{
       })
     });
 
+   
     return { updatedState: state };
   }
 
-  static updateDrawingItem(state, layerID, x, y) {
-    // Add snap handling
-    let snap = null;
-    if (state.snapMask && !state.snapMask.isEmpty()) {
-      let snapElements = SnapSceneUtils.sceneSnapElements(state.scene, new List(), state.snapMask);
-      snap = SnapUtils.nearestSnap(snapElements, x, y, state.snapMask);
-      if (snap) ({x, y} = snap.point);
-    }
+  static getEdgeMidpoints(state, centreX, centreY, width, height) {
+    // calculate midpoints
+    const leftMidpoint = {x: centreX - width/2, y: centreY}
+    const rightMidpoint = {x: centreX + width/2, y: centreY}
+    const topMidpoint = {x: centreX, y: centreY + height/2}
+    const bottomMidpoint = {x: centreX, y: centreY - height/2}
 
+    return {
+        left: leftMidpoint,
+        right: rightMidpoint,
+        top: topMidpoint,
+        bottom: bottomMidpoint
+    }
+  }
+
+  static updateDrawingItem(state, layerID, x, y) {
     if (state.hasIn(['drawingSupport','currentID'])) {
       state = state.updateIn(['scene', 'layers', layerID, 'items', state.getIn(['drawingSupport','currentID'])], item => item.merge({x, y}));
     }
@@ -87,11 +100,6 @@ class Item{
       state = Item.select( stateI, layerID, item.id ).updatedState;
       state = state.setIn(['drawingSupport','currentID'], item.id);
     }
-
-    // Update snap elements
-    state = state.merge({
-      activeSnapElement: snap ? snap.snap : null
-    });
 
     return { updatedState: state };
   }
@@ -129,6 +137,7 @@ class Item{
     return { updatedState: state };
   }
 
+  // original
   static updateDraggingItem(state, x, y) {
     let {draggingSupport, scene} = state;
 
@@ -139,23 +148,77 @@ class Item{
     let originalX = draggingSupport.get('originalX');
     let originalY = draggingSupport.get('originalY');
 
+    let item = scene.getIn(['layers', layerID, 'items', itemID]);
+
     let diffX = startPointX - x;
     let diffY = startPointY - y;
 
     let newX = originalX - diffX;
     let newY = originalY - diffY;
 
+    // let itemElement = catalog.getElement(item.get('type'));
+    // let width = itemElement.WIDTH;
+
+    // console.log('Direct access:', {
+    //   x: item.x,
+    //   y: item.y,
+    //   width: item.width,
+    //   height: item.height
+    // });
+
+    // console.log('Get method:', {
+    //   x: item.get('x'),
+    //   y: item.get('y'),
+    //   width: item.get('width'),
+    //   height: item.get('height')
+    // });
+
+    // let itemType = item.get('type');
+    // let itemData = state.catalog.getIn(['elements', itemType]);
+    // let dimensions = itemData.get('dimensions');
+    // let width = dimensions.get('width');
+
+    
     // Add snap handling
     if (state.snapMask && !state.snapMask.isEmpty()) {
-      let snap = SnapUtils.nearestSnap(state.snapElements, newX, newY, state.snapMask);
-      if (snap) {
-        newX = snap.point.x;
-        newY = snap.point.y;
-        state = state.merge({ activeSnapElement: snap.snap });
+      let itemType = item.get('type');
+      let element = state.catalog.getIn(['elements', itemType]).toJS();
+      let dims = element.info.dimensions;
+
+      // check left side snap
+      let leftSnap = SnapUtils.nearestSnap(state.snapElements, newX - dims.width/2, newY, state.snapMask);
+      if (leftSnap) {
+        newX = leftSnap.point.x + dims.width/2;
+        newY = leftSnap.point.y;
+        state = state.merge({ activeSnapElement: leftSnap.snap });
+      }
+
+      //check right side snap
+      let rightSnap = SnapUtils.nearestSnap(state.snapElements, newX + dims.width/2, newY, state.snapMask);
+      if (rightSnap) {
+        newX = rightSnap.point.x - dims.width/2;
+        newY = rightSnap.point.y;
+        state = state.merge({ activeSnapElement: rightSnap.snap});
+      }
+
+      // check top side snap
+      let topSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY + dims.width/2, state.snapMask);
+      if (topSnap) {
+        // check top side
+        newX = topSnap.point.x;
+        newY = topSnap.point.y - dims.depth/2;
+        state = state.merge({ activeSnapElement: topSnap.snap});
+      }
+
+      // check bottom side snap
+      let bottomSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY - dims.width/2, state.snapMask);
+      if (bottomSnap) {
+        newX = bottomSnap.point.x;
+        newY = bottomSnap.point.y + dims.depth/2;
+        state = state.merge({ activeSnapElement: bottomSnap.snap});
       }
     }
 
-    let item = scene.getIn(['layers', layerID, 'items', itemID]);
     item = item.merge({
       x: newX,
       y: newY
@@ -167,7 +230,14 @@ class Item{
 
     return { updatedState: state };
   }
-
+    // if (state.snapMask && !state.snapMask.isEmpty()) {
+    //   const snapPoints = [
+    //     {x: newX - item.width/2, y: newY},  // left
+    //     {x: newX + item.width/2, y: newY},  // right
+    //     {x: newX, y: newY + item.height/2}, // top
+    //     {x: newX, y: newY - item.height/2}  // bottom
+    //   ];
+    
   static endDraggingItem(state, x, y) {
     state = this.updateDraggingItem(state, x, y).updatedState;
     state = state.merge({ 
@@ -202,11 +272,11 @@ class Item{
     let deltaY = y - item.y;
     let rotation = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
 
-    if (-5 < rotation && rotation < 5) rotation = 0;
-    if (-95 < rotation && rotation < -85) rotation = -90;
-    if (-185 < rotation && rotation < -175) rotation = -180;
-    if (85 < rotation && rotation < 90) rotation = 90;
-    if (-270 < rotation && rotation < -265) rotation = 90;
+    if (-15 < rotation && rotation < 15) rotation = 0;
+    if (-105 < rotation && rotation < -75) rotation = -90;
+    if (-195 < rotation && rotation < -165) rotation = -180;
+    if (75 < rotation && rotation < 105) rotation = 90;
+    if (-280 < rotation && rotation < -260) rotation = 90;
 
     item = item.merge({
       rotation,
