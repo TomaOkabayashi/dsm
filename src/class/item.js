@@ -76,6 +76,7 @@ class Item{
       state = state.updateIn(['scene', 'layers', layerID, 'items', state.getIn(['drawingSupport','currentID'])], item => item.merge({x, y}));
     }
     else {
+      // if not item is being drawn, make new item with default values
       let { updatedState: stateI, item } = this.create( state, layerID, state.getIn(['drawingSupport','type']), x, y, 200, 100, 0);
       state = Item.select( stateI, layerID, item.id ).updatedState;
       state = state.setIn(['drawingSupport','currentID'], item.id);
@@ -86,9 +87,11 @@ class Item{
 
   static endDrawingItem(state, layerID, x, y) {
     let catalog = state.catalog;
+
     state = this.updateDrawingItem(state, layerID, x, y, catalog).updatedState;
-    state = Layer.unselectAll( state, layerID ).updatedState;
-    state =  state.merge({
+
+    state = state.merge({
+      mode: MODE_IDLE,
       drawingSupport: Map({
         type: state.drawingSupport.get('type')
       })
@@ -116,6 +119,41 @@ class Item{
 
     return { updatedState: state };
   }
+  // checks if the items coordinates are in an area, loading area
+  static isCoordsInLoadingArea(state, layerID, x, y) {
+    const scene = state.get('scene');
+    const areas = scene.getIn(['layers', layerID, 'areas']);
+    
+    if(!areas) return false;
+
+    let isInArea = false;
+    // Use valueSeq() for Immutable.js collections
+    areas.valueSeq().forEach(area => {
+      const areaVertices = area.get('vertices');
+      if(areaVertices) {
+        const coordinates = areaVertices.map(vertexID => {
+          const vertex = scene.getIn(['layers', layerID, 'vertices', vertexID]);
+          return {
+            x: vertex.get('x'),
+            y: vertex.get('y')
+          };
+        }).toJS();
+
+        if (coordinates.length > 0) {
+          let minX = Math.min(...coordinates.map(c => c.x));
+          let maxX = Math.max(...coordinates.map(c => c.x));
+          let minY = Math.min(...coordinates.map(c => c.y));
+          let maxY = Math.max(...coordinates.map(c => c.y));
+
+          if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+            isInArea = true;
+          }
+        }
+      }
+    });
+
+    return isInArea;
+  }
 
   static updateDraggingItem(state, x, y) {
     let {draggingSupport, scene} = state;
@@ -127,7 +165,10 @@ class Item{
     let originalX = draggingSupport.get('originalX');
     let originalY = draggingSupport.get('originalY');
 
+    //this.logItemsOnLayer(state, layerID);
+
     let item = scene.getIn(['layers', layerID, 'items', itemID]);
+    //console.log('Current item ID:', itemID);
 
     let diffX = startPointX - x;
     let diffY = startPointY - y;
@@ -135,46 +176,57 @@ class Item{
     let newX = originalX - diffX;
     let newY = originalY - diffY;
     
-    // Add snap handling
-    if (state.snapMask && !state.snapMask.isEmpty()) {
-      let itemType = item.get('type');
-      let element = state.catalog.getIn(['elements', itemType]).toJS();
-      let dims = element.info.dimensions;
+    // check if the item is in a loading area
+    let isInArea = this.isCoordsInLoadingArea(state, layerID, newX, newY);
+    // Only if the item is in a loading area do we make snap calculations
+    if (isInArea) {
 
-      // check left side snap
-      let leftSnap = SnapUtils.nearestSnap(state.snapElements, newX - dims.width/2, newY, state.snapMask);
-      if (leftSnap) {
-        newX = leftSnap.point.x + dims.width/2;
-        newY = leftSnap.point.y;
-        state = state.merge({ activeSnapElement: leftSnap.snap });
-      }
+      // snap handling
+      if (state.snapMask && !state.snapMask.isEmpty()) {
 
-      //check right side snap
-      let rightSnap = SnapUtils.nearestSnap(state.snapElements, newX + dims.width/2, newY, state.snapMask);
-      if (rightSnap) {
-        newX = rightSnap.point.x - dims.width/2;
-        newY = rightSnap.point.y;
-        state = state.merge({ activeSnapElement: rightSnap.snap});
-      }
+        
 
-      // check top side snap
-      let topSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY + dims.width/2, state.snapMask);
-      if (topSnap) {
-        // check top side
-        newX = topSnap.point.x;
-        newY = topSnap.point.y - dims.depth/2;
-        state = state.merge({ activeSnapElement: topSnap.snap});
-      }
+        let itemType = item.get('type');
+        let element = state.catalog.getIn(['elements', itemType]).toJS();
+        let dims = element.info.dimensions;
 
-      // check bottom side snap
-      let bottomSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY - dims.width/2, state.snapMask);
-      if (bottomSnap) {
-        newX = bottomSnap.point.x;
-        newY = bottomSnap.point.y + dims.depth/2;
-        state = state.merge({ activeSnapElement: bottomSnap.snap});
+        // check left side snap
+        let leftSnap = SnapUtils.nearestSnap(state.snapElements, newX - dims.width/2, newY, state.snapMask);
+        if (leftSnap) {
+          newX = leftSnap.point.x + dims.width/2;
+          newY = leftSnap.point.y;
+          state = state.merge({ activeSnapElement: leftSnap.snap });
+        }
+
+        //check right side snap
+        let rightSnap = SnapUtils.nearestSnap(state.snapElements, newX + dims.width/2, newY, state.snapMask);
+        if (rightSnap) {
+          newX = rightSnap.point.x - dims.width/2;
+          newY = rightSnap.point.y;
+          state = state.merge({ activeSnapElement: rightSnap.snap});
+        }
+
+        // check top side snap
+        let topSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY + dims.width/2, state.snapMask);
+        if (topSnap) {
+          // check top side
+          newX = topSnap.point.x;
+          newY = topSnap.point.y - dims.depth/2;
+          state = state.merge({ activeSnapElement: topSnap.snap});
+        }
+
+        // check bottom side snap
+        let bottomSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY - dims.width/2, state.snapMask);
+        if (bottomSnap) {
+          newX = bottomSnap.point.x;
+          newY = bottomSnap.point.y + dims.depth/2;
+          state = state.merge({ activeSnapElement: bottomSnap.snap});
+        }
       }
     }
 
+    // Add collision detection here in future
+    
     item = item.merge({
       x: newX,
       y: newY
@@ -277,6 +329,11 @@ class Item{
     itemAttributes = fromJS(itemAttributes);
     return this.setAttributes(state, layerID, itemID, itemAttributes);
   }
+
+  // static logItemsOnLayer(state, layerID) {
+  //   const items = state.getIn(['scene', 'layers', layerID, 'items']);
+  //   console.log('Items on layer:', items.toJS());
+  // }
 
 }
 

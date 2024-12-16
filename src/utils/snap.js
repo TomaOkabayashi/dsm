@@ -99,6 +99,85 @@ export function nearestSnap(snapElements, x, y, snapMask) {
   );
 }
 
+export function nearestGridSnap(state, layerID, x, y) {
+  const scene = state.get('scene');
+    const areas = scene.getIn(['layers', layerID, 'areas']);
+    
+    if(!areas) return false;
+
+    let isInArea = false;
+    // Use valueSeq() for Immutable.js collections
+    areas.valueSeq().forEach(area => {
+      const areaVertices = area.get('vertices');
+      if(areaVertices) {
+        const coordinates = areaVertices.map(vertexID => {
+          const vertex = scene.getIn(['layers', layerID, 'vertices', vertexID]);
+          return {
+            x: vertex.get('x'),
+            y: vertex.get('y')
+          };
+        }).toJS();
+
+        if (coordinates.length > 0) {
+          let minX = Math.min(...coordinates.map(c => c.x));
+          let maxX = Math.max(...coordinates.map(c => c.x));
+          let minY = Math.min(...coordinates.map(c => c.y));
+          let maxY = Math.max(...coordinates.map(c => c.y));
+
+          if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+            isInArea = true;
+          }
+        }
+      }
+    });
+}
+// export function nearestSnap(snapElements, x, y, snapMask) {
+  
+//   // const isInFilledArea = snapElements 
+//   //   .valueSeq()
+//   //   .filter(el => el.prototype === 'areas')
+//   //   .some(area => area.info.isFilled);
+
+//   // If not in filled area, return no snaps
+//   // if (!isInFilledArea) {
+//   //   return null;
+//   // }
+
+//   // First check if point (x,y) is in any filled area
+//   const areas = snapElements.filter(el => el.prototype === 'areas')
+  
+//   // Check if point x,y is in any of these areas using vertices
+//   const isInFilledArea = areas.some(element => {
+//     // Get vertices and check if x,y is inside the polygon they form
+//     const vertices = element.vertices.map(vertexID => {
+//       let vertex = layer.vertices.get(vertexID);
+//       return {x: vertex.x, y: vertex.y};
+//     });
+//     return pointIsInPolygon(x, y, vertices);
+//   });
+//   // If not in any filled area, return null - no snapping
+//   //if (!isInFilledArea) return null;
+//   // If we are in filled area, proceed with normal snap logic
+//   let filter = {
+//     'point': snapMask.get(SNAP_POINT),
+//     'line': snapMask.get(SNAP_LINE),
+//     'line-segment': snapMask.get(SNAP_SEGMENT),
+//     'grid': snapMask.get(SNAP_GRID)
+//   };
+
+//   return snapElements
+//     .valueSeq()
+//     .filter(el => filter[el.type] && el.isNear(x, y, el.radius))
+//     .map(snap => { return {snap, point: snap.nearestPoint(x, y)} })
+//     .filter(({snap: {radius}, point: {distance}}) => distance < radius)
+//     .min(
+//       (
+//         {snap: { priority : p1 }, point: { distance : d1 }},
+//         {snap: { priority : p2 }, point: { distance : d2 }}
+//       ) => p1 === p2 ? ( d1 < d2 ? -1 : 1 ) : ( p1 > p2 ? -1 : 1 )
+//     );
+// }
+
 export function addPointSnap(snapElements, x, y, radius, priority, related) {
   related = new List([related]);
   return snapElements.push(new PointSnap({x, y, radius, priority, related}));

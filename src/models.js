@@ -205,9 +205,9 @@ export class Scene extends Record({
   grids: new Map(),
   selectedLayer: null,
   groups: new Map(),
-  width: 15000, // default width
-  height: 9000, // default height
-  meta: new Map(),   //additional info
+  width: 15000,
+  height: 9000,
+  meta: new Map(),
   guides: new Map()
 }, 'Scene') {
   constructor(json = {}) {

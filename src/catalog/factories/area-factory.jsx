@@ -7,6 +7,7 @@ let translator = new Translator();
 
 export default function AreaFactory(name, info, textures) {
 
+
   let areaElement = {
     name,
     prototype: 'areas',
@@ -15,7 +16,7 @@ export default function AreaFactory(name, info, textures) {
       visibility: {
         catalog: false,
         layerElementsVisible: false
-      }
+      },
     },
     properties: {
       patternColor: {
@@ -31,7 +32,7 @@ export default function AreaFactory(name, info, textures) {
         }
       }
     },
-    render2D: function (element, layer, scene) {
+    render2D: function (element, layer) {
       let path = '';
 
       ///print area path
@@ -53,7 +54,13 @@ export default function AreaFactory(name, info, textures) {
 
       let fill = element.selected ? SharedStyle.AREA_MESH_COLOR.selected : element.properties.get('patternColor');
 
-      return (<path d={path} fill={fill} />);
+      return (
+        <path 
+          d={path} 
+          fill={fill}
+          fillOpacity="0.4"
+        />
+      );
     },
 
     render3D: function (element, layer, scene) {
