@@ -1,55 +1,52 @@
 import {
   SNAP_POINT,
-  SNAP_GUIDE,
   SNAP_LINE,
+  SNAP_SEGMENT,
   SNAP_GRID,
+  SNAP_GUIDE,
   addPointSnap,
-  addGridSnap,
   addLineSnap,
-  addLineSegmentSnap
+  addLineSegmentSnap,
+  addGridSnap
 } from './snap';
-
 import { GeometryUtils } from './export';
 import { Map, List } from 'immutable';
-import { SNAP_SEGMENT } from './snap';
 
 export function sceneSnapElements(scene, snapElements = new List(), snapMask = new Map()) {
-  
+
   let { width, height } = scene;
 
-  // variables for line equations
   let a, b, c;
   return snapElements.withMutations(snapElements => {
     scene.layers.forEach(layer => {
 
       let { lines, vertices } = layer;
 
-      vertices.forEach(({ id: vertexID, x, y}) => {
+      vertices.forEach(({ id: vertexID, x, y }) => {
 
         if (snapMask.get(SNAP_POINT)) {
-          addPointSnap(snapElements, x, y, 15, 50, vertexID);
+          addPointSnap(snapElements, x, y, 10, 10, vertexID);
         }
 
         if (snapMask.get(SNAP_LINE)) {
           ({ a, b, c } = GeometryUtils.horizontalLine(y));
-          addLineSnap(snapElements, a, b, c, 20, 30, vertexID);
+          addLineSnap(snapElements, a, b, c, 10, 5, vertexID);
           ({ a, b, c } = GeometryUtils.verticalLine(x));
-          addLineSnap(snapElements, a, b, c, 20, 30, vertexID);
+          addLineSnap(snapElements, a, b, c, 10, 5, vertexID);
         }
 
       });
 
       if (snapMask.get(SNAP_SEGMENT)) {
-        lines.forEach(({ id: lineID, vertices: [v0, v1]}) => {
+        lines.forEach(({ id: lineID, vertices: [v0, v1] }) => {
           let { x: x1, y: y1 } = vertices.get(v0);
           let { x: x2, y: y2 } = vertices.get(v1);
 
-          addLineSegmentSnap(snapElements, x1, y1, x2, y2, 20, 50, lineID);
+          addLineSegmentSnap(snapElements, x1, y1, x2, y2, 20, 1, lineID);
         });
       }
 
     });
-
 
     if (snapMask.get(SNAP_GRID)) {
       let divider = 5;
@@ -109,14 +106,14 @@ export function sceneSnapElements(scene, snapElements = new List(), snapMask = n
 
       hValues.forEach(hVal => {
         vValues.forEach(vVal => {
-          addPointSnap(snapElements, vVal, hVal, 15, 45); // for intersections
+          addPointSnap(snapElements, vVal, hVal, 10, 10);
         });
       });
-      // for guidelines
-      hValues.forEach(hVal => addLineSegmentSnap(snapElements, 0, hVal, width, hVal, 25, 35));
-      vValues.forEach(vVal => addLineSegmentSnap(snapElements, vVal, 0, vVal, height, 25, 35));
+
+      hValues.forEach(hVal => addLineSegmentSnap(snapElements, 0, hVal, width, hVal, 20, 1));
+      vValues.forEach(vVal => addLineSegmentSnap(snapElements, vVal, 0, vVal, height, 20, 1));
+
     }
 
   })
 }
-
