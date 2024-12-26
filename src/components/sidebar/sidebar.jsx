@@ -15,7 +15,6 @@ const STYLE = {
   display: 'block',
   overflowY: 'auto',
   overflowX: 'hidden',
-  paddingBottom: '20px'
 };
 
 const sortButtonsCb = (a, b) => {

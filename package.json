@@ -1,7 +1,7 @@
 {
-  "name": "react-planner",
-  "version": "2.0.6",
-  "description": "react-planner is a React Component for plans design. Draw a 2D floorplan and navigate it in 3D mode.",
+  "name": "deck-space-management",
+  "version": "1.0.0",
+  "description": "deck-space-management is a React Component for plans design. Draw a 2D floorplan and navigate it in 3D mode.",
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
@@ -41,28 +41,6 @@
   "bugs": {
     "url": "https://github.com/TomaOkabayashi/dsm"
   },
-  "maintainers": [
-    {
-      "url": "https://github.com/chrvadala",
-      "name": "chrvadala"
-    },
-    {
-      "url": "https://github.com/danilosalvati",
-      "name": "danilosalvati"
-    },
-    {
-      "url": "https://github.com/enricomarino",
-      "name": "enricomarino"
-    },
-    {
-      "url": "https://github.com/federicospini",
-      "name": "federicospini"
-    },
-    {
-      "url": "https://github.com/alessiocarrafa",
-      "name": "alessiocarrafa"
-    }
-  ],
   "homepage": "https://github.com/TomaOkabayashi/dsm#readme",
   "dependencies": {
     "@mapbox/react-range": "0.0.7",

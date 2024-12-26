@@ -18,8 +18,8 @@ export default class RulerX extends Component {
       position: 'relative',
       borderLeft: '1px solid ' + this.props.fontColor,
       paddingLeft: '0.2em',
-      fontSize: '10px',
-      height: '100%'
+      fontSize: '11px',
+      height: '11px'
     };
 
     let insideElementsStyle = {
@@ -28,6 +28,11 @@ export default class RulerX extends Component {
       margin: 0,
       padding: 0
     };
+
+    let textStyle = {
+      position: 'relative',
+      bottom: '2.5px'
+    }
 
     let rulerStyle = {
       backgroundColor: this.props.backgroundColor,
@@ -78,7 +83,9 @@ export default class RulerX extends Component {
       for (let x = 0; x < this.props.positiveUnitsNumber; x++) {
         positiveDomElements.push(
           <div key={x} style={{ ...elementStyle, gridColumn: (x + 1), gridRow: 1 }}>
+            <span style={textStyle}>
             {elementW > 30 ? (x * 100) : ''}
+            </span>
           </div>
         );
       }
@@ -88,11 +95,13 @@ export default class RulerX extends Component {
         let val = x * 100;
         positiveDomElements.push(
           <div key={x} style={{ ...elementStyle, gridColumn: (x + 1), gridRow: 1 }}>
-            <div style={insideElementsStyle}>{val}</div>
-            <div style={insideElementsStyle}>{val + (1 * 20)}</div>
-            <div style={insideElementsStyle}>{val + (2 * 20)}</div>
-            <div style={insideElementsStyle}>{val + (3 * 20)}</div>
-            <div style={insideElementsStyle}>{val + (4 * 20)}</div>
+            <span style={textStyle}>
+              <div style={insideElementsStyle}>{val}</div>
+              <div style={insideElementsStyle}>{val + (1 * 20)}</div>
+              <div style={insideElementsStyle}>{val + (2 * 20)}</div>
+              <div style={insideElementsStyle}>{val + (3 * 20)}</div>
+              <div style={insideElementsStyle}>{val + (4 * 20)}</div>
+            </span>
           </div>
         );
       }
