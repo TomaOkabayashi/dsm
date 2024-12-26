@@ -29,23 +29,23 @@ export const MATERIAL_COLORS = {
 };
 
 export const PRIMARY_COLOR = {
-  main: '#28292D',
-  alt: '#2E2F33',
-  icon: '#C2C2C2',
+  main: '#353535', // main layout
+  alt: '#2E2F33', // color of the side bar (only two thirds of it for somereason)
+  icon: '#ffffff', // colour of icons on toolbar
   border: '1px solid #555',
-  text_main: COLORS.white,
-  text_alt: '#EBEBEB',
-  input: '#55595C'
+  text_main: 'COLORS.white',
+  text_alt: '#EBEBEB', // text colour of sidebar
+  input: '#55595C' // text colour of attributes on sidebar
 };
 
 export const SECONDARY_COLOR = {
-  main: '#1CA6FC',
-  alt: '#005FAF',
-  icon: '#1CA6FC',
+  main: '#1CA6FC', // text colour of hover of texts on sidebar
+  alt: '#444088', // text colour of box and footer
+  icon: '#1dafe6', // colour of hover of texts on toolbar
   border: '1px solid #FFF'
 };
 
-export const MESH_SELECTED = '#99C3FB';
+export const MESH_SELECTED = '#99C3FB'; // colour of 'areas' selected (areas formed by walls)
 
 export const AREA_MESH_COLOR = {
   selected: MESH_SELECTED,
@@ -54,5 +54,5 @@ export const AREA_MESH_COLOR = {
 
 export const LINE_MESH_COLOR = {
   selected: MESH_SELECTED,
-  unselected: '#8E9BA2'
+  unselected: '#8E9BA2' // colour of the border of wall objects
 }

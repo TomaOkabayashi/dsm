@@ -13,26 +13,65 @@ export default class RulerY extends Component {
     let elementH = this.props.unitPixelSize * this.props.zoom;
 
     let elementStyle = {
-      width: '8px',
+      width: '25px',
       borderBottom: '1px solid ' + this.props.fontColor,
       paddingBottom: '0.2em',
-      fontSize: '10px',
+      fontSize: '11px',
       height: elementH,
-      textOrientation: 'upright',
-      writingMode: 'vertical-lr',
-      letterSpacing: '-2px',
-      textAlign: 'right'
+      writingMode: 'horizontal-tb',
+      textAlign: 'right',
+      display: 'flex',
+      alignItems: 'flex-end'
+    };
+
+    // the inside element requires the parent to have a flex direction
+    // of column to stack the smaller values properly. 
+    // However when a parent has the flex direction
+    // and is zoomed further out, the placement of the values is skewed.
+    // I chose the simplest solution to this issue, sorry. - Toma 
+    let elementStyleWithFlexCol = { 
+      width: '25px',
+      borderBottom: '1px solid ' + this.props.fontColor,
+      paddingBottom: '0.2em',
+      fontSize: '11px',
+      height: elementH,
+      writingMode: 'horizontal-tb',
+      textAlign: 'right',
+      display: 'flex',
+      alignItems: 'flex-end',
+      flexDirection: 'column'
     };
 
     let insideElementsStyle = {
+      ...textStyleZoomIn,
       height: '20%',
       width: '100%',
-      textOrientation: 'upright',
-      writingMode: 'vertical-lr',
-      display: 'inline-block',
-      letterSpacing: '-2px',
-      textAlign: 'right'
+      writingMode: 'horizontal-tb',
+      textAlign: 'right',
+      display: 'flex',
+      alignItems: 'flex-end',
     };
+
+    // style for the greatest Y value
+    let topValueStyle = {
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'flex-end',
+      height: '100%',
+      right: '3px'
+    }
+
+    // these were initially different but they are the same now
+    // so they are redundant but keeping for potential future tweaks
+    let textStyleZoomOut = {
+      position: 'relative',
+      right: '3px'
+    }
+
+    let textStyleZoomIn = {
+      position: 'relative',
+      right: '3px'
+    }
 
     let rulerStyle = {
       backgroundColor: this.props.backgroundColor,
@@ -82,23 +121,38 @@ export default class RulerY extends Component {
       for (let x = 1; x <= this.props.positiveUnitsNumber; x++) {
         positiveDomElements.push(
           <div key={x} style={{ ...elementStyle, gridColumn: 1, gridRow: x }}>
-            {elementH > 30 ? ((this.props.positiveUnitsNumber - x) * 100) : ''}
+            <span style={textStyleZoomOut}>
+              {elementH > 30 ? ((this.props.positiveUnitsNumber - x) * 100) : ''}
+            </span>
           </div>
         );
       }
     }
     else if (elementH > 200) {
       for (let x = 1; x <= this.props.positiveUnitsNumber; x++) {
+
         let val = (this.props.positiveUnitsNumber - x) * 100;
-        positiveDomElements.push(
-          <div key={x} style={{ ...elementStyle, gridColumn: 1, gridRow: x }}>
-            <div style={insideElementsStyle}>{val + (4 * 20)}</div>
-            <div style={insideElementsStyle}>{val + (3 * 20)}</div>
-            <div style={insideElementsStyle}>{val + (2 * 20)}</div>
-            <div style={insideElementsStyle}>{val + (1 * 20)}</div>
-            <div style={insideElementsStyle}>{val}</div>
-          </div>
-        );
+
+        if (x === 1) {
+          positiveDomElements.push(
+            // What the problem was: top value would generate with smaller values ontop
+            // Solution: custom style just for the top Y value
+            <div key={x} style={{ ...elementStyleWithFlexCol, gridColumn: 1, gridRow: x }}>
+              <div style={topValueStyle}>{val}</div>
+            </div>
+          );
+        } 
+        else {
+          positiveDomElements.push(
+            <div key={x} style={{ ...elementStyleWithFlexCol, gridColumn: 1, gridRow: x }}>
+              <div style={{...insideElementsStyle, ...textStyleZoomIn}}>{val + (4 * 20)}</div>
+              <div style={{...insideElementsStyle, ...textStyleZoomIn}}>{val + (3 * 20)}</div>
+              <div style={{...insideElementsStyle, ...textStyleZoomIn}}>{val + (2 * 20)}</div>
+              <div style={{...insideElementsStyle, ...textStyleZoomIn}}>{val + (1 * 20)}</div>
+              <div style={{...insideElementsStyle, ...textStyleZoomIn}}>{val}</div>
+            </div>
+          );
+        }
       }
     }
 

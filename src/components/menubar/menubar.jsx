@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdSettings, MdUndo, MdDirectionsRun } from 'react-icons/md';
 import { FaFile, FaMousePointer, FaPlus } from 'react-icons/fa';
-import ToolbarButton from './toolbar-button';
-import ToolbarSaveButton from './toolbar-save-button';
-import ToolbarLoadButton from './toolbar-load-button';
+import MenubarButton from './menubar-button';
+import MenubarSaveButton from './menubar-save-button';
+import MenubarLoadButton from './menubar-load-button';
 import If from '../../utils/react-if';
 import CompanyLogo from '../icons/companyLogo';
 import {
@@ -27,10 +27,14 @@ const iconTextStyle = {
 const Icon2D = ( {style} ) => <p style={{...iconTextStyle, ...style}}>2D</p>;
 const Icon3D = ( {style} ) => <p style={{...iconTextStyle, ...style}}>3D</p>;
 
-const ASIDE_STYLE = {
+const menubarstyle = {
+  position: 'absolute',
+  top: 0,
   backgroundColor: SharedStyle.PRIMARY_COLOR.main,
-  padding: '10px 3px 0px 3px',
-  border: '1px solid #000000'
+  border: '1px solid #000000',
+  zIndex: '9001',
+  display: 'flex',
+  width: '100%'
 };
 
 const sortButtonsCb = (a, b) => {
@@ -57,7 +61,7 @@ const mapButtonsCb = (el, ind) => {
   );
 };
 
-export default class Toolbar extends Component {
+export default class Menubar extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -74,7 +78,7 @@ export default class Toolbar extends Component {
   render() {
 
     let {
-      props: { state, width, height, toolbarButtons, allowProjectFileSupport },
+      props: { state, width, height, menubarButtons, allowProjectFileSupport },
       context: { projectActions, viewer3DActions, translator }
     } = this;
 
@@ -90,79 +94,79 @@ export default class Toolbar extends Component {
         dom: <CompanyLogo/>
       },
       {
-        index: 2, condition: allowProjectFileSupport, dom: <ToolbarButton
+        index: 2, condition: allowProjectFileSupport, dom: <MenubarButton
           active={false}
           tooltip={translator.t('New project')}
           onClick={event => confirm(translator.t('Would you want to start a new Project?')) ? projectActions.newProject() : null}>
           <FaFile />
-        </ToolbarButton>
+        </MenubarButton>
       },
       {
         index: 3, condition: allowProjectFileSupport,
-        dom: <ToolbarSaveButton state={state} />
+        dom: <MenubarSaveButton state={state} />
       },
       {
         index: 4, condition: allowProjectFileSupport,
-        dom: <ToolbarLoadButton state={state} />
+        dom: <MenubarLoadButton state={state} />
       },
       {
         index: 5, condition: true,
-        dom: <ToolbarButton
+        dom: <MenubarButton
           active={[MODE_VIEWING_CATALOG].includes(mode)}
           tooltip={translator.t('Open catalog')}
           onClick={event => projectActions.openCatalog()}>
           <FaPlus />
-        </ToolbarButton>
+        </MenubarButton>
       },
       {
-        index: 6, condition: true, dom: <ToolbarButton
+        index: 6, condition: true, dom: <MenubarButton
           active={[MODE_3D_VIEW].includes(mode)}
           tooltip={translator.t('3D View')}
           onClick={event => viewer3DActions.selectTool3DView()}>
           <Icon3D />
-        </ToolbarButton>
+        </MenubarButton>
       },
       {
-        index: 7, condition: true, dom: <ToolbarButton
+        index: 7, condition: true, dom: <MenubarButton
           active={[MODE_IDLE].includes(mode)}
           tooltip={translator.t('2D View')}
           onClick={event => projectActions.setMode( MODE_IDLE )}>
           {[MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode) ? <Icon2D style={{color: alterateColor}} /> : <FaMousePointer style={{color: alterateColor}} />}
-        </ToolbarButton>
+        </MenubarButton>
       },
       {
-        index: 8, condition: true, dom: <ToolbarButton
+        index: 8, condition: true, dom: <MenubarButton
           active={[MODE_3D_FIRST_PERSON].includes(mode)}
           tooltip={translator.t('3D First Person')}
           onClick={event => viewer3DActions.selectTool3DFirstPerson()}>
           <MdDirectionsRun />
-        </ToolbarButton>
+        </MenubarButton>
       },
       {
-        index: 9, condition: true, dom: <ToolbarButton
+        index: 9, condition: true, dom: <MenubarButton
           active={false}
           tooltip={translator.t('Undo (CTRL-Z)')}
           onClick={event => projectActions.undo()}>
           <MdUndo />
-        </ToolbarButton>
+        </MenubarButton>
       },
       {
-        index: 10, condition: true, dom: <ToolbarButton
+        index: 10, condition: true, dom: <MenubarButton
           active={[MODE_CONFIGURING_PROJECT].includes(mode)}
           tooltip={translator.t('Configure project')}
           onClick={event => projectActions.openProjectConfigurator()}>
           <MdSettings />
-        </ToolbarButton>
+        </MenubarButton>
       }
     ];
 
-    sorter = sorter.concat(toolbarButtons.map((Component, key) => {
+    sorter = sorter.concat(menubarButtons.map((Component, key) => {
       return Component.prototype ? //if is a react component
         {
           condition: true,
           dom: React.createElement(Component, { mode, state, key })
         } :
-        {                           //else is a sortable toolbar button
+        {                           //else is a sortable menubar button
           index: Component.index,
           condition: Component.condition,
           dom: React.createElement(Component.dom, { mode, state, key })
@@ -170,22 +174,22 @@ export default class Toolbar extends Component {
     }));
 
     return (
-      <aside style={{ ...ASIDE_STYLE, maxWidth: width, maxHeight: height }} className='toolbar'>
+      <aside style={{ ...menubarstyle, maxWidth: width, maxHeight: height }} className='menubar'>
         {sorter.sort(sortButtonsCb).map(mapButtonsCb)}
       </aside>
     )
   }
 }
 
-Toolbar.propTypes = {
+Menubar.propTypes = {
   state: PropTypes.object.isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   allowProjectFileSupport: PropTypes.bool.isRequired,
-  toolbarButtons: PropTypes.array
+  menubarButtons: PropTypes.array
 };
 
-Toolbar.contextTypes = {
+Menubar.contextTypes = {
   projectActions: PropTypes.object.isRequired,
   viewer2DActions: PropTypes.object.isRequired,
   viewer3DActions: PropTypes.object.isRequired,

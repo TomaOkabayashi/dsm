@@ -297,6 +297,7 @@ export default function Viewer2D(
   let { e, f, SVGWidth, SVGHeight } = state.get('viewer2D').toJS();
 
   let rulerSize = 15; //px
+  let yRulerSize = 30;
   let rulerUnitPixelSize = 100;
   let rulerBgColor = SharedStyle.PRIMARY_COLOR.main;
   let rulerFnColor = SharedStyle.COLORS.white;
@@ -314,7 +315,7 @@ export default function Viewer2D(
       display: 'grid',
       gridRowGap: '0',
       gridColumnGap: '0',
-      gridTemplateColumns: `${rulerSize}px ${width - rulerSize}px`,
+      gridTemplateColumns: `${yRulerSize}px ${width - rulerSize}px`,
       gridTemplateRows: `${rulerSize}px ${height - rulerSize}px`,
       position: 'relative'
     }}>
