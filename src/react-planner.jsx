@@ -8,7 +8,9 @@ import Catalog from './catalog/catalog';
 import actions from './actions/export';
 import {objectsMap} from './utils/objects-utils';
 import {
+  LogobarComponents,
   MenubarComponents,
+  UtilitybarComponents,
   ToolbarComponents,
   Content,
   SidebarComponents,
@@ -17,12 +19,17 @@ import {
 import {VERSION} from './version';
 import './styles/export';
 
+const {Logobar} = LogobarComponents;
 const {Menubar} = MenubarComponents;
+const {Utilitybar} = UtilitybarComponents;
 const {Toolbar} = ToolbarComponents;
 const {Sidebar} = SidebarComponents;
 const {FooterBar} = FooterBarComponents;
 
-const menubarH = 50;
+const logobarH = 50;
+const logobarW = 50;
+const menubarH = 25;
+const utilitybarH = 25;
 const toolbarW = 50;
 const sidebarW = 300;
 const footerBarH= 20;
@@ -64,23 +71,47 @@ class ReactPlanner extends Component {
     let {width, height, state, stateExtractor, ...props} = this.props;
 
     let contentW = width - toolbarW - sidebarW;
-    let toolbarH = height - footerBarH - menubarH;
-    let contentH = height - footerBarH - menubarH;
-    let sidebarH = height - footerBarH - menubarH;
+    let toolbarH = height - footerBarH - menubarH - utilitybarH;
+    let contentH = height - footerBarH - menubarH - utilitybarH;
+    let sidebarH = height - footerBarH - menubarH - utilitybarH;
 
     let extractedState = stateExtractor(state);
 
     return (
       <div style={{...wrapperStyle, height}}>
         
-        <Menubar width={width} height={menubarH} state={extractedState} {...props} />
-        <Menubar width={width} height={menubarH} state={extractedState} {...props} />
-
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          height: '50px',
+          width: '50px'
+        }}>
+          <Logobar width={logobarW} height={logobarH} state={extractedState} {...props} />
+        </div>
+        
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: logobarW,
+          width: '100%'
+        }}>
+          <Menubar width={width} height={menubarH} state={extractedState} {...props} />
+        </div>
+        
+        <div style={{
+          position: 'absolute',
+          top: menubarH,
+          left: logobarW,
+          width: '100%'
+        }}>
+          <Utilitybar width={width} height={utilitybarH} state={extractedState} {...props} />
+        </div>
+        
         <div style={{
           display: 'flex',
           flexFlow: 'row nowrap',
-          marginTop: menubarH,
-          height: `calc(100% - ${menubarH + footerBarH}px)`
+          marginTop: menubarH + utilitybarH,
+          height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`
         }}>
           <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} />
           <Content width={contentW} height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
@@ -104,7 +135,9 @@ ReactPlanner.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   stateExtractor: PropTypes.func.isRequired,
+  logoBarButtons: PropTypes.array,
   menuBarButtons: PropTypes.array,
+  utilityBarButtons: PropTypes.array,
   toolbarButtons: PropTypes.array,
   sidebarComponents: PropTypes.array,
   footerbarComponents: PropTypes.array,
@@ -128,7 +161,9 @@ ReactPlanner.defaultProps = {
   plugins: [],
   allowProjectFileSupport: true,
   softwareSignature: `React-Planner ${VERSION}`,
+  logobarButtons: [],
   menubarButtons: [],
+  utilitybarButtons: [],
   toolbarButtons: [],
   sidebarComponents: [],
   footerbarComponents: [],

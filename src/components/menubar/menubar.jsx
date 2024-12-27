@@ -17,7 +17,7 @@ import {
 import * as SharedStyle from '../../shared-style';
 
 const iconTextStyle = {
-  fontSize: '19px',
+  fontSize: '19px', // this the text size for the icon 3d, needs fixing. Fix with the other icons too
   textDecoration: 'none',
   fontWeight: 'bold',
   margin: '0px',
@@ -32,9 +32,9 @@ const menubarstyle = {
   top: 0,
   backgroundColor: SharedStyle.PRIMARY_COLOR.main,
   border: '1px solid #000000',
-  zIndex: '9001',
   display: 'flex',
-  width: '100%'
+  width: '100%',
+  height: '25px'
 };
 
 const sortButtonsCb = (a, b) => {
@@ -88,11 +88,11 @@ export default class Menubar extends Component {
 
     
     let sorter = [
-      {
-        index: 0, 
-        condition: true,
-        dom: <CompanyLogo/>
-      },
+      // {
+      //   index: 0, 
+      //   condition: true,
+      //   dom: <CompanyLogo/>
+      // },
       {
         index: 2, condition: allowProjectFileSupport, dom: <MenubarButton
           active={false}

@@ -5,8 +5,8 @@ import * as SharedStyle from '../../shared-style';
 //http://www.cssportal.com/css-tooltip-generator/
 
 const STYLE = {
-  width: '30px',
-  height: '50px', // height of the menu bar
+  width: '70px',
+  height: '25px', // height of the menu bar
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

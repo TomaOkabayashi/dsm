@@ -45,7 +45,7 @@ export default class RulerX extends Component {
     let markerStyle = {
       position: 'absolute',
       left: this.props.zeroLeftPosition + (this.props.mouseX * this.props.zoom) - 6.5,
-      top: 8,
+      top: 7,
       width: 0,
       height: 0,
       borderLeft: '5px solid transparent',

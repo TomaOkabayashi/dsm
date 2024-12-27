@@ -83,7 +83,7 @@ export default class RulerY extends Component {
     let markerStyle = {
       position: 'absolute',
       top: this.props.zeroTopPosition - (this.props.mouseY * this.props.zoom) - 6.5,
-      left: 8,
+      left: 22,
       width: 0,
       height: 0,
       borderTop: '5px solid transparent',
