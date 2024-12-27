@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MdCamera } from 'react-icons/md'
+// import { MdCamera } from 'react-icons/md'
 import {ReactPlannerComponents, ReactPlannerConstants} from 'react-planner';
 
 const {
@@ -20,6 +20,15 @@ const {
   MODE_3D_FIRST_PERSON,
   MODE_3D_VIEW
 } = ReactPlannerConstants;
+
+const iconTextStyle = {
+  fontSize: '19px', // this the text size for the icon 3d, needs fixing. Fix with the other icons too
+  textDecoration: 'none',
+  fontWeight: 'bold',
+  margin: '0px',
+  userSelect: 'none'
+};
+
 
 const { ToolbarButton } = ReactPlannerComponents.ToolbarComponents;
 
@@ -93,8 +102,8 @@ export default function ToolbarScreenshotButton({mode}, {translator}) {
 
   if ([MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode)) {
     return (
-      <ToolbarButton active={false} tooltip={translator.t('Get Screenshot')} onClick={saveScreenshotToFile}>
-        <MdCamera/>
+      <ToolbarButton active={false} tooltip={translator.t('Export As PNG')} onClick={saveScreenshotToFile}>
+        <span style={{...iconTextStyle}}>Export as PNG</span>
       </ToolbarButton>
     );
   }
@@ -114,8 +123,8 @@ export default function ToolbarScreenshotButton({mode}, {translator}) {
       MODE_ROTATING_ITEM].includes(mode)) {
 
     return (
-      <ToolbarButton active={false} tooltip={translator.t('Get Screenshot')} onClick={saveSVGScreenshotToFile}>
-        <MdCamera/>
+      <ToolbarButton active={false} tooltip={translator.t('Export As PNG')} onClick={saveSVGScreenshotToFile}>
+        <span style={{...iconTextStyle}}>Export as PNG</span>
       </ToolbarButton>
     );
   }

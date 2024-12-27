@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { MdSettings, MdUndo, MdDirectionsRun } from 'react-icons/md';
+import { MdSettings, MdUndo, MdRedo, MdZoomIn, MdZoomOut } from 'react-icons/md';
 import { FaFile, FaMousePointer, FaPlus } from 'react-icons/fa';
-//import { IoMdEye } from "react-icons/io";
-//import { RxDividerVertical } from "react-icons/rx";
+import { IoMdEye } from "react-icons/io";
 import UtilitybarButton from './utilitybar-button';
-import UtilitybarSaveButton from './utilitybar-save-button';
-import UtilitybarLoadButton from './utilitybar-load-button';
 import If from '../../utils/react-if';
 import {
   MODE_IDLE,
@@ -90,56 +87,40 @@ export default class Utilitybar extends Component {
     
     let sorter = [
       {
-        index: 1, condition: allowProjectFileSupport, dom: <UtilitybarButton
+        index: 1, condition: true, dom: <UtilitybarButton
           active={false}
-          tooltip={translator.t('New project')}
-          onClick={event => confirm(translator.t('Would you want to start a new Project?')) ? projectActions.newProject() : null}>
+          tooltip={translator.t('Selector')}
+          onClick={event => projectActions.undo()}>
           <FaMousePointer />
         </UtilitybarButton>
       },
       {
-        index: 2, condition: allowProjectFileSupport,
-        dom: <UtilitybarSaveButton state={state} />
+        index: 2, condition: true, dom: <UtilitybarButton
+          active={false}
+          tooltip={translator.t('Zoom')}
+          onClick={event => projectActions.undo()}>
+          <span>100%</span>
+        </UtilitybarButton>
       },
       {
-        index: 3, condition: allowProjectFileSupport,
-        dom: <UtilitybarLoadButton state={state} />
+        index: 3, condition: true, dom: <UtilitybarButton
+          active={false}
+          tooltip={translator.t('Zoom In')}
+          onClick={event => projectActions.undo()}>
+          <MdZoomIn />
+        </UtilitybarButton>
       },
       {
         index: 4, condition: true,
         dom: <UtilitybarButton
           active={[MODE_VIEWING_CATALOG].includes(mode)}
-          tooltip={translator.t('Open catalog')}
+          tooltip={translator.t('Zoom Out')}
           onClick={event => projectActions.openCatalog()}>
-          <FaPlus />
+          <MdZoomOut />
         </UtilitybarButton>
       },
       {
         index: 5, condition: true, dom: <UtilitybarButton
-          active={[MODE_3D_VIEW].includes(mode)}
-          tooltip={translator.t('3D View')}
-          onClick={event => viewer3DActions.selectTool3DView()}>
-          <Icon3D />
-        </UtilitybarButton>
-      },
-      {
-        index: 6, condition: true, dom: <UtilitybarButton
-          active={[MODE_IDLE].includes(mode)}
-          tooltip={translator.t('2D View')}
-          onClick={event => projectActions.setMode( MODE_IDLE )}>
-          {[MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode) ? <Icon2D style={{color: alterateColor}} /> : <FaMousePointer style={{color: alterateColor}} />}
-        </UtilitybarButton>
-      },
-      {
-        index: 7, condition: true, dom: <UtilitybarButton
-          active={[MODE_3D_FIRST_PERSON].includes(mode)}
-          tooltip={translator.t('3D First Person')}
-          onClick={event => viewer3DActions.selectTool3DFirstPerson()}>
-          <MdDirectionsRun />
-        </UtilitybarButton>
-      },
-      {
-        index: 8, condition: true, dom: <UtilitybarButton
           active={false}
           tooltip={translator.t('Undo (CTRL-Z)')}
           onClick={event => projectActions.undo()}>
@@ -147,11 +128,35 @@ export default class Utilitybar extends Component {
         </UtilitybarButton>
       },
       {
+        index: 6, condition: true, dom: <UtilitybarButton
+          active={false}
+          tooltip={translator.t('Redo (CTRL-SHIFT-Z)')}
+          onClick={event => projectActions.undo()}>
+          <MdRedo />
+        </UtilitybarButton>
+      },
+      {
+        index: 7, condition: true, dom: <UtilitybarButton
+          active={[MODE_IDLE].includes(mode)}
+          tooltip={translator.t('2D View')}
+          onClick={event => projectActions.setMode( MODE_IDLE )}>
+          {[MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode) ? <Icon2D style={{color: alterateColor}} /> : <Icon2D style={{color: alterateColor}} />}
+        </UtilitybarButton>
+      },
+      {
+        index: 8, condition: true, dom: <UtilitybarButton
+          active={[MODE_3D_VIEW].includes(mode)}
+          tooltip={translator.t('3D View')}
+          onClick={event => viewer3DActions.selectTool3DView()}>
+          <Icon3D />
+        </UtilitybarButton>
+      },
+      {
         index: 9, condition: true, dom: <UtilitybarButton
-          active={[MODE_CONFIGURING_PROJECT].includes(mode)}
-          tooltip={translator.t('Configure project')}
-          onClick={event => projectActions.openProjectConfigurator()}>
-          <MdSettings />
+          active={[MODE_3D_FIRST_PERSON].includes(mode)}
+          tooltip={translator.t('1st View')}
+          onClick={event => viewer3DActions.selectTool3DFirstPerson()}>
+          <IoMdEye />
         </UtilitybarButton>
       },
       {

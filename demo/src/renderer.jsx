@@ -75,6 +75,10 @@ let toolbarButtons = [
   ToolbarScreenshotButton,
 ];
 
+let menubarButtons = [
+  ToolbarScreenshotButton
+];
+
 //render
 ReactDOM.render(
   (
@@ -87,6 +91,7 @@ ReactDOM.render(
             height={height}
             plugins={plugins}
             toolbarButtons={toolbarButtons}
+            menubarButtons={menubarButtons}
             stateExtractor={state => state.get('react-planner')}
           />
         }
