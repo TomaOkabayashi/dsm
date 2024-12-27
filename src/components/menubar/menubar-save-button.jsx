@@ -1,9 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {FaSave as IconSave} from 'react-icons/fa';
 import MenubarButton from './menubar-button';
 import {browserDownload}  from '../../utils/browser';
 import { Project } from '../../class/export';
+
+const iconTextStyle = {
+  fontSize: '19px', // this the text size for the icon 3d, needs fixing. Fix with the other icons too
+  textDecoration: 'none',
+  fontWeight: 'bold',
+  margin: '0px',
+  userSelect: 'none'
+};
 
 export default function MenubarSaveButton({state}, {translator}) {
 
@@ -14,8 +21,8 @@ export default function MenubarSaveButton({state}, {translator}) {
   };
 
   return (
-    <MenubarButton active={false} tooltip={translator.t('Save project')} onClick={saveProjectToFile}>
-      <IconSave />
+    <MenubarButton active={false} tooltip={translator.t('Save project as JSON')} onClick={saveProjectToFile}>
+      <span style={{...iconTextStyle}}>Save</span>
     </MenubarButton>
   );
 }

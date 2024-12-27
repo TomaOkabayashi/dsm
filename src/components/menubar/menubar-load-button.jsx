@@ -1,8 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {FaFolderOpen as IconLoad} from 'react-icons/fa';
 import MenubarButton from './menubar-button';
 import {browserUpload}  from '../../utils/browser';
+
+const iconTextStyle = {
+  fontSize: '19px', // this the text size for the icon 3d, needs fixing. Fix with the other icons too
+  textDecoration: 'none',
+  fontWeight: 'bold',
+  margin: '0px',
+  userSelect: 'none'
+};
 
 export default function MenubarLoadButton({state}, {translator, projectActions}) {
 
@@ -14,8 +21,8 @@ export default function MenubarLoadButton({state}, {translator, projectActions})
   };
 
   return (
-    <MenubarButton active={false} tooltip={translator.t("Load project")} onClick={loadProjectFromFile}>
-      <IconLoad />
+    <MenubarButton active={false} tooltip={translator.t("Load project (JSON)")} onClick={loadProjectFromFile}>
+      <span style={{...iconTextStyle}}>Load</span>
     </MenubarButton>
   );
 }

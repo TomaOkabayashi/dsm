@@ -6,7 +6,6 @@ import MenubarButton from './menubar-button';
 import MenubarSaveButton from './menubar-save-button';
 import MenubarLoadButton from './menubar-load-button';
 import If from '../../utils/react-if';
-import CompanyLogo from '../icons/companyLogo';
 import {
   MODE_IDLE,
   MODE_3D_VIEW,
@@ -88,26 +87,21 @@ export default class Menubar extends Component {
 
     
     let sorter = [
-      // {
-      //   index: 0, 
-      //   condition: true,
-      //   dom: <CompanyLogo/>
-      // },
       {
         index: 2, condition: allowProjectFileSupport, dom: <MenubarButton
           active={false}
           tooltip={translator.t('New project')}
           onClick={event => confirm(translator.t('Would you want to start a new Project?')) ? projectActions.newProject() : null}>
-          <FaFile />
+          <span style={{...iconTextStyle}}>New</span>
         </MenubarButton>
       },
       {
         index: 3, condition: allowProjectFileSupport,
-        dom: <MenubarSaveButton state={state} />
+        dom: <MenubarLoadButton state={state} />
       },
       {
         index: 4, condition: allowProjectFileSupport,
-        dom: <MenubarLoadButton state={state} />
+        dom: <MenubarSaveButton state={state} />
       },
       {
         index: 5, condition: true,
