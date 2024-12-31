@@ -33,7 +33,8 @@ const menubarstyle = {
   border: '1px solid #000000',
   display: 'flex',
   width: '100%',
-  height: '25px'
+  height: '25px',
+  whiteSpace: 'noWrap',
 };
 
 const sortButtonsCb = (a, b) => {
@@ -88,7 +89,7 @@ export default class Menubar extends Component {
     
     let sorter = [
       {
-        index: 2, condition: allowProjectFileSupport, dom: <MenubarButton
+        index: 1, condition: allowProjectFileSupport, dom: <MenubarButton
           active={false}
           tooltip={translator.t('New project')}
           onClick={event => confirm(translator.t('Would you want to start a new Project?')) ? projectActions.newProject() : null}>
@@ -96,77 +97,64 @@ export default class Menubar extends Component {
         </MenubarButton>
       },
       {
-        index: 3, condition: allowProjectFileSupport,
+        index: 2, condition: allowProjectFileSupport,
         dom: <MenubarLoadButton state={state} />
       },
       {
-        index: 4, condition: allowProjectFileSupport,
+        index: 3, condition: allowProjectFileSupport,
         dom: <MenubarSaveButton state={state} />
       },
+
+      // screenshot button
+      ...menubarButtons.map((Component, key) => ({
+        index: 4,
+        condition: true,
+        dom: <div style={{
+          padding: '0 10px 0 10px',
+          margin: '0 50px 0 50px',
+          display: 'flex',
+          alignItems: 'center',
+          height: '100%',
+        }}>
+          {React.createElement(Component, { mode, state, key})}
+        </div>
+      })),
+
       {
         index: 5, condition: true,
         dom: <MenubarButton
           active={[MODE_VIEWING_CATALOG].includes(mode)}
-          tooltip={translator.t('Open catalog')}
+          tooltip={translator.t('get rid of this')}
           onClick={event => projectActions.openCatalog()}>
-          <FaPlus />
-        </MenubarButton>
-      },
-      {
-        index: 6, condition: true, dom: <MenubarButton
-          active={[MODE_3D_VIEW].includes(mode)}
-          tooltip={translator.t('3D View')}
-          onClick={event => viewer3DActions.selectTool3DView()}>
-          <Icon3D />
+          <span style={{...iconTextStyle}}>Import Excel</span>
         </MenubarButton>
       },
       {
         index: 7, condition: true, dom: <MenubarButton
-          active={[MODE_IDLE].includes(mode)}
-          tooltip={translator.t('2D View')}
-          onClick={event => projectActions.setMode( MODE_IDLE )}>
-          {[MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode) ? <Icon2D style={{color: alterateColor}} /> : <FaMousePointer style={{color: alterateColor}} />}
+          active={[MODE_3D_VIEW].includes(mode)}
+          tooltip={translator.t('get rid of this')}
+          onClick={event => viewer3DActions.selectTool3DView()}>
+          <span style={{...iconTextStyle}}>Export as Excel</span>
         </MenubarButton>
       },
       {
         index: 8, condition: true, dom: <MenubarButton
-          active={[MODE_3D_FIRST_PERSON].includes(mode)}
-          tooltip={translator.t('3D First Person')}
-          onClick={event => viewer3DActions.selectTool3DFirstPerson()}>
-          <MdDirectionsRun />
+          active={[MODE_3D_VIEW].includes(mode)}
+          tooltip={translator.t('get rid of this')}
+          onClick={event => viewer3DActions.selectTool3DView()}>
+          <span style={{...iconTextStyle}}>Create PDF Report</span>
         </MenubarButton>
       },
       {
         index: 9, condition: true, dom: <MenubarButton
-          active={false}
-          tooltip={translator.t('Undo (CTRL-Z)')}
-          onClick={event => projectActions.undo()}>
-          <MdUndo />
+          active={[MODE_CONFIGURING_PROJECT].includes(mode)}
+          tooltip={translator.t('Color')}
+          onClick={event => projectActions.openProjectConfigurator()}>
+          <span style={{...iconTextStyle}}>Display</span>
         </MenubarButton>
       },
-      {
-        index: 10, condition: true, dom: <MenubarButton
-          active={[MODE_CONFIGURING_PROJECT].includes(mode)}
-          tooltip={translator.t('Configure project')}
-          onClick={event => projectActions.openProjectConfigurator()}>
-          <MdSettings />
-        </MenubarButton>
-      }
     ];
-
-    sorter = sorter.concat(menubarButtons.map((Component, key) => {
-      return Component.prototype ? //if is a react component
-        {
-          condition: true,
-          dom: React.createElement(Component, { mode, state, key })
-        } :
-        {                           //else is a sortable menubar button
-          index: Component.index,
-          condition: Component.condition,
-          dom: React.createElement(Component.dom, { mode, state, key })
-        };
-    }));
-
+    
     return (
       <aside style={{ ...menubarstyle, maxWidth: width, maxHeight: height }} className='menubar'>
         {sorter.sort(sortButtonsCb).map(mapButtonsCb)}

@@ -22,7 +22,7 @@ export default function MenubarLoadButton({state}, {translator, projectActions})
 
   return (
     <MenubarButton active={false} tooltip={translator.t("Load project (JSON)")} onClick={loadProjectFromFile}>
-      <span style={{...iconTextStyle}}>Load</span>
+      <span style={{...iconTextStyle}}>Open</span>
     </MenubarButton>
   );
 }
