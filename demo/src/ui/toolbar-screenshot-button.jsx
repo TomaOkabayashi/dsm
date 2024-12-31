@@ -102,8 +102,10 @@ export default function ToolbarScreenshotButton({mode}, {translator}) {
 
   if ([MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode)) {
     return (
-      <ToolbarButton active={false} tooltip={translator.t('Export As PNG')} onClick={saveScreenshotToFile}>
-        <span style={{...iconTextStyle}}>Export as PNG</span>
+      <ToolbarButton active={false} 
+        //tooltip={translator.t('Export As PNG')} 
+        onClick={saveScreenshotToFile}>
+        <span style={{...iconTextStyle}}>Save as PNG</span>
       </ToolbarButton>
     );
   }
@@ -123,8 +125,10 @@ export default function ToolbarScreenshotButton({mode}, {translator}) {
       MODE_ROTATING_ITEM].includes(mode)) {
 
     return (
-      <ToolbarButton active={false} tooltip={translator.t('Export As PNG')} onClick={saveSVGScreenshotToFile}>
-        <span style={{...iconTextStyle}}>Export as PNG</span>
+      <ToolbarButton active={false} 
+        //tooltip={translator.t('Export As PNG')} 
+        onClick={saveSVGScreenshotToFile}>
+        <span style={{...iconTextStyle}}>Save as PNG</span>
       </ToolbarButton>
     );
   }

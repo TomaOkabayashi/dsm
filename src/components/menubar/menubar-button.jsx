@@ -5,7 +5,7 @@ import * as SharedStyle from '../../shared-style';
 //http://www.cssportal.com/css-tooltip-generator/
 
 const STYLE = {
-  width: '70px', //space between the icons
+  width: '170px', //space between the icons
   height: '25px', // height of the menu bar
   display: 'flex',
   alignItems: 'center',
@@ -13,7 +13,8 @@ const STYLE = {
   marginRight: '5px',
   fontSize: '25px',
   position: 'relative',
-  cursor: 'pointer'
+  cursor: 'pointer',
+  whiteSpace: 'nowrap',
 };
 
 const STYLE_TOOLTIP = {

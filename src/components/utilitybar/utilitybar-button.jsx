@@ -5,7 +5,7 @@ import * as SharedStyle from '../../shared-style';
 //http://www.cssportal.com/css-tooltip-generator/
 
 const STYLE = {
-  width: '70px', // width between buttons on bar
+  width: '65px', // width between buttons on bar
   height: '25px', // height of the menu bar
   display: 'flex',
   alignItems: 'center',

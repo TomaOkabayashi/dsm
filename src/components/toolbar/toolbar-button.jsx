@@ -68,8 +68,8 @@ export default class ToolbarButton extends Component {
 
         {
           state.active ?
-          <div style={STYLE_TOOLTIP}>
-            <span style={STYLE_TOOLTIP_PIN} />
+          <div>
+            <span/>
             {props.tooltip}
           </div>
           : null

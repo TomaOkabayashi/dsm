@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdSettings, MdUndo, MdRedo, MdZoomIn, MdZoomOut } from 'react-icons/md';
-import { FaFile, FaMousePointer, FaPlus } from 'react-icons/fa';
-import { IoMdEye } from "react-icons/io";
+import { FaFile, FaMousePointer, FaPlus, FaCopy, FaPaste } from 'react-icons/fa';
+import { IoMdEye, IoMdTrash } from "react-icons/io";
 import UtilitybarButton from './utilitybar-button';
 import If from '../../utils/react-if';
 import {
@@ -137,6 +137,30 @@ export default class Utilitybar extends Component {
       },
       {
         index: 7, condition: true, dom: <UtilitybarButton
+          active={false}
+          tooltip={translator.t('Delete')}
+          onClick={event => projectActions.remove()}>
+          <IoMdTrash />
+        </UtilitybarButton>
+      },
+      {
+        index: 8, condition: true, dom: <UtilitybarButton
+          active={false}
+          tooltip={translator.t('Copy (Ctrl + C)')}
+          onClick={event => projectActions.copyProperties()}>
+          <FaCopy />
+        </UtilitybarButton>
+      },
+      {
+        index: 9, condition: true, dom: <UtilitybarButton
+          active={false}
+          tooltip={translator.t('Paste (Ctrl + V)')}
+          onClick={event => projectActions.pasteProperties()}>
+          <FaPaste />
+        </UtilitybarButton>
+      },
+      {
+        index: 10, condition: true, dom: <UtilitybarButton
           active={[MODE_IDLE].includes(mode)}
           tooltip={translator.t('2D View')}
           onClick={event => projectActions.setMode( MODE_IDLE )}>
@@ -144,7 +168,7 @@ export default class Utilitybar extends Component {
         </UtilitybarButton>
       },
       {
-        index: 8, condition: true, dom: <UtilitybarButton
+        index: 11, condition: true, dom: <UtilitybarButton
           active={[MODE_3D_VIEW].includes(mode)}
           tooltip={translator.t('3D View')}
           onClick={event => viewer3DActions.selectTool3DView()}>
@@ -152,7 +176,7 @@ export default class Utilitybar extends Component {
         </UtilitybarButton>
       },
       {
-        index: 9, condition: true, dom: <UtilitybarButton
+        index: 12, condition: true, dom: <UtilitybarButton
           active={[MODE_3D_FIRST_PERSON].includes(mode)}
           tooltip={translator.t('1st View')}
           onClick={event => viewer3DActions.selectTool3DFirstPerson()}>
@@ -160,7 +184,7 @@ export default class Utilitybar extends Component {
         </UtilitybarButton>
       },
       {
-        index: 10, condition: true, dom: <UtilitybarButton
+        index: 13, condition: true, dom: <UtilitybarButton
           active={[MODE_CONFIGURING_PROJECT].includes(mode)}
           tooltip={translator.t('Configure project')}
           onClick={event => projectActions.openProjectConfigurator()}>
