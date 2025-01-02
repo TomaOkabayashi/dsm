@@ -1,8 +1,8 @@
 import * as Three from 'three';
 import React from 'react';
 
-const WIDTH = 40;
-const DEPTH = 40;
+const WIDTH = 100;
+const DEPTH = 60;
 const HEIGHT = 60;
 
 const black = new Three.MeshLambertMaterial({color: 0x000000});

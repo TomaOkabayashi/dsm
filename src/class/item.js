@@ -184,16 +184,22 @@ class Item{
       // snap handling
       if (state.snapMask && !state.snapMask.isEmpty()) {
 
-        
-
         let itemType = item.get('type');
         let element = state.catalog.getIn(['elements', itemType]).toJS();
         let dims = element.info.dimensions;
+        let rotation = item.get('rotation');
+
+        // by the way, depth here means length
+
+        // Determine if the width and depth should be swapped based on rotation
+        let isHorizontal = rotation === 90 || rotation === 270 || rotation === -90 || rotation === -270;
+        let effectiveWidth = isHorizontal ? dims.depth : dims.width;
+        let effectiveDepth = isHorizontal ? dims.width : dims.depth;
 
         // check left side snap
         let leftSnap = SnapUtils.nearestSnap(state.snapElements, newX - dims.width/2, newY, state.snapMask);
         if (leftSnap) {
-          newX = leftSnap.point.x + dims.width/2;
+          newX = leftSnap.point.x + effectiveWidth/2;
           newY = leftSnap.point.y;
           state = state.merge({ activeSnapElement: leftSnap.snap });
         }
@@ -201,7 +207,7 @@ class Item{
         //check right side snap
         let rightSnap = SnapUtils.nearestSnap(state.snapElements, newX + dims.width/2, newY, state.snapMask);
         if (rightSnap) {
-          newX = rightSnap.point.x - dims.width/2;
+          newX = rightSnap.point.x - effectiveWidth/2;
           newY = rightSnap.point.y;
           state = state.merge({ activeSnapElement: rightSnap.snap});
         }
@@ -211,7 +217,7 @@ class Item{
         if (topSnap) {
           // check top side
           newX = topSnap.point.x;
-          newY = topSnap.point.y - dims.depth/2;
+          newY = topSnap.point.y - effectiveDepth/2;
           state = state.merge({ activeSnapElement: topSnap.snap});
         }
 
@@ -219,7 +225,7 @@ class Item{
         let bottomSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY - dims.width/2, state.snapMask);
         if (bottomSnap) {
           newX = bottomSnap.point.x;
-          newY = bottomSnap.point.y + dims.depth/2;
+          newY = bottomSnap.point.y + effectiveDepth/2;
           state = state.merge({ activeSnapElement: bottomSnap.snap});
         }
       }
