@@ -114,6 +114,33 @@ class Project{
     return { updatedState: state };
   }
 
+  /**
+  * Start redo from index 1 of redoList as a pragmatic solution to handle duplicate states.
+  * Due to the double historyPop in undo operation, first undone state is added to redoList twice.
+  * Rather than refactoring the undo logic, we simply skip the first duplicate state in redoList
+  * when redoing as a simple workaround.
+  */
+  static redo(state) {
+    let sceneHistory = state.sceneHistory;
+
+    if (sceneHistory.redoList.size > 1) {
+      let nextState = sceneHistory.redoList.get(1);
+
+      // Push state back into history list WITHOUT clearing redoList
+      sceneHistory = history.historyPushFromRedo(sceneHistory, nextState);
+
+      sceneHistory = sceneHistory.set('redoList', sceneHistory.redoList.shift());
+
+      state = state.merge({
+        mode: MODE_IDLE,
+        scene: nextState,
+        sceneHistory: sceneHistory
+      });
+    }
+
+    return { updatedState: state}
+  }
+
   static rollback(state) {
     let sceneHistory = state.sceneHistory;
 
