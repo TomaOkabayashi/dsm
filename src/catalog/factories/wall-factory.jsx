@@ -7,7 +7,7 @@ import Translator from '../../translator/translator';
 const epsilon = 20;
 const STYLE_TEXT = { textAnchor: 'middle' };
 const STYLE_LINE = { stroke: SharedStyle.LINE_MESH_COLOR.selected };
-const STYLE_RECT = { strokeWidth: 1, stroke: SharedStyle.LINE_MESH_COLOR.unselected};
+const STYLE_RECT = { strokeWidth: 1, stroke: SharedStyle.LINE_MESH_COLOR.unselected}; // for diagonal etching: , fill: 'url(#diagonalFill)' };
 const STYLE_RECT_SELECTED = { ...STYLE_RECT, stroke: SharedStyle.LINE_MESH_COLOR.selected };
 
 let translator = new Translator();
