@@ -58,7 +58,8 @@ export default function AreaFactory(name, info, textures) {
         <path 
           d={path} 
           fill={fill}
-          fillOpacity="0.4"
+          fillOpacity="0.5"
+          stroke={fill}
         />
       );
     },

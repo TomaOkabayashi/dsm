@@ -49,10 +49,10 @@ export const MESH_SELECTED = '#99C3FB'; // colour of 'areas' selected (areas for
 
 export const AREA_MESH_COLOR = {
   selected: MESH_SELECTED,
-  unselected: '#F5F4F4'
+  unselected: '#D3D3D3'
 };
 
 export const LINE_MESH_COLOR = {
   selected: MESH_SELECTED,
-  unselected: '#8E9BA2' // colour of the border of wall objects
+  unselected: '#000000' // colour of the border of wall objects
 }
