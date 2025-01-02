@@ -91,7 +91,6 @@ class ReactPlanner extends Component {
         
         <div style={{
           position: 'absolute',
-          overflow: 'hidden',
           top: 0,
           left: logobarW,
           width: 'calc(100% - 50px)'
