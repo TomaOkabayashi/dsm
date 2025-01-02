@@ -91,9 +91,10 @@ class ReactPlanner extends Component {
         
         <div style={{
           position: 'absolute',
+          overflow: 'hidden',
           top: 0,
           left: logobarW,
-          width: '100%'
+          width: 'calc(100% - 50px)'
         }}>
           <Menubar width={width} height={menubarH} state={extractedState} {...props} />
         </div>
@@ -102,7 +103,7 @@ class ReactPlanner extends Component {
           position: 'absolute',
           top: menubarH,
           left: logobarW,
-          width: '100%'
+          width: 'calc(100% - 50px)'
         }}>
           <Utilitybar width={width} height={utilitybarH} state={extractedState} {...props} />
         </div>
