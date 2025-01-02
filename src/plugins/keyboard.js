@@ -9,6 +9,7 @@ import {
 import {
   rollback,
   undo,
+  redo,
   remove,
   toggleSnap,
   copyProperties,
@@ -40,8 +41,13 @@ export default function keyboard() {
         }
         case KEYBOARD_BUTTON_CODE.Z:
         {
-          if (event.getModifierState('Control') || event.getModifierState('Meta'))
-            store.dispatch(undo());
+          if (event.getModifierState('Control') || event.getModifierState('Meta')) {
+            if (event.getModifierState('Shift')) {
+              store.dispatch(redo());
+            } else {
+              store.dispatch(undo());
+            }
+          }
           break;
         }
         case KEYBOARD_BUTTON_CODE.ALT:

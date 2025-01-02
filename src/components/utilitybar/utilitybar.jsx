@@ -131,7 +131,7 @@ export default class Utilitybar extends Component {
         index: 6, condition: true, dom: <UtilitybarButton
           active={false}
           tooltip={translator.t('Redo (CTRL-SHIFT-Z)')}
-          onClick={event => projectActions.undo()}>
+          onClick={event => projectActions.redo()}>
           <MdRedo />
         </UtilitybarButton>
       },

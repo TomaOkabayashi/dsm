@@ -284,12 +284,14 @@ export class Catalog extends Record({
 
 export class HistoryStructure extends Record({
   list: new List(),
+  redoList: new List(),
   first: null,
   last: null
 }, 'HistoryStructure' ){
   constructor( json = {} ){
     super({
       list: fromJS( json.list || [] ),
+      redoList: fromJS( json.list || []),
       first: new Scene( json.scene ),
       last: new Scene( json.last || json.scene )
     });
