@@ -2,6 +2,11 @@ import React from 'react';
 import { BoxGeometry, MeshBasicMaterial, Mesh, BoxHelper } from 'three';
 import { ReactPlannerSharedStyle } from 'react-planner';
 
+// Define constants at the top of the file
+const WIDTH = 160;
+const DEPTH = 210;
+const HEIGHT = 100;
+
 export default {
   name: 'cube',
   prototype: 'items',
@@ -10,7 +15,13 @@ export default {
     title: 'cube',
     tag: ['demo'],
     description: 'Demo item',
-    image: require('./cube.png')
+    image: require('./cube.png'),
+    // Add dimensions object like in cleaningcart
+    dimensions: {
+      width: WIDTH,
+      height: HEIGHT,
+      depth: DEPTH
+    }
   },
 
   properties: {
@@ -23,7 +34,7 @@ export default {
       label: 'Width',
       type: 'length-measure',
       defaultValue: {
-        length: 100,
+        length: WIDTH,  // Use constant instead of hardcoded value
         unit: 'cm'
       }
     },
@@ -31,7 +42,7 @@ export default {
       label: 'Height',
       type: 'length-measure',
       defaultValue: {
-        length: 100,
+        length: HEIGHT,  // Use constant instead of hardcoded value
         unit: 'cm'
       }
     },
@@ -39,7 +50,7 @@ export default {
       label: 'Depth',
       type: 'length-measure',
       defaultValue: {
-        length: 100,
+        length: DEPTH,  // Use constant instead of hardcoded value
         unit: 'cm'
       }
     },
@@ -52,14 +63,9 @@ export default {
       fill: element.properties.get('color')
     };
 
-    let w = element.properties.getIn(['width', 'length']);
-    let d = element.properties.getIn(['depth', 'length']);
-    let w2 = w / 2;
-    let d2 = d / 2;
-
     return (
-      <g transform={`translate(-${w2}, -${d2})`}>
-        <rect x="0" y="0" width={w} height={d} style={style} />
+      <g transform={`translate(${-WIDTH/2}, ${-DEPTH/2})`}>
+        <rect x="0" y="0" width={WIDTH} height={DEPTH} style={style} />
       </g>
     );
   },

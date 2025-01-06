@@ -184,43 +184,96 @@ class Item{
       // snap handling
       if (state.snapMask && !state.snapMask.isEmpty()) {
 
-        
-
         let itemType = item.get('type');
         let element = state.catalog.getIn(['elements', itemType]).toJS();
         let dims = element.info.dimensions;
+        let rotation = item.get('rotation');
 
-        // check left side snap
-        let leftSnap = SnapUtils.nearestSnap(state.snapElements, newX - dims.width/2, newY, state.snapMask);
-        if (leftSnap) {
-          newX = leftSnap.point.x + dims.width/2;
-          newY = leftSnap.point.y;
-          state = state.merge({ activeSnapElement: leftSnap.snap });
+        // by the way, depth here means length
+
+        // Determine if the width and depth should be swapped based on rotation
+        let isHorizontal = rotation === 90 || rotation === 270 || rotation === -90 || rotation === -270;
+        let effectiveWidth = isHorizontal ? dims.depth : dims.width;
+        let effectiveDepth = isHorizontal ? dims.width : dims.depth;
+
+        // check left side snaps (standard and offset)
+        let leftSnap = SnapUtils.nearestSnap(state.snapElements, newX - effectiveWidth/2, newY, state.snapMask);
+        let leftOffsetForward = SnapUtils.nearestSnap(state.snapElements, newX - effectiveWidth/2 + 10, newY, state.snapMask);
+        let leftOffsetBack = SnapUtils.nearestSnap(state.snapElements, newX - effectiveWidth/2 - 10, newY, state.snapMask);
+        if (leftSnap || leftOffsetForward || leftOffsetBack) {
+          if (leftSnap) {
+            newX = leftSnap.point.x + effectiveWidth/2;
+            newY = leftSnap.point.y;
+            state = state.merge({ activeSnapElement: leftSnap.snap });
+          } else if (leftOffsetForward) {
+            newX = leftOffsetForward.point.x + effectiveWidth/2 - 10;
+            newY = leftOffsetForward.point.y;
+            state = state.merge({ activeSnapElement: leftOffsetForward.snap });
+          } else {
+            newX = leftOffsetBack.point.x + effectiveWidth/2 + 10;
+            newY = leftOffsetBack.point.y;
+            state = state.merge({ activeSnapElement: leftOffsetBack.snap });
+          }
         }
 
-        //check right side snap
-        let rightSnap = SnapUtils.nearestSnap(state.snapElements, newX + dims.width/2, newY, state.snapMask);
-        if (rightSnap) {
-          newX = rightSnap.point.x - dims.width/2;
-          newY = rightSnap.point.y;
-          state = state.merge({ activeSnapElement: rightSnap.snap});
+        // check right side snaps (standard and offset)
+        let rightSnap = SnapUtils.nearestSnap(state.snapElements, newX + effectiveWidth/2, newY, state.snapMask);
+        let rightOffsetForward = SnapUtils.nearestSnap(state.snapElements, newX + effectiveWidth/2 + 10, newY, state.snapMask);
+        let rightOffsetBack = SnapUtils.nearestSnap(state.snapElements, newX + effectiveWidth/2 - 10, newY, state.snapMask);
+        if (rightSnap || rightOffsetForward || rightOffsetBack) {
+          if (rightSnap) {
+            newX = rightSnap.point.x - effectiveWidth/2;
+            newY = rightSnap.point.y;
+            state = state.merge({ activeSnapElement: rightSnap.snap });
+          } else if (rightOffsetForward) {
+            newX = rightOffsetForward.point.x - effectiveWidth/2 - 10;
+            newY = rightOffsetForward.point.y;
+            state = state.merge({ activeSnapElement: rightOffsetForward.snap });
+          } else {
+            newX = rightOffsetBack.point.x - effectiveWidth/2 + 10;
+            newY = rightOffsetBack.point.y;
+            state = state.merge({ activeSnapElement: rightOffsetBack.snap });
+          }
         }
 
-        // check top side snap
-        let topSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY + dims.width/2, state.snapMask);
-        if (topSnap) {
-          // check top side
-          newX = topSnap.point.x;
-          newY = topSnap.point.y - dims.depth/2;
-          state = state.merge({ activeSnapElement: topSnap.snap});
+        // check top side snaps (standard and offset)
+        let topSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY + effectiveDepth/2, state.snapMask);
+        let topOffsetForward = SnapUtils.nearestSnap(state.snapElements, newX, newY + effectiveDepth/2 + 10, state.snapMask);
+        let topOffsetBack = SnapUtils.nearestSnap(state.snapElements, newX, newY + effectiveDepth/2 - 10, state.snapMask);
+        if (topSnap || topOffsetForward || topOffsetBack) {
+          if (topSnap) {
+            newX = topSnap.point.x;
+            newY = topSnap.point.y - effectiveDepth/2;
+            state = state.merge({ activeSnapElement: topSnap.snap });
+          } else if (topOffsetForward) {
+            newX = topOffsetForward.point.x;
+            newY = topOffsetForward.point.y - effectiveDepth/2 - 10;
+            state = state.merge({ activeSnapElement: topOffsetForward.snap });
+          } else {
+            newX = topOffsetBack.point.x;
+            newY = topOffsetBack.point.y - effectiveDepth/2 + 10;
+            state = state.merge({ activeSnapElement: topOffsetBack.snap });
+          }
         }
 
-        // check bottom side snap
-        let bottomSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY - dims.width/2, state.snapMask);
-        if (bottomSnap) {
-          newX = bottomSnap.point.x;
-          newY = bottomSnap.point.y + dims.depth/2;
-          state = state.merge({ activeSnapElement: bottomSnap.snap});
+        // check bottom side snaps (standard and offset)
+        let bottomSnap = SnapUtils.nearestSnap(state.snapElements, newX, newY - effectiveDepth/2, state.snapMask);
+        let bottomOffsetForward = SnapUtils.nearestSnap(state.snapElements, newX, newY - effectiveDepth/2 + 10, state.snapMask);
+        let bottomOffsetBack = SnapUtils.nearestSnap(state.snapElements, newX, newY - effectiveDepth/2 - 10, state.snapMask);
+        if (bottomSnap || bottomOffsetForward || bottomOffsetBack) {
+          if (bottomSnap) {
+            newX = bottomSnap.point.x;
+            newY = bottomSnap.point.y + effectiveDepth/2;
+            state = state.merge({ activeSnapElement: bottomSnap.snap });
+          } else if (bottomOffsetForward) {
+            newX = bottomOffsetForward.point.x;
+            newY = bottomOffsetForward.point.y + effectiveDepth/2 - 10;
+            state = state.merge({ activeSnapElement: bottomOffsetForward.snap });
+          } else {
+            newX = bottomOffsetBack.point.x;
+            newY = bottomOffsetBack.point.y + effectiveDepth/2 + 10;
+            state = state.merge({ activeSnapElement: bottomOffsetBack.snap });
+          }
         }
       }
     }

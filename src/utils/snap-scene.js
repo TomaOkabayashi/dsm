@@ -88,7 +88,7 @@ export function sceneSnapElements(scene, snapElements = new List(), snapMask = n
                 let onXCross = !(gridX % divider);
                 let onYCross = !(gridY % divider);
 
-                addGridSnap(snapElements, x, y, 8, onXCross && onYCross ? 20 : 10, null);
+                addGridSnap(snapElements, x, y, 6, onXCross && onYCross ? 20 : 10, null);
               }
             }
           }
