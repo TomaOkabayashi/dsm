@@ -99,6 +99,21 @@ export function nearestSnap(snapElements, x, y, snapMask) {
   );
 }
 
+
+// this code is perfect for collision detection between items 
+// export function nearestSnap(snapElements, x, y, snapMask) {
+//   // First try non-grid snaps
+//   let nonGridSnap = snapElements
+//     .valueSeq()
+//     .filter(el => el.type !== 'grid' && filter[el.type])
+//     .map(snap => { return {snap, point: snap.nearestPoint(x, y)} })
+//     .filter(({snap: {radius}, point: {distance}}) => distance < radius)
+//     .min((a, b) => a.point.distance - b.point.distance);
+
+//   if (nonGridSnap) return nonGridSnap;
+
+// }
+
 export function nearestGridSnap(state, layerID, x, y) {
   const scene = state.get('scene');
     const areas = scene.getIn(['layers', layerID, 'areas']);
@@ -131,52 +146,6 @@ export function nearestGridSnap(state, layerID, x, y) {
       }
     });
 }
-// export function nearestSnap(snapElements, x, y, snapMask) {
-  
-//   // const isInFilledArea = snapElements 
-//   //   .valueSeq()
-//   //   .filter(el => el.prototype === 'areas')
-//   //   .some(area => area.info.isFilled);
-
-//   // If not in filled area, return no snaps
-//   // if (!isInFilledArea) {
-//   //   return null;
-//   // }
-
-//   // First check if point (x,y) is in any filled area
-//   const areas = snapElements.filter(el => el.prototype === 'areas')
-  
-//   // Check if point x,y is in any of these areas using vertices
-//   const isInFilledArea = areas.some(element => {
-//     // Get vertices and check if x,y is inside the polygon they form
-//     const vertices = element.vertices.map(vertexID => {
-//       let vertex = layer.vertices.get(vertexID);
-//       return {x: vertex.x, y: vertex.y};
-//     });
-//     return pointIsInPolygon(x, y, vertices);
-//   });
-//   // If not in any filled area, return null - no snapping
-//   //if (!isInFilledArea) return null;
-//   // If we are in filled area, proceed with normal snap logic
-//   let filter = {
-//     'point': snapMask.get(SNAP_POINT),
-//     'line': snapMask.get(SNAP_LINE),
-//     'line-segment': snapMask.get(SNAP_SEGMENT),
-//     'grid': snapMask.get(SNAP_GRID)
-//   };
-
-//   return snapElements
-//     .valueSeq()
-//     .filter(el => filter[el.type] && el.isNear(x, y, el.radius))
-//     .map(snap => { return {snap, point: snap.nearestPoint(x, y)} })
-//     .filter(({snap: {radius}, point: {distance}}) => distance < radius)
-//     .min(
-//       (
-//         {snap: { priority : p1 }, point: { distance : d1 }},
-//         {snap: { priority : p2 }, point: { distance : d2 }}
-//       ) => p1 === p2 ? ( d1 < d2 ? -1 : 1 ) : ( p1 > p2 ? -1 : 1 )
-//     );
-// }
 
 export function addPointSnap(snapElements, x, y, radius, priority, related) {
   related = new List([related]);
