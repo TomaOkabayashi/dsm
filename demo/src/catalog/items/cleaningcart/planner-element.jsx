@@ -768,10 +768,23 @@ export default {
 
   render2D: function (element, layer, scene) {
 
-    let angle = element.rotation + 90;
-
     let textRotation = 0;
-    if (Math.sin(angle * Math.PI / 180) < 0) {
+   
+    let rotation = ((element.rotation % 360) + 360) % 360;
+
+    /* Use these console.logs in each if statement to debug rotation values:
+      console.log('Rotation: ', rotation);
+      console.log('TextRotation: ', textRotation);
+    */
+    if (rotation >= 0 && rotation < 45) {
+      textRotation = 0;
+    } else if (rotation >= 45 && rotation <= 120) {
+      textRotation = 90;
+    } else if (rotation >= 235 && rotation <= 310) {
+      textRotation = 270;
+    } else if (rotation > 310 && rotation <= 359) {
+      textRotation = 0
+    } else {
       textRotation = 180;
     }
 
