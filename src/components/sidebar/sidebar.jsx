@@ -36,6 +36,7 @@ export default function Sidebar({ state, width, height, sidebarComponents }) {
   let selectedLayer = state.getIn(['scene', 'selectedLayer']);
 
   //TODO change in multi-layer check
+  // get the properties of selected items
   let selected = state.getIn(['scene', 'layers', selectedLayer, 'selected']);
 
   let multiselected =
