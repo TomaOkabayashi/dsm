@@ -1,5 +1,10 @@
 import React from 'react';
+
+// Door
 import * as Three from 'three';
+// Container
+import { BoxGeometry, MeshBasicMaterial, Mesh, BoxHelper } from 'three';
+
 import { ReactPlannerSharedStyle } from 'react-planner';
 
 //------------DOOR-----------
