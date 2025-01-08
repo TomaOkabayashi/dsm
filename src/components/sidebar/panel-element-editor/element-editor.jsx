@@ -303,10 +303,20 @@ export default class ElementEditor extends Component {
   }
 
   updateProperty(propertyName, value) {
-    let {state: {propertiesFormData}} = this;
+    let {state: {propertiesFormData, attributesFormData}} = this;
     propertiesFormData = propertiesFormData.setIn([propertyName, 'currentValue'], value);
-    this.setState({propertiesFormData});
-    this.save({propertiesFormData});
+    
+    // the name needs to stay in sync between properties and attributes
+    if (propertyName === 'name') {
+      // update attributeFormData too
+      attributesFormData = attributesFormData.set('name', value);
+      // Update both forms in state and save
+      this.setState({propertiesFormData, attributesFormData});
+      this.save({propertiesFormData, attributesFormData});
+    } else {
+      this.setState({propertiesFormData});
+      this.save({propertiesFormData});
+    }
   }
 
   reset() {
@@ -356,17 +366,39 @@ export default class ElementEditor extends Component {
       props: {state: appState, element},
     } = this;
 
+    const isWall = element.prototype === 'lines';
+    
     return (
       <div>
+        {/* Show only name property first for walls 
+            See reason on line-attribute-editor.jsx */}
+        {isWall && propertiesFormData.has('name') && (() => {
+          let nameData = propertiesFormData.get('name');
+          let currentValue = nameData.get('currentValue');
+          let configs = nameData.get('configs');
+          let {Editor} = catalog.getPropertyType(configs.type);
+
+          return <Editor
+            key="name"
+            propertyName="name"
+            value={currentValue}
+            configs={configs}
+            onUpdate={value => this.updateProperty('name', value)}
+            state={appState}
+            sourceElement={element}
+            internalState={this.state}
+          />;
+        })()}
 
         <AttributesEditor
           element={element}
           onUpdate={this.updateAttribute}
           attributeFormData={attributesFormData}
-          state={appState}
+          state={appState} 
         />
 
-        <div style={attrPorpSeparatorStyle}>
+        {/* Does not even work */}
+        {/* <div style={attrPorpSeparatorStyle}>
           <div style={headActionStyle}>
             <div title={translator.t('Copy')} style={iconHeadStyle} onClick={ e => this.copyProperties(element.properties) }><MdContentCopy /></div>
             {
@@ -374,9 +406,10 @@ export default class ElementEditor extends Component {
                 <div title={translator.t('Paste')} style={iconHeadStyle} onClick={ e => this.pasteProperties() }><MdContentPaste /></div> : null
             }
           </div>
-        </div>
+        </div> */}
 
         {propertiesFormData.entrySeq()
+          .filter(([propertyName, _]) => !(isWall && propertyName === 'name'))  // Filter out name for walls
           .map(([propertyName, data]) => {
 
             let currentValue = data.get('currentValue'), configs = data.get('configs');

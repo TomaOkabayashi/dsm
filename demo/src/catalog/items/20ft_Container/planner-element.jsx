@@ -281,8 +281,7 @@ export default {
     title: 'BIN,GENERAL WASTE,3M3',
     tag: ['demo'],
     description: 'Demo item',
-    image: require('./cube.png'),
-    // Add dimensions object like in cleaningcart
+    image: null,
     dimensions: {
       width: WIDTH,
       height: HEIGHT,
@@ -331,7 +330,6 @@ export default {
   },
 
   render2D: (element, layer, scene) => {
-    
     let width = element.properties.getIn(['width', 'length']);
     let depth = element.properties.getIn(['depth', 'length']);
     
@@ -362,7 +360,7 @@ export default {
         <text key='2' x='0' y='0'
               transform={`translate(${width/2}, ${depth/2}) scale(1,-1) rotate(${textRotation})`}
               style={{textAnchor: 'middle', fontSize: '11px'}}>
-          {element.type}
+          {element.name}
         </text>
       </g>
     );

@@ -20,17 +20,11 @@ export default function AreaFactory(name, info, textures) {
     },
     properties: {
       patternColor: {
-        label: translator.t('color'),
+        label: translator.t('Colour'),
         type: 'color',
         defaultValue: SharedStyle.AREA_MESH_COLOR.unselected
       },
-      thickness: {
-        label: translator.t('thickness'),
-        type: 'length-measure',
-        defaultValue: {
-          length: 0,
-        }
-      }
+      
     },
     render2D: function (element, layer) {
       let path = '';

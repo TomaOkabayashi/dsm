@@ -8,8 +8,6 @@ const firstTdStyle = { width: '6em' };
 const inputStyle = { textAlign: 'left' };
 
 export default function LineAttributesEditor({element, onUpdate, attributeFormData, state, ...rest}, {translator}) {
-
-  let name = attributeFormData.has('name') ? attributeFormData.get('name') : element.name;
   let vertexOne = attributeFormData.has('vertexOne') ? attributeFormData.get('vertexOne') : null;
   let vertexTwo = attributeFormData.has('vertexTwo') ? attributeFormData.get('vertexTwo') : null;
   let lineLength = attributeFormData.has('lineLength') ? attributeFormData.get('lineLength') : null;
@@ -18,16 +16,8 @@ export default function LineAttributesEditor({element, onUpdate, attributeFormDa
     <div>
       <table style={tableStyle}>
         <tbody>
-          <tr>
-            <td style={firstTdStyle}>{translator.t('Name')}</td>
-            <td>
-              <FormTextInput
-                value={name}
-                onChange={event => onUpdate('name', event.target.value)}
-                style={inputStyle}
-              />
-            </td>
-          </tr>
+          {/* Due to a bug in in element-editor.jsx that makes direct attribute name changes unusable (not sure why),
+              we update properties instead and sync the attributes via updateProperty in element-editor */}
           <tr>
             <td style={firstTdStyle}>X1</td>
             <td>

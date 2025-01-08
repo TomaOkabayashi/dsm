@@ -15,10 +15,15 @@ let translator = new Translator();
 export default function WallFactory(name, info, textures) {
 
   let wallElement = {
-    name,
+    name, 
     prototype: 'lines',
     info,
     properties: {
+      name: {
+        label: translator.t('Name'),
+        type: 'string',
+        defaultValue: 'Wall'
+      },
       height: {
         label: translator.t('height'),
         type: 'length-measure',
@@ -50,12 +55,19 @@ export default function WallFactory(name, info, textures) {
       let textDistance = half_thickness + epsilon + extra_epsilon;
 
       return (element.selected) ?
+        // the original with the orientation line, feels pointless since the A and B switch with the wall rotation
+        // if you want to fix it, its useful
+        // <g>
+        //   <rect x="0" y={-half_thickness} width={length} height={thickness} style={STYLE_RECT_SELECTED} />
+        //   <line x1={length_5} y1={-half_thickness_eps} x2={length_5} y2={half_thickness_eps} style={STYLE_LINE} />
+        //   <text x={length_5} y={textDistance + char_height} style={STYLE_TEXT}>&#x2C6F;</text>
+        //   <text x={length_5} y={-textDistance} style={STYLE_TEXT}>B</text>
+        // </g> : 
+        // // &#x2C6F; is upside down A and &#x15FA; is upside down B
         <g>
           <rect x="0" y={-half_thickness} width={length} height={thickness} style={STYLE_RECT_SELECTED} />
-          <line x1={length_5} y1={-half_thickness_eps} x2={length_5} y2={half_thickness_eps} style={STYLE_LINE} />
-          <text x={length_5} y={textDistance + char_height} style={STYLE_TEXT}>A</text>
-          <text x={length_5} y={-textDistance} style={STYLE_TEXT}>B</text>
-        </g> :
+          <line x1={length_5} x2={length_5} style={STYLE_LINE} />
+        </g> : 
         <rect x="0" y={-half_thickness} width={length} height={thickness} style={STYLE_RECT} />
     },
 
