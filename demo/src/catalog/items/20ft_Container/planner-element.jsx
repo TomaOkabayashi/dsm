@@ -290,6 +290,11 @@ export default {
   },
 
   properties: {
+    color: {
+      label: 'Colour Def: 211-211-211',
+      type: 'color',
+      defaultValue: ReactPlannerSharedStyle.AREA_MESH_COLOR.unselected
+    },
     altitude: {
       label: 'Altitude',
       type: 'length-measure',
@@ -298,16 +303,11 @@ export default {
         unit: 'cm'
       }
     },
-    color: {
-      label: 'Colour Def: 211-211-211',
-      type: 'color',
-      defaultValue: ReactPlannerSharedStyle.AREA_MESH_COLOR.unselected
-    },
     width: {
       label: `Width\u00A0\u00A0\u00A0 Orig: ` + WIDTH,
       type: 'length-measure',
       defaultValue: {
-        length: WIDTH,  // Use constant instead of hardcoded value
+        length: WIDTH,
         unit: 'cm'
       }
     },
@@ -315,7 +315,7 @@ export default {
       label: `Length\u00A0\u00A0\u00A0 Orig: ` + DEPTH,
       type: 'length-measure',
       defaultValue: {
-        length: DEPTH,  // Use constant instead of hardcoded value
+        length: DEPTH,
         unit: 'cm'
       }
     },
@@ -323,7 +323,7 @@ export default {
       label: `Height\u00A0\u00A0\u00A0 Orig: ` + HEIGHT,
       type: 'length-measure',
       defaultValue: {
-        length: HEIGHT,  // Use constant instead of hardcoded value
+        length: HEIGHT,
         unit: 'cm'
       }
     },
