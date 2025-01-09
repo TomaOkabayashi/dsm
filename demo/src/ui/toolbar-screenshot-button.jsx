@@ -30,9 +30,9 @@ const iconTextStyle = {
 };
 
 
-const { ToolbarButton } = ReactPlannerComponents.ToolbarComponents;
+const { MenubarButton } = ReactPlannerComponents.MenubarComponents;
 
-export default function ToolbarScreenshotButton({mode}, {translator}) {
+export default function MenubarScreenshotButton({mode}, {translator}) {
 
   let imageBrowserDownload = imageUri => {
     let fileOutputLink = document.createElement('a');
@@ -102,11 +102,11 @@ export default function ToolbarScreenshotButton({mode}, {translator}) {
 
   if ([MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode)) {
     return (
-      <ToolbarButton active={false} 
+      <MenubarButton active={false} 
         //tooltip={translator.t('Export As PNG')} 
         onClick={saveScreenshotToFile}>
         <span style={{...iconTextStyle}}>Save as PNG</span>
-      </ToolbarButton>
+      </MenubarButton>
     );
   }
 
@@ -125,11 +125,11 @@ export default function ToolbarScreenshotButton({mode}, {translator}) {
       MODE_ROTATING_ITEM].includes(mode)) {
 
     return (
-      <ToolbarButton active={false} 
+      <MenubarButton active={false} 
         //tooltip={translator.t('Export As PNG')} 
         onClick={saveSVGScreenshotToFile}>
         <span style={{...iconTextStyle}}>Save as PNG</span>
-      </ToolbarButton>
+      </MenubarButton>
     );
   }
 
@@ -137,10 +137,10 @@ export default function ToolbarScreenshotButton({mode}, {translator}) {
 
 }
 
-ToolbarScreenshotButton.propTypes = {
+MenubarScreenshotButton.propTypes = {
   mode: PropTypes.string.isRequired,
 };
 
-ToolbarScreenshotButton.contextTypes = {
+MenubarScreenshotButton.contextTypes = {
   translator: PropTypes.object.isRequired,
 };

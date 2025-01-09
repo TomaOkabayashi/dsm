@@ -32,7 +32,7 @@ const menubarH = 25;
 const utilitybarH = 25;
 const toolbarW = 50;
 const sidebarW = 300;
-const footerBarH= 20;
+const footerBarH= 31;
 
 const wrapperStyle = {
   display: 'flex',
