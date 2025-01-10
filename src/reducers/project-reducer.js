@@ -8,6 +8,7 @@ import {
   UNSELECT_ALL,
   SET_PROPERTIES,
   SET_ITEMS_ATTRIBUTES,
+  SET_AREAS_ATTRIBUTES,
   SET_LINES_ATTRIBUTES,
   SET_HOLES_ATTRIBUTES,
   REMOVE,
@@ -70,6 +71,10 @@ export default function (state, action) {
     case SET_ITEMS_ATTRIBUTES:
       state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
       return Project.setItemsAttributes(state, action.itemsAttributes).updatedState;
+
+    case SET_AREAS_ATTRIBUTES:
+      state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
+      return Project.setAreasAttributes(state, action.areasAttributes).updatedState;
 
     case SET_LINES_ATTRIBUTES:
       state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });

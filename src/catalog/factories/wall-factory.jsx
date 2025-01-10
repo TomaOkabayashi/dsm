@@ -24,6 +24,13 @@ export default function WallFactory(name, info, textures) {
         type: 'string',
         defaultValue: 'Wall'
       },
+      thickness: {
+        label: translator.t('width'),
+        type: 'length-measure',
+        defaultValue: {
+          length: 2
+        }
+      },
       height: {
         label: translator.t('height'),
         type: 'length-measure',
@@ -31,13 +38,6 @@ export default function WallFactory(name, info, textures) {
           length: 300,
         }
       },
-      thickness: {
-        label: translator.t('thickness'),
-        type: 'length-measure',
-        defaultValue: {
-          length: 2
-        }
-      }
     },
 
     render2D: function (element, layer, scene) {

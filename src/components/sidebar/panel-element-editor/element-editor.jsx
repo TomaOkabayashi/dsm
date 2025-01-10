@@ -150,6 +150,10 @@ export default class ElementEditor extends Component {
         attributesFormData = attributesFormData.set(attributeName, value);
         break;
       }
+      case 'areas': {
+        attributesFormData = attributesFormData.set(attributeName, value);
+        break;
+      }
       case 'lines': {
         switch(attributeName)
         {
@@ -307,6 +311,12 @@ export default class ElementEditor extends Component {
     propertiesFormData = propertiesFormData.setIn([propertyName, 'currentValue'], value);
     
     // the name needs to stay in sync between properties and attributes
+    /* Elements: Wall and Areas store their name in two places:
+     * 1. In properties - for the properties panel display
+     * 2. In attributes - for the layer elements panel display
+     * When name is changed, we need to sync both to show the same name everywhere
+     * For some reason I cannot change the name attribute direclty for both of these elements
+     */
     if (propertyName === 'name') {
       // update attributeFormData too
       attributesFormData = attributesFormData.set('name', value);
@@ -339,6 +349,10 @@ export default class ElementEditor extends Component {
           this.context.projectActions.setItemsAttributes(attributesFormData);
           break;
         }
+        case 'areas': {
+          this.context.projectActions.setAreasAttributes(attributesFormData);
+          break;
+        }
         case 'lines': {
           this.context.projectActions.setLinesAttributes(attributesFormData);
           break;
@@ -367,12 +381,13 @@ export default class ElementEditor extends Component {
     } = this;
 
     const isWall = element.prototype === 'lines';
+    const isArea = element.prototype === 'areas';
     
     return (
       <div>
         {/* Show only name property first for walls 
             See reason on line-attribute-editor.jsx */}
-        {isWall && propertiesFormData.has('name') && (() => {
+        {(isWall || isArea) && propertiesFormData.has('name') && (() => {
           let nameData = propertiesFormData.get('name');
           let currentValue = nameData.get('currentValue');
           let configs = nameData.get('configs');
@@ -409,7 +424,7 @@ export default class ElementEditor extends Component {
         </div> */}
 
         {propertiesFormData.entrySeq()
-          .filter(([propertyName, _]) => !(isWall && propertyName === 'name'))  // Filter out name for walls
+          .filter(([propertyName, _]) => !((isWall || isArea) && propertyName === 'name'))  // Filter out name for walls
           .map(([propertyName, data]) => {
 
             let currentValue = data.get('currentValue'), configs = data.get('configs');
