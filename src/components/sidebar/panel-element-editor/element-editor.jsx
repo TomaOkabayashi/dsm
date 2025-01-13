@@ -13,24 +13,44 @@ const attrPorpSeparatorStyle = {
   margin: '0.5em 0.25em 0.5em 0',
   border: '2px solid ' + SharedStyle.SECONDARY_COLOR.alt,
   position:'relative',
-  height:'2.5em',
-  borderRadius:'2px'
+  height:'3em',
+  borderRadius:'2px',
 };
 
 const headActionStyle = {
-  position:'absolute',
-  right:'0.5em',
-  top:'0.5em'
+  position: 'absolute',
+  left: '0.5em',
+  top: '0.5em',
+  display: 'flex',
+  gap: '1.5em',
+  alignItems: 'center',
+  width: '90%',
+  paddingRight: '5px',
 };
 
-const iconHeadStyle = {
-  float:'right',
-  margin:'-3px 4px 0px 0px',
-  padding:0,
-  cursor:'pointer',
-  fontSize:'1.4em'
+const buttonContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+  color: SharedStyle.COLORS.white,
+  minWidth: 'fit-content',
+  border: '1px solid #ffffff',
+  borderRadius: '4px',
+  padding: '3px',
+  position: 'relative',
+  top: '-3px',
 };
 
+const labelStyle = {
+  fontSize: '1.1em',
+  marginLeft: '4px',
+};
+
+const description = {
+  fontSize: '1.1em',
+  width: '37%',
+  marginTop: '-0.5em',
+};
 export default class ElementEditor extends Component {
 
   constructor(props, context) {
@@ -412,17 +432,6 @@ export default class ElementEditor extends Component {
           state={appState} 
         />
 
-        {/* Does not even work */}
-        {/* <div style={attrPorpSeparatorStyle}>
-          <div style={headActionStyle}>
-            <div title={translator.t('Copy')} style={iconHeadStyle} onClick={ e => this.copyProperties(element.properties) }><MdContentCopy /></div>
-            {
-              appState.get('clipboardProperties') && appState.get('clipboardProperties').size ?
-                <div title={translator.t('Paste')} style={iconHeadStyle} onClick={ e => this.pasteProperties() }><MdContentPaste /></div> : null
-            }
-          </div>
-        </div> */}
-
         {propertiesFormData.entrySeq()
           .filter(([propertyName, _]) => !((isWall || isArea) && propertyName === 'name'))  // Filter out name for walls
           .map(([propertyName, data]) => {
@@ -443,6 +452,48 @@ export default class ElementEditor extends Component {
             />
           })
         }
+
+        <div style={attrPorpSeparatorStyle}>
+          <div style={headActionStyle}>
+            <span style={{...description, pointerEvents: 'none',}}>Copy & Paste Properties</span>
+            
+            <div 
+              title={translator.t('Copy')} 
+              style={buttonContainerStyle}
+              onClick={e => this.copyProperties(element.properties)}
+              onMouseOver={e => {
+                e.currentTarget.style.color = SharedStyle.SECONDARY_COLOR.main;
+                e.currentTarget.style.border = `1px solid ${SharedStyle.SECONDARY_COLOR.main}`;
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.color = SharedStyle.COLORS.white;
+                e.currentTarget.style.border = `1px solid ${SharedStyle.COLORS.white}`;
+              }}
+            >
+              <span style={{pointerEvents: 'none'}}><MdContentCopy /></span>
+              <span style={{...labelStyle, pointerEvents: 'none'}}>Copy</span>
+            </div>
+            
+            {appState.get('clipboardProperties') && appState.get('clipboardProperties').size ? (
+            <div 
+              title={translator.t('Paste')} 
+              style={buttonContainerStyle}
+              onClick={e => this.pasteProperties()}
+              onMouseOver={e => {
+                e.currentTarget.style.color = SharedStyle.SECONDARY_COLOR.main;
+                e.currentTarget.style.border = `1px solid ${SharedStyle.SECONDARY_COLOR.main}`;
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.color = SharedStyle.COLORS.white;
+                e.currentTarget.style.border = `1px solid ${SharedStyle.COLORS.white}`;
+              }}
+            >
+              <span style={{pointerEvents: 'none'}}><MdContentPaste /></span>
+              <span style={{...labelStyle, pointerEvents: 'none',}}>Paste</span>
+            </div>
+            ) : null}
+          </div>
+        </div>
 
       </div>
     )

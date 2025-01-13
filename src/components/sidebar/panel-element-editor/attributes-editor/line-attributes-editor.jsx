@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { FormNumberInput, FormTextInput } from '../../../style/export';
 import { PropertyLengthMeasure } from '../../../../catalog/properties/export';
 
-const tableStyle = { width: '100%' };
-const firstTdStyle = { width: '6em' };
+const tableStyle = {width: '100%', borderSpacing: '2px 0', marginBottom: '3px'};
+const firstTdStyle = {width: '5.45em', fontSize: '1.1em', textTransform:'capitalize'};
 const inputStyle = { textAlign: 'left' };
 
 export default function LineAttributesEditor({element, onUpdate, attributeFormData, state, ...rest}, {translator}) {

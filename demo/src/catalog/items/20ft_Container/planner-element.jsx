@@ -269,9 +269,13 @@ function makeDoorStructure() {
 }
 //------------DOOR-----------
 
+// Container dimensions
 const WIDTH = 240;
 const DEPTH = 610; //length
 const HEIGHT = 260;
+
+const defaultFontSize = 20;
+const defaultColor = '#000000';
 
 export default {
   name: 'BIN,GENERAL WASTE,3M3',
@@ -290,10 +294,20 @@ export default {
   },
 
   properties: {
-    color: {
-      label: 'Colour Def: 211-211-211',
+    fontSize: {
+      label: 'Font Size',
+      type: 'number',
+      defaultValue: defaultFontSize,
+    },
+    textColor: {
+      label: 'Text Colour',
       type: 'color',
-      defaultValue: ReactPlannerSharedStyle.AREA_MESH_COLOR.unselected
+      defaultValue: defaultColor,
+    },
+    color: {
+      label: 'Item Colour',
+      type: 'color',
+      defaultValue: ReactPlannerSharedStyle.AREA_MESH_COLOR.unselected,
     },
     altitude: {
       label: 'Altitude',
@@ -301,7 +315,7 @@ export default {
       defaultValue: {
         length: 0,
         unit: 'cm'
-      }
+      },
     },
     width: {
       label: `Width\u00A0\u00A0\u00A0 Orig: ` + WIDTH,
@@ -309,7 +323,7 @@ export default {
       defaultValue: {
         length: WIDTH,
         unit: 'cm'
-      }
+      },
     },
     depth: {
       label: `Length\u00A0\u00A0\u00A0 Orig: ` + DEPTH,
@@ -317,7 +331,7 @@ export default {
       defaultValue: {
         length: DEPTH,
         unit: 'cm'
-      }
+      },
     },
     height: {
       label: `Height\u00A0\u00A0\u00A0 Orig: ` + HEIGHT,
@@ -325,13 +339,16 @@ export default {
       defaultValue: {
         length: HEIGHT,
         unit: 'cm'
-      }
+      },
     },
   },
 
   render2D: (element, layer, scene) => {
     let width = element.properties.getIn(['width', 'length']);
     let depth = element.properties.getIn(['depth', 'length']);
+
+    let fontSize = element.properties.get('fontSize') || defaultFontSize;
+    let textColour = element.properties.get('textColor') || defaultColor;
     
     let style = {
       stroke: element.selected ? '#0096fd' : '#000',
@@ -340,18 +357,24 @@ export default {
     };
 
     let textRotation = 0;
+    let textLength = width; //default to width
     let rotation = ((element.rotation % 360) + 360) % 360;
 
     if (rotation >= 0 && rotation < 45) {
       textRotation = 0;
+      textLength = width;
     } else if (rotation >= 45 && rotation <= 120) {
       textRotation = 90;
+      textLength = depth * 0.8;
     } else if (rotation >= 235 && rotation <= 310) {
       textRotation = 270;
+      textLength = depth * 0.8;
     } else if (rotation > 310 && rotation <= 359) {
       textRotation = 0;
+      textLength = width;
     } else {
       textRotation = 180;
+      textLength = width;
     }
 
     return (
@@ -359,7 +382,9 @@ export default {
         <rect key='1' x='0' y='0' width={width} height={depth} style={style} />
         <text key='2' x='0' y='0'
               transform={`translate(${width/2}, ${depth/2}) scale(1,-1) rotate(${textRotation})`}
-              style={{textAnchor: 'middle', fontSize: '11px'}}>
+              style={{textAnchor: 'middle', fontSize: `${fontSize}px`, fill: textColour}}
+              textLength={textLength * 0.95} // Set to slightly less than width to add some padding
+              lengthAdjust="spacingAndGlyphs">
           {element.name}
         </text>
       </g>
