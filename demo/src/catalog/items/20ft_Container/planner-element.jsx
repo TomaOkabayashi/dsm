@@ -278,11 +278,11 @@ function createElement() {
     // Required fields that must have a value - empty string placeholder
     // Column titles on excel
     destination: 'FPSO', // DEST
-    container: '', // CON
-    containerID: '', // Hu/Container
-    description: 'BIN,GENERAL WASTE,3M3', // Packaging Mat Desc
-    tare: '', // Tare
-    vgm: '', // VGM
+    container: 'CWAY', // CON
+    containerID: 'AORU770101-2', // Hu/Container
+    description: 'BIN,GENERAL WASTE,3M3', // Packaging Mat Desc 
+    tare: '1,020', // Tare
+    vgm: '1.0', // VGM
 
     originalDimensions: {
       length: '8',  // Will be like 2.2 from Excel
@@ -292,14 +292,15 @@ function createElement() {
 
     // Optional or potentially unknown fields - null
     chkd: null, // CHKD
-    classCode: null, // Class Code
+    classCode: 'Ship Bin', // Class Code
   };
 
   const info = {
-    title: metadata.description,
-    tag: [metadata.destination],
-    description: 'none',
+    title: metadata.description, // The name field in the sidebar and catalog name
+    tag: [metadata.destination, 'example test container'],
+    description: metadata.description, // The description shown in the catalog
     image: null,
+    containerID: metadata.containerID,
     dimensions: {
       width: metadata.originalDimensions.width * 100,
       height: metadata.originalDimensions.height * 100,
@@ -307,8 +308,8 @@ function createElement() {
     }
   };
 
-  return {
-    name: 'BIN,GENERAL WASTE,3M3',
+  const element = {
+    name: info.containerID, // what shows up on sidebar. Properties: [name] hashcode. Also shows up on the recent searches on catalog
     prototype: 'items',
     metadata,
     info,
@@ -431,6 +432,9 @@ function createElement() {
       return Promise.resolve(mesh);
     }
   };
+
+  console.log('Returning element:', element);
+  return element;
 }
 
 export default createElement();

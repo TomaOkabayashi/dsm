@@ -7,9 +7,9 @@ export default {
   prototype: 'holes',
 
   info: {
-    tag: ['gate'],
-    title: 'gate',
-    description: 'hole in the wall',
+    tag: ['entry', 'access', 'opening'],
+    title: 'Loading Bay Access Tool',
+    description: 'Add entry points to loading zones',
     image: require('./gate.jpg')
   },
 

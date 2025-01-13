@@ -1,9 +1,9 @@
 import {ElementsFactories} from 'react-planner';
 
 const info = {
-  title: 'wall',
-  tag: ['wall'],
-  description: 'Wall with bricks or painted',
+  title: 'Loading Bay Creator',
+  tag: ['zone', 'area', 'boundary', 'layout'],
+  description: 'Create and define loading bay areas',
   image: require('./wall.png'),
   visibility: {
     catalog: true,
