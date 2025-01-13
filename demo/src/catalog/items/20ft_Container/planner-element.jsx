@@ -269,148 +269,172 @@ function makeDoorStructure() {
 }
 //------------DOOR-----------
 
-// Container dimensions
-const WIDTH = 240;
-const DEPTH = 610; //length
-const HEIGHT = 260;
 
 const defaultFontSize = 20;
 const defaultColor = '#000000';
 
-export default {
-  name: 'BIN,GENERAL WASTE,3M3',
-  prototype: 'items',
+function createElement() {
+  const metadata = {
+    // Required fields that must have a value - empty string placeholder
+    // Column titles on excel
+    destination: 'FPSO', // DEST
+    container: 'CWAY', // CON
+    containerID: 'AORU770101-2', // Hu/Container
+    description: 'BIN,GENERAL WASTE,3M3', // Packaging Mat Desc 
+    tare: '1,020', // Tare
+    vgm: '1.0', // VGM
 
-  info: {
-    title: 'BIN,GENERAL WASTE,3M3',
-    tag: ['demo'],
-    description: 'Demo item',
+    originalDimensions: {
+      length: '8',  // Will be like 2.2 from Excel
+      width: '2.4',   // Will be like 2.0 from Excel
+      height: '2.6',  // Will be like 2.5 from Excel
+    },
+
+    // Optional or potentially unknown fields - null
+    chkd: null, // CHKD
+    classCode: 'Ship Bin', // Class Code
+  };
+
+  const info = {
+    title: metadata.description, // The name field in the sidebar and catalog name
+    tag: [metadata.destination, 'example test container'],
+    description: metadata.description, // The description shown in the catalog
     image: null,
+    containerID: metadata.containerID,
     dimensions: {
-      width: WIDTH,
-      height: HEIGHT,
-      depth: DEPTH
+      width: metadata.originalDimensions.width * 100,
+      height: metadata.originalDimensions.height * 100,
+      depth: metadata.originalDimensions.length * 100,
     }
-  },
+  };
 
-  properties: {
-    fontSize: {
-      label: 'Font Size',
-      type: 'number',
-      defaultValue: defaultFontSize,
-    },
-    textColor: {
-      label: 'Text Colour',
-      type: 'color',
-      defaultValue: defaultColor,
-    },
-    color: {
-      label: 'Item Colour',
-      type: 'color',
-      defaultValue: ReactPlannerSharedStyle.AREA_MESH_COLOR.unselected,
-    },
-    altitude: {
-      label: 'Altitude',
-      type: 'length-measure',
-      defaultValue: {
-        length: 0,
-        unit: 'cm'
+  const element = {
+    name: info.containerID, // what shows up on sidebar. Properties: [name] hashcode. Also shows up on the recent searches on catalog
+    prototype: 'items',
+    metadata,
+    info,
+    properties: {
+      fontSize: {
+        label: 'Font Size',
+        type: 'number',
+        defaultValue: defaultFontSize,
+      },
+      textColor: {
+        label: 'Text Colour',
+        type: 'color',
+        defaultValue: defaultColor,
+      },
+      color: {
+        label: 'Item Colour',
+        type: 'color',
+        defaultValue: ReactPlannerSharedStyle.AREA_MESH_COLOR.unselected,
+      },
+      altitude: {
+        label: 'Altitude',
+        type: 'length-measure',
+        defaultValue: {
+          length: 0,
+          unit: 'cm'
+        },
+      },
+      width: {
+        label: `Width\u00A0\u00A0\u00A0 Orig: ${info.dimensions.width}`,
+        type: 'length-measure',
+        defaultValue: {
+          length: info.dimensions.width,
+          unit: 'cm'
+        },
+      },
+      depth: {
+        label: `Length\u00A0\u00A0\u00A0 Orig: ${info.dimensions.depth}`,
+        type: 'length-measure',
+        defaultValue: {
+          length: info.dimensions.depth,
+          unit: 'cm'
+        },
+      },
+      height: {
+        label: `Height\u00A0\u00A0\u00A0 Orig: ${info.dimensions.height}`,
+        type: 'length-measure',
+        defaultValue: {
+          length: info.dimensions.height,
+          unit: 'cm'
+        },
       },
     },
-    width: {
-      label: `Width\u00A0\u00A0\u00A0 Orig: ` + WIDTH,
-      type: 'length-measure',
-      defaultValue: {
-        length: WIDTH,
-        unit: 'cm'
-      },
+    render2D: (element, layer, scene) => {
+      let width = element.properties.getIn(['width', 'length']);
+      let depth = element.properties.getIn(['depth', 'length']);
+
+      let fontSize = element.properties.get('fontSize') || defaultFontSize;
+      let textColour = element.properties.get('textColor') || defaultColor;
+      
+      let style = {
+        stroke: element.selected ? '#0096fd' : '#000',
+        strokeWidth: '2px',
+        fill: element.properties.get('color')
+      };
+
+      let textRotation = 0;
+      let textLength = width; //default to width
+      let rotation = ((element.rotation % 360) + 360) % 360;
+
+      if (rotation >= 0 && rotation < 45) {
+        textRotation = 0;
+        textLength = width;
+      } else if (rotation >= 45 && rotation <= 120) {
+        textRotation = 90;
+        textLength = depth * 0.8;
+      } else if (rotation >= 235 && rotation <= 310) {
+        textRotation = 270;
+        textLength = depth * 0.8;
+      } else if (rotation > 310 && rotation <= 359) {
+        textRotation = 0;
+        textLength = width;
+      } else {
+        textRotation = 180;
+        textLength = width;
+      }
+
+      return (
+        <g transform={`translate(${-width/2}, ${-depth/2})`}>
+          <rect key='1' x='0' y='0' width={width} height={depth} style={style} />
+          <text key='2' x='0' y='0'
+                transform={`translate(${width/2}, ${depth/2}) scale(1,-1) rotate(${textRotation})`}
+                style={{textAnchor: 'middle', fontSize: `${fontSize}px`, fill: textColour}}
+                textLength={textLength * 0.95} // Set to slightly less than width to add some padding
+                lengthAdjust="spacingAndGlyphs">
+            {element.name}
+          </text>
+        </g>
+      );
     },
-    depth: {
-      label: `Length\u00A0\u00A0\u00A0 Orig: ` + DEPTH,
-      type: 'length-measure',
-      defaultValue: {
-        length: DEPTH,
-        unit: 'cm'
-      },
-    },
-    height: {
-      label: `Height\u00A0\u00A0\u00A0 Orig: ` + HEIGHT,
-      type: 'length-measure',
-      defaultValue: {
-        length: HEIGHT,
-        unit: 'cm'
-      },
-    },
-  },
+    render3D: (element, layer, scene) => {
+      let w = element.properties.getIn(['width', 'length']);
+      let h = element.properties.getIn(['height', 'length']);
+      let d = element.properties.getIn(['depth', 'length']);
+      let altitude = element.properties.getIn(['altitude', 'length']);
+      
+      let geometry = new BoxGeometry(w, h, d);
+      let material = new MeshBasicMaterial({
+        color: element.properties.get('color')
+      });
 
-  render2D: (element, layer, scene) => {
-    let width = element.properties.getIn(['width', 'length']);
-    let depth = element.properties.getIn(['depth', 'length']);
+      let mesh = new Mesh(geometry, material);
 
-    let fontSize = element.properties.get('fontSize') || defaultFontSize;
-    let textColour = element.properties.get('textColor') || defaultColor;
-    
-    let style = {
-      stroke: element.selected ? '#0096fd' : '#000',
-      strokeWidth: '2px',
-      fill: element.properties.get('color')
-    };
+      let box = new BoxHelper(mesh, !element.selected ? ReactPlannerSharedStyle.LINE_MESH_COLOR.unselected : ReactPlannerSharedStyle.MESH_SELECTED );
+      box.material.linewidth = 2;
+      box.renderOrder = 1000;
+      mesh.add(box);
 
-    let textRotation = 0;
-    let textLength = width; //default to width
-    let rotation = ((element.rotation % 360) + 360) % 360;
+      mesh.position.y = (h / 2) + altitude;
 
-    if (rotation >= 0 && rotation < 45) {
-      textRotation = 0;
-      textLength = width;
-    } else if (rotation >= 45 && rotation <= 120) {
-      textRotation = 90;
-      textLength = depth * 0.8;
-    } else if (rotation >= 235 && rotation <= 310) {
-      textRotation = 270;
-      textLength = depth * 0.8;
-    } else if (rotation > 310 && rotation <= 359) {
-      textRotation = 0;
-      textLength = width;
-    } else {
-      textRotation = 180;
-      textLength = width;
+      return Promise.resolve(mesh);
     }
+  };
 
-    return (
-      <g transform={`translate(${-width/2}, ${-depth/2})`}>
-        <rect key='1' x='0' y='0' width={width} height={depth} style={style} />
-        <text key='2' x='0' y='0'
-              transform={`translate(${width/2}, ${depth/2}) scale(1,-1) rotate(${textRotation})`}
-              style={{textAnchor: 'middle', fontSize: `${fontSize}px`, fill: textColour}}
-              textLength={textLength * 0.95} // Set to slightly less than width to add some padding
-              lengthAdjust="spacingAndGlyphs">
-          {element.name}
-        </text>
-      </g>
-    );
-  },
+  console.log('Returning element:', element);
+  return element;
+}
 
-  render3D: (element, layer, scene) => {
-    let w = element.properties.getIn(['width', 'length']);
-    let h = element.properties.getIn(['height', 'length']);
-    let d = element.properties.getIn(['depth', 'length']);
-    let altitude = element.properties.getIn(['altitude', 'length']);
-    
-    let geometry = new BoxGeometry(w, h, d);
-    let material = new MeshBasicMaterial({
-      color: element.properties.get('color')
-    });
-
-    let mesh = new Mesh(geometry, material);
-
-    let box = new BoxHelper(mesh, !element.selected ? ReactPlannerSharedStyle.LINE_MESH_COLOR.unselected : ReactPlannerSharedStyle.MESH_SELECTED );
-    box.material.linewidth = 2;
-    box.renderOrder = 1000;
-    mesh.add(box);
-
-    mesh.position.y = (h / 2) + altitude;
-
-    return Promise.resolve(mesh);
-  }
-};
+export default createElement();
