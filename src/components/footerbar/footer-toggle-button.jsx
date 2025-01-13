@@ -3,15 +3,21 @@ import PropTypes from 'prop-types';
 import * as SharedStyle from '../../shared-style';
 
 const toggleButtonStyle = {
-  width: '5.5em',
+  width: '8em',
+  height: '2.2em',
   color: '#CCC',
   textAlign: 'center',
   cursor: 'pointer',
   userSelect: 'none',
   border: '1px solid transparent',
-  margin: '-1px 5px 0 5px',
+  margin: '0px -1px 0 5px',
   borderRadius: '2px',
-  display: 'inline-block'
+  display: 'inline-block',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#808080',
+  border: '1px solid #000',
+  lineHeight: '2.0em',
 };
 
 const toggleButtonStyleOver = {

@@ -59,6 +59,13 @@ class Project{
     return { updatedState: state };
   }
 
+  static setAreasAttributes(state, attributes) {
+    //TODO apply only to areas
+    state.getIn(['scene', 'layers']).forEach( layer => { state = Layer.setAttributesOnSelected( state, layer.id, attributes ).updatedState; } );
+
+    return { updatedState: state };
+  }
+
   static setLinesAttributes(state, attributes) {
     //TODO apply only to lines
     state.getIn(['scene', 'layers']).forEach( layer => { state = Layer.setAttributesOnSelected( state, layer.id, attributes ).updatedState; } );

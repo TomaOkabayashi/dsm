@@ -19,21 +19,36 @@ export default function AreaFactory(name, info, textures) {
       },
     },
     properties: {
+      name: {
+        label: translator.t('Name'),
+        type: 'string',
+        defaultValue: 'Area',
+      },
       patternColor: {
-        label: translator.t('color'),
+        label: translator.t('Colour'),
         type: 'color',
         defaultValue: SharedStyle.AREA_MESH_COLOR.unselected
       },
-      thickness: {
-        label: translator.t('thickness'),
-        type: 'length-measure',
-        defaultValue: {
-          length: 0,
-        }
-      }
+      opacity: {
+        label: translator.t('Opacity (0-1)'),
+        type: 'number',
+        defaultValue: 0.5,
+        min: 0,
+        max: 1
+      },
     },
     render2D: function (element, layer) {
       let path = '';
+
+      // Calculate bounds for text positioning
+      let xMin = Infinity, yMin = Infinity, xMax = -Infinity, yMax = -Infinity;
+      element.vertices.forEach(vertexID => {
+        let vertex = layer.vertices.get(vertexID);
+        xMin = Math.min(xMin, vertex.x);
+        yMin = Math.min(yMin, vertex.y);
+        xMax = Math.max(xMax, vertex.x);
+        yMax = Math.max(yMax, vertex.y);
+      });
 
       ///print area path
       element.vertices.forEach((vertexID, ind) => {
@@ -44,23 +59,30 @@ export default function AreaFactory(name, info, textures) {
       //add holes
       element.holes.forEach(areaID => {
         let area = layer.areas.get(areaID);
-
         area.vertices.reverse().forEach((vertexID, ind) => {
           let vertex = layer.vertices.get(vertexID);
           path += (ind ? 'L' : 'M') + vertex.x + ' ' + vertex.y + ' ';
         });
-
       });
 
       let fill = element.selected ? SharedStyle.AREA_MESH_COLOR.selected : element.properties.get('patternColor');
+      let opacity = element.properties.get('opacity');
 
       return (
-        <path 
-          d={path} 
-          fill={fill}
-          fillOpacity="0.5"
-          stroke={fill}
-        />
+        <g>
+          <path 
+            d={path} 
+            fill={fill}
+            fillOpacity={opacity}
+            stroke={fill}
+          />
+          <text
+            transform={`translate(${(xMin + xMax) / 2}, ${(yMin + yMax) / 2}) scale(1, -1)`}
+            style={{textAnchor: 'middle', fontSize: '11px'}}
+          >
+            {element.name}
+          </text>
+        </g>
       );
     },
 

@@ -86,27 +86,14 @@ export default class Toolbar extends Component {
     let sorter = [
       {
         index: 1, condition: true, dom: <ToolbarButton
-          active={[MODE_CONFIGURING_PROJECT].includes(mode)}
-          tooltip={translator.t('Configure project')}
-          onClick={event => projectActions.openProjectConfigurator()}>
-          <MdSettings />
-        </ToolbarButton>
+        active={[MODE_VIEWING_CATALOG].includes(mode)}
+        tooltip={translator.t('')}
+        onClick={event => projectActions.openCatalog()}>
+        <FaPlus />
+      </ToolbarButton>
       }
     ];
-
-    sorter = sorter.concat(toolbarButtons.map((Component, key) => {
-      return Component.prototype ? //if is a react component
-        {
-          condition: true,
-          dom: React.createElement(Component, { mode, state, key })
-        } :
-        {                           //else is a sortable toolbar button
-          index: Component.index,
-          condition: Component.condition,
-          dom: React.createElement(Component.dom, { mode, state, key })
-        };
-    }));
-
+    
     return (
       <aside style={{ ...ASIDE_STYLE, maxWidth: width, maxHeight: height }} className='toolbar'>
         {sorter.sort(sortButtonsCb).map(mapButtonsCb)}

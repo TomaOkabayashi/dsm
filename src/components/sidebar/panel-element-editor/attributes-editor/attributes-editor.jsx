@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ItemAttributesEditor from './item-attributes-editor';
 import LineAttributesEditor from './line-attributes-editor';
 import HoleAttributesEditor from './hole-attributes-editor';
+import AreaAttributesEditor from './area-attributes-editor';
 
 
 export default function AttributesEditor({element, onUpdate, onValid, attributeFormData, state, ...rest}) {
@@ -36,8 +37,14 @@ export default function AttributesEditor({element, onUpdate, onValid, attributeF
               {...rest}
             />;
     case 'areas':
-      return null;
-
+      return <AreaAttributesEditor
+              element={element}
+              onUpdate={onUpdate}
+              onValid={onValid}
+              attributeFormData={attributeFormData}
+              state={state}
+              {...rest}
+            />;
   }
 
   return null;

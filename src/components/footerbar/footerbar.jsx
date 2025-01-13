@@ -12,11 +12,10 @@ import { VERSION } from '../../version';
 const footerBarStyle = {
   position: 'absolute',
   bottom: 0,
-  lineHeight: '14px',
   fontSize: '12px',
   color: SharedStyle.COLORS.white,
   backgroundColor: SharedStyle.SECONDARY_COLOR.alt,
-  padding: '3px 1em',
+  padding: '3px 0em',
   margin: 0,
   boxSizing: 'border-box',
   cursor: 'default',
@@ -29,23 +28,32 @@ export const leftTextStyle = {
   borderRight: '1px solid #FFF',
   float: 'left',
   padding: '0 1em',
-  display: 'inline-block'
+  display: 'inline-block',
+  height: '25px',
 };
 
 export const rightTextStyle = {
   position: 'relative',
   borderLeft: '1px solid #FFF',
   float: 'right',
-  padding: '0 1em',
-  display: 'inline-block'
+  padding: 6,
+  display: 'inline-block',
+  height: '25px',
 };
 
 const coordStyle = {
   display: 'inline-block',
-  width: '6em',
-  margin: 0,
-  padding: 0
+  width: '6.78em',
+  padding: 4,
+  fontSize: 14,
 };
+
+const zoomStyle = {
+  ...leftTextStyle,
+
+  fontSize: 14,
+  paddingTop: 4,
+}
 
 const appMessageStyle = { borderBottom: '1px solid #555', lineHeight: '1.5em' };
 
@@ -87,9 +95,9 @@ export default class FooterBar extends Component {
             <div title={translator.t('Mouse Y Coordinate')} style={coordStyle}>Y : {y.toFixed(3)}</div>
           </div>
 
-          <div style={leftTextStyle} title={translator.t('Scene Zoom Level')}>Zoom: {zoom.toFixed(3)}X</div>
+          <div style={zoomStyle} title={translator.t('Scene Zoom Level')}>Zoom: {zoom.toFixed(3)}X</div>
 
-          <div style={leftTextStyle}>
+          <div style={{...leftTextStyle, paddingLeft: '6px'}}>
             <FooterToggleButton
               state={this.state}
               toggleOn={() => { updateSnapMask({ SNAP_POINT: true }); }}

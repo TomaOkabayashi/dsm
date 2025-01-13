@@ -7,6 +7,7 @@ import {
   UNSELECT_ALL,
   SET_PROPERTIES,
   SET_ITEMS_ATTRIBUTES,
+  SET_AREAS_ATTRIBUTES,
   SET_LINES_ATTRIBUTES,
   SET_HOLES_ATTRIBUTES,
   REMOVE,
@@ -103,6 +104,13 @@ export function setItemsAttributes(itemsAttributes) {
   return {
     type: SET_ITEMS_ATTRIBUTES,
     itemsAttributes
+  };
+}
+
+export function setAreasAttributes(areasAttributes) {
+  return {
+    type: SET_AREAS_ATTRIBUTES,
+    areasAttributes
   };
 }
 

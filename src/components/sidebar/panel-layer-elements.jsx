@@ -63,6 +63,7 @@ export default class PanelLayerElement extends Component {
       lines: layer.lines,
       holes: layer.holes,
       items: layer.items,
+      areas: layer.areas,
     };
 
     this.state = {
@@ -81,7 +82,8 @@ export default class PanelLayerElement extends Component {
     if(
       oldElements.lines.hashCode() !== newElements.lines.hashCode() ||
       oldElements.holes.hashCode() !== newElements.holes.hashCode() ||
-      oldElements.items.hashCode() !== newElements.items.hashCode()
+      oldElements.items.hashCode() !== newElements.items.hashCode() ||
+      oldElements.areas.hashCode() !== newElements.areas.hashCode()
     ) return true;
 
     return false;
@@ -96,6 +98,7 @@ export default class PanelLayerElement extends Component {
       lines: layer.lines,
       holes: layer.holes,
       items: layer.items,
+      areas: layer.areas,
     };
 
     if (this.state.matchString !== '') {
@@ -107,7 +110,8 @@ export default class PanelLayerElement extends Component {
           elements,
           lines: elements.lines.filter(filterCb),
           holes: elements.holes.filter(filterCb),
-          items: elements.items.filter(filterCb)
+          items: elements.items.filter(filterCb),
+          areas: elements.areas.filter(filterCb),
         }
       });
     } else {
@@ -132,7 +136,8 @@ export default class PanelLayerElement extends Component {
       matchedElements: {
         lines: this.state.elements.lines.filter(filterCb),
         holes: this.state.elements.holes.filter(filterCb),
-        items: this.state.elements.items.filter(filterCb)
+        items: this.state.elements.items.filter(filterCb),
+        areas: this.state.elements.areas.filter(filterCb),
       }
     });
   }
@@ -158,18 +163,39 @@ export default class PanelLayerElement extends Component {
           </table>
 
           {
-            this.state.matchedElements.lines.count() ?
+            this.state.matchedElements.items.count() ?
               <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Lines')}</p>
+                <p style={categoryDividerStyle}>{this.context.translator.t('Items')}</p>
                 {
-                  this.state.matchedElements.lines.entrySeq().map(([lineID, line]) => {
+                  this.state.matchedElements.items.entrySeq().map(([itemID, item]) => {
                     return (
                       <div
-                        key={lineID}
-                        onClick={e => this.context.linesActions.selectLine(layer.id, line.id)}
-                        style={line.selected ? elementSelectedStyle : elementStyle}
+                        key={itemID}
+                        onClick={e => this.context.itemsActions.selectItem(layer.id, item.id)}
+                        style={item.selected ? elementSelectedStyle : elementStyle}
                       >
-                        {line.name}
+                        {item.name}
+                      </div>
+                    )
+                  })
+                }
+              </div>
+              : null
+          }
+
+          {
+            this.state.matchedElements.areas.count() ?
+              <div>
+                <p style={categoryDividerStyle}>{this.context.translator.t('Areas')}</p>
+                {
+                  this.state.matchedElements.areas.entrySeq().map(([areaID, area]) => {
+                    return (
+                      <div
+                        key={areaID}
+                        onClick={e => this.context.areaActions.selectArea(layer.id, area.id)}
+                        style={area.selected ? elementSelectedStyle : elementStyle}
+                      >
+                        {area.name}
                       </div>
                     )
                   })
@@ -200,18 +226,18 @@ export default class PanelLayerElement extends Component {
           }
 
           {
-            this.state.matchedElements.items.count() ?
+            this.state.matchedElements.lines.count() ?
               <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Items')}</p>
+                <p style={categoryDividerStyle}>{this.context.translator.t('Lines')}</p>
                 {
-                  this.state.matchedElements.items.entrySeq().map(([itemID, item]) => {
+                  this.state.matchedElements.lines.entrySeq().map(([lineID, line]) => {
                     return (
                       <div
-                        key={itemID}
-                        onClick={e => this.context.itemsActions.selectItem(layer.id, item.id)}
-                        style={item.selected ? elementSelectedStyle : elementStyle}
+                        key={lineID}
+                        onClick={e => this.context.linesActions.selectLine(layer.id, line.id)}
+                        style={line.selected ? elementSelectedStyle : elementStyle}
                       >
-                        {item.name}
+                        {line.name}
                       </div>
                     )
                   })
@@ -238,5 +264,6 @@ PanelLayerElement.contextTypes = {
   itemsActions: PropTypes.object.isRequired,
   linesActions: PropTypes.object.isRequired,
   holesActions: PropTypes.object.isRequired,
+  areaActions: PropTypes.object.isRequired,
   projectActions: PropTypes.object.isRequired
 };

@@ -13,24 +13,44 @@ const attrPorpSeparatorStyle = {
   margin: '0.5em 0.25em 0.5em 0',
   border: '2px solid ' + SharedStyle.SECONDARY_COLOR.alt,
   position:'relative',
-  height:'2.5em',
-  borderRadius:'2px'
+  height:'3em',
+  borderRadius:'2px',
 };
 
 const headActionStyle = {
-  position:'absolute',
-  right:'0.5em',
-  top:'0.5em'
+  position: 'absolute',
+  left: '0.5em',
+  top: '0.5em',
+  display: 'flex',
+  gap: '1.5em',
+  alignItems: 'center',
+  width: '90%',
+  paddingRight: '5px',
 };
 
-const iconHeadStyle = {
-  float:'right',
-  margin:'-3px 4px 0px 0px',
-  padding:0,
-  cursor:'pointer',
-  fontSize:'1.4em'
+const buttonContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+  color: SharedStyle.COLORS.white,
+  minWidth: 'fit-content',
+  border: '1px solid #ffffff',
+  borderRadius: '4px',
+  padding: '3px',
+  position: 'relative',
+  top: '-3px',
 };
 
+const labelStyle = {
+  fontSize: '1.1em',
+  marginLeft: '4px',
+};
+
+const description = {
+  fontSize: '1.1em',
+  width: '37%',
+  marginTop: '-0.5em',
+};
 export default class ElementEditor extends Component {
 
   constructor(props, context) {
@@ -147,6 +167,10 @@ export default class ElementEditor extends Component {
 
     switch (this.props.element.prototype) {
       case 'items': {
+        attributesFormData = attributesFormData.set(attributeName, value);
+        break;
+      }
+      case 'areas': {
         attributesFormData = attributesFormData.set(attributeName, value);
         break;
       }
@@ -303,10 +327,26 @@ export default class ElementEditor extends Component {
   }
 
   updateProperty(propertyName, value) {
-    let {state: {propertiesFormData}} = this;
+    let {state: {propertiesFormData, attributesFormData}} = this;
     propertiesFormData = propertiesFormData.setIn([propertyName, 'currentValue'], value);
-    this.setState({propertiesFormData});
-    this.save({propertiesFormData});
+    
+    // the name needs to stay in sync between properties and attributes
+    /* Elements: Wall and Areas store their name in two places:
+     * 1. In properties - for the properties panel display
+     * 2. In attributes - for the layer elements panel display
+     * When name is changed, we need to sync both to show the same name everywhere
+     * For some reason I cannot change the name attribute direclty for both of these elements
+     */
+    if (propertyName === 'name') {
+      // update attributeFormData too
+      attributesFormData = attributesFormData.set('name', value);
+      // Update both forms in state and save
+      this.setState({propertiesFormData, attributesFormData});
+      this.save({propertiesFormData, attributesFormData});
+    } else {
+      this.setState({propertiesFormData});
+      this.save({propertiesFormData});
+    }
   }
 
   reset() {
@@ -327,6 +367,10 @@ export default class ElementEditor extends Component {
       switch (this.props.element.prototype) {
         case 'items': {
           this.context.projectActions.setItemsAttributes(attributesFormData);
+          break;
+        }
+        case 'areas': {
+          this.context.projectActions.setAreasAttributes(attributesFormData);
           break;
         }
         case 'lines': {
@@ -356,27 +400,40 @@ export default class ElementEditor extends Component {
       props: {state: appState, element},
     } = this;
 
+    const isWall = element.prototype === 'lines';
+    const isArea = element.prototype === 'areas';
+    
     return (
       <div>
+        {/* Show only name property first for walls 
+            See reason on line-attribute-editor.jsx */}
+        {(isWall || isArea) && propertiesFormData.has('name') && (() => {
+          let nameData = propertiesFormData.get('name');
+          let currentValue = nameData.get('currentValue');
+          let configs = nameData.get('configs');
+          let {Editor} = catalog.getPropertyType(configs.type);
+
+          return <Editor
+            key="name"
+            propertyName="name"
+            value={currentValue}
+            configs={configs}
+            onUpdate={value => this.updateProperty('name', value)}
+            state={appState}
+            sourceElement={element}
+            internalState={this.state}
+          />;
+        })()}
 
         <AttributesEditor
           element={element}
           onUpdate={this.updateAttribute}
           attributeFormData={attributesFormData}
-          state={appState}
+          state={appState} 
         />
 
-        <div style={attrPorpSeparatorStyle}>
-          <div style={headActionStyle}>
-            <div title={translator.t('Copy')} style={iconHeadStyle} onClick={ e => this.copyProperties(element.properties) }><MdContentCopy /></div>
-            {
-              appState.get('clipboardProperties') && appState.get('clipboardProperties').size ?
-                <div title={translator.t('Paste')} style={iconHeadStyle} onClick={ e => this.pasteProperties() }><MdContentPaste /></div> : null
-            }
-          </div>
-        </div>
-
         {propertiesFormData.entrySeq()
+          .filter(([propertyName, _]) => !((isWall || isArea) && propertyName === 'name'))  // Filter out name for walls
           .map(([propertyName, data]) => {
 
             let currentValue = data.get('currentValue'), configs = data.get('configs');
@@ -395,6 +452,48 @@ export default class ElementEditor extends Component {
             />
           })
         }
+
+        <div style={attrPorpSeparatorStyle}>
+          <div style={headActionStyle}>
+            <span style={{...description, pointerEvents: 'none',}}>Copy & Paste Properties</span>
+            
+            <div 
+              title={translator.t('Copy')} 
+              style={buttonContainerStyle}
+              onClick={e => this.copyProperties(element.properties)}
+              onMouseOver={e => {
+                e.currentTarget.style.color = SharedStyle.SECONDARY_COLOR.main;
+                e.currentTarget.style.border = `1px solid ${SharedStyle.SECONDARY_COLOR.main}`;
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.color = SharedStyle.COLORS.white;
+                e.currentTarget.style.border = `1px solid ${SharedStyle.COLORS.white}`;
+              }}
+            >
+              <span style={{pointerEvents: 'none'}}><MdContentCopy /></span>
+              <span style={{...labelStyle, pointerEvents: 'none'}}>Copy</span>
+            </div>
+            
+            {appState.get('clipboardProperties') && appState.get('clipboardProperties').size ? (
+            <div 
+              title={translator.t('Paste')} 
+              style={buttonContainerStyle}
+              onClick={e => this.pasteProperties()}
+              onMouseOver={e => {
+                e.currentTarget.style.color = SharedStyle.SECONDARY_COLOR.main;
+                e.currentTarget.style.border = `1px solid ${SharedStyle.SECONDARY_COLOR.main}`;
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.color = SharedStyle.COLORS.white;
+                e.currentTarget.style.border = `1px solid ${SharedStyle.COLORS.white}`;
+              }}
+            >
+              <span style={{pointerEvents: 'none'}}><MdContentPaste /></span>
+              <span style={{...labelStyle, pointerEvents: 'none',}}>Paste</span>
+            </div>
+            ) : null}
+          </div>
+        </div>
 
       </div>
     )
