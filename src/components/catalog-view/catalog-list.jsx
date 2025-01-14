@@ -7,6 +7,7 @@ import CatalogTurnBackPageItem from './catalog-turn-back-page-item';
 import ContentContainer from '../style/content-container';
 import ContentTitle from '../style/content-title';
 import * as SharedStyle from '../../shared-style';
+import { MODE_3D_VIEW, MODE_3D_FIRST_PERSON } from '../../constants';
 
 const containerStyle = {
   position: 'fixed',
@@ -82,7 +83,7 @@ export default class CatalogList extends Component {
     let page = props.state.catalog.page;
     let currentCategory = context.catalog.getCategory(page);
     let categoriesToDisplay = currentCategory.categories;
-    let elementsToDisplay = currentCategory.elements;
+    let elementsToDisplay = currentCategory.elements.filter(element => element.info.visibility ? element.info.visibility.catalog : true );
 
     this.state = {
       categories: currentCategory.categories,
@@ -116,7 +117,7 @@ export default class CatalogList extends Component {
 
   handleMouseMove(e) {
     if (!this.state.isResizing) return;
-    
+
     const minWidth = 200;
     const maxWidth = 800;
     const newWidth = Math.min(Math.max(e.clientX - 50, minWidth), maxWidth);
@@ -181,11 +182,17 @@ export default class CatalogList extends Component {
   }
 
   render() {
+    let mode = this.props.state.get('mode');
+    
+    // Don't render in 3D modes
+    if (mode === MODE_3D_VIEW || mode === MODE_3D_FIRST_PERSON) {
+      return null;
+    }
 
     let page = this.props.state.catalog.page;
     let currentCategory = this.context.catalog.getCategory(page);
     let categoriesToDisplay = currentCategory.categories;
-    let elementsToDisplay = currentCategory.elements;
+    let elementsToDisplay = currentCategory.elements.filter(element => element.info.visibility ? element.info.visibility.catalog : true );
 
     let breadcrumbComponent = null;
 
@@ -259,7 +266,7 @@ export default class CatalogList extends Component {
           ] : this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem}/>)}
         </div>
         <div
-          style={resizeHandleStyle}
+          style={{...resizeHandleStyle, backgroundColor: 'grey', height: '100%'}}
           onMouseDown = { this.handleMouseDown }
         />
       </ContentContainer>

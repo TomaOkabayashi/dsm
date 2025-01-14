@@ -18,6 +18,8 @@ import {
 } from './components/export';
 import {VERSION} from './version';
 import './styles/export';
+import CatalogList from './components/catalog-view/catalog-list';
+import { MODE_3D_FIRST_PERSON, MODE_3D_VIEW } from './constants';
 
 const {Logobar} = LogobarComponents;
 const {Menubar} = MenubarComponents;
@@ -40,6 +42,48 @@ const wrapperStyle = {
   height: '100%',
   postition: 'relative'
 };
+
+const logobarStyle = {
+  position: 'absolute',
+  top: 0,
+  height: '50px',
+  width: '50px'
+};
+const menubarStyle = {
+  position: 'absolute',
+  top: 0,
+  left: logobarW,
+  width: 'calc(100% - 50px)'
+};
+const utilitybarStyle = {
+  position: 'absolute',
+  top: menubarH,
+  left: logobarW,
+  width: 'calc(100% - 50px)'
+};
+
+const mainContentStyle = {
+  display: 'flex',
+  flexFlow: 'row nowrap',
+  marginTop: menubarH + utilitybarH,
+  height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`
+};
+
+const catalogListStyle = {
+  position: 'relative',
+  marginRight: '50px'
+};
+const contentStyle = {
+  flex: '0 0 auto' 
+};
+const sidebarStyle = {
+  position: 'fixed',
+  right: 0,
+  top: menubarH + utilitybarH,
+  width: sidebarW,
+  height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`
+};
+
 
 class ReactPlanner extends Component {
 
@@ -70,52 +114,57 @@ class ReactPlanner extends Component {
   render() {
     let {width, height, state, stateExtractor, ...props} = this.props;
 
-    let contentW = width - toolbarW - sidebarW;
-    let toolbarH = height - footerBarH - menubarH - utilitybarH;
+    let extractedState = stateExtractor(state);
+    let mode = extractedState.get('mode');
+
+    const catalogWidth = extractedState.get('catalogWidth') || 200;
+
+    let catalogW = catalogWidth;
+    let catalogH = height - footerBarH - menubarH - utilitybarH;
+    let contentW = width - sidebarW - catalogW;
+    let in3DMode = width - sidebarW;
+    //let toolbarH = height - footerBarH - menubarH - utilitybarH;
     let contentH = height - footerBarH - menubarH - utilitybarH;
     let sidebarH = height - footerBarH - menubarH - utilitybarH;
-
-    let extractedState = stateExtractor(state);
 
     return (
       <div style={{...wrapperStyle, height}}>
         
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          height: '50px',
-          width: '50px'
-        }}>
+        {/* The company logo */}
+        <div style={logobarStyle}>
           <Logobar width={logobarW} height={logobarH} state={extractedState} {...props} />
         </div>
-        
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: logobarW,
-          width: 'calc(100% - 50px)'
-        }}>
+
+        {/* top bar */}
+        <div style={menubarStyle}>
           <Menubar width={width} height={menubarH} state={extractedState} {...props} />
         </div>
-        
-        <div style={{
-          position: 'absolute',
-          top: menubarH,
-          left: logobarW,
-          width: 'calc(100% - 50px)'
-        }}>
+
+        {/* below top bar */}
+        <div style={utilitybarStyle}>
           <Utilitybar width={width} height={utilitybarH} state={extractedState} {...props} />
         </div>
-        
-        <div style={{
-          display: 'flex',
-          flexFlow: 'row nowrap',
-          marginTop: menubarH + utilitybarH,
-          height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`
-        }}>
-          <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} />
-          <Content width={contentW} height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
-          <Sidebar width={sidebarW} height={sidebarH} state={extractedState} {...props} />
+
+        {/* main content */}
+        <div style={mainContentStyle}>
+          {/*<Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} />*/}
+
+          {/* catalog on left side */}
+          <div style={catalogListStyle}>
+            <CatalogList width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? 0 : catalogW} 
+            height={catalogH} state={extractedState} {...props} />
+          </div>
+
+          {/* the grid */}
+          <div style={contentStyle}>
+            <Content width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? in3DMode : contentW} 
+            height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
+          </div>
+
+          {/* right sidebar */}
+          <div style={sidebarStyle}>
+            <Sidebar width={sidebarW} height={sidebarH} state={extractedState} {...props} />
+          </div>
         </div>
 
         <FooterBar width={width} height={footerBarH} state={extractedState} {...props} />

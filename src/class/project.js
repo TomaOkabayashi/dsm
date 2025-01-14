@@ -311,6 +311,12 @@ class Project{
     return { updatedState: state };
   }
 
+  static setCatalogWidth(state, width) {
+    return { 
+      updatedState: state.set('catalogWidth', width) 
+    };
+  }
+
 }
 
 export { Project as default };
