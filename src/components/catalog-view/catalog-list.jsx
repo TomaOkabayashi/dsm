@@ -10,7 +10,6 @@ import * as SharedStyle from '../../shared-style';
 
 const containerStyle = {
   position: 'fixed',
-  width:'calc( 100% - 51px)',
   height:'calc( 100% - 20px)',
   backgroundColor:'#FFF',
   padding:'1em',
@@ -83,14 +82,51 @@ export default class CatalogList extends Component {
     let page = props.state.catalog.page;
     let currentCategory = context.catalog.getCategory(page);
     let categoriesToDisplay = currentCategory.categories;
-    let elementsToDisplay = currentCategory.elements.filter(element => element.info.visibility ? element.info.visibility.catalog : true );
+    let elementsToDisplay = currentCategory.elements;
 
     this.state = {
       categories: currentCategory.categories,
       elements: elementsToDisplay,
       matchString: '',
-      matchedElements: []
+      matchedElements: [],
+      width: props.width || 300, // Initial width
+      isResizing: false,
     };
+
+    // Bind methods
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mouseup', this.handleMouseUp);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
+  }
+
+  handleMouseDown(e) {
+    this.setState({ isResizing: true });
+    document.body.style.cursor = 'col-resize';
+  }
+
+  handleMouseMove(e) {
+    if (!this.state.isResizing) return;
+    
+    const minWidth = 200;
+    const maxWidth = 800;
+    const newWidth = Math.min(Math.max(e.clientX - 50, minWidth), maxWidth);
+    
+    this.setState({ width: newWidth });
+  }
+
+  handleMouseUp() {
+    this.setState({ isResizing: false });
+    document.body.style.cursor = 'default';
   }
 
   flattenCategories( categories ) {
@@ -149,7 +185,7 @@ export default class CatalogList extends Component {
     let page = this.props.state.catalog.page;
     let currentCategory = this.context.catalog.getCategory(page);
     let categoriesToDisplay = currentCategory.categories;
-    let elementsToDisplay = currentCategory.elements.filter(element => element.info.visibility ? element.info.visibility.catalog : true );
+    let elementsToDisplay = currentCategory.elements;
 
     let breadcrumbComponent = null;
 
@@ -180,33 +216,54 @@ export default class CatalogList extends Component {
       <div key={ind} style={historyElementStyle} title={el.name} onClick={() => this.select(el) }>{el.name}</div>
     );
 
+    const resizeHandleStyle = {
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      width: '8px',
+      height: '100%',
+      cursor: 'col-resize',
+      backgroundColor: this.state.isResizing ? '#e0e0e0' : 'transparent',
+      transition: 'background-color 0.2s',
+      ':hover': {
+        backgroundColor: '#f0f0f0'
+      }
+    };
+
+    const combinedContainerStyle = {
+      ...containerStyle,
+      ...this.props.style,
+      width: this.state.width,
+      position: 'relative'
+    };
+
     return (
-      <ContentContainer width={this.props.width} height={this.props.height} style={{...containerStyle, ...this.props.style}}>
+      <ContentContainer width={this.state.width} height={this.props.height} style={combinedContainerStyle}>
         <ContentTitle>{this.context.translator.t('Catalog')}</ContentTitle>
         {breadcrumbComponent}
         <div style={searchContainer}>
           <span style={searchText}>{this.context.translator.t('Search Element')}</span>
           <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
         </div>
-        { selectedHistory.size ?
+        { selectedHistory.size ? (
           <div style={historyContainer}>
             <span>{this.context.translator.t('Last Selected')}</span>
             {selectedHistoryElements}
-          </div> :
-          null
-        }
+          </div>
+        ) : null}
         <div style={itemsStyle}>
-          {
-            this.state.matchString === '' ? [
-              turnBackButton,
-              categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>),
-              elementsToDisplay.map(elem => <CatalogItem key={elem.name} element={elem}/>)
-            ] :
-            this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem}/>)
-          }
+          {this.state.matchString === '' ? [
+            turnBackButton,
+            categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>),
+            elementsToDisplay.map(elem => <CatalogItem key={elem.name} element={elem}/>)
+          ] : this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem}/>)}
         </div>
+        <div
+          style={resizeHandleStyle}
+          onMouseDown = { this.handleMouseDown }
+        />
       </ContentContainer>
-    )
+    );
   }
 }
 
