@@ -10,14 +10,17 @@ import * as SharedStyle from '../../shared-style';
 import { MODE_3D_VIEW, MODE_3D_FIRST_PERSON } from '../../constants';
 
 const containerStyle = {
-  position: 'fixed',
-  height:'calc( 100% - 20px)',
-  backgroundColor:'#FFF',
-  padding:'1em',
-  left:50,
-  overflowY:'auto',
-  overflowX:'hidden',
-  zIndex:10
+  height: '100%',
+  backgroundColor: '#FFF',
+  zIndex: 10,
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  paddingRight: '20px'
+};
+
+const wrapperStyle = {
+  position: 'relative',
+  height: '100%'
 };
 
 const itemsStyle = {
@@ -98,6 +101,8 @@ export default class CatalogList extends Component {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseOver = this.handleMouseOver.bind(this);
+    this.handleMouseOut = this.handleMouseOut.bind(this);
   }
 
   componentDidMount() {
@@ -128,6 +133,14 @@ export default class CatalogList extends Component {
   handleMouseUp() {
     this.setState({ isResizing: false });
     document.body.style.cursor = 'default';
+  }
+
+  handleMouseOver() {
+    this.setState({ hovering: true});
+  }
+
+  handleMouseOut() {
+    this.setState({ hovering: false});
   }
 
   flattenCategories( categories ) {
@@ -223,18 +236,16 @@ export default class CatalogList extends Component {
       <div key={ind} style={historyElementStyle} title={el.name} onClick={() => this.select(el) }>{el.name}</div>
     );
 
+    // Render css
     const resizeHandleStyle = {
       position: 'absolute',
       right: 0,
       top: 0,
-      width: '8px',
+      width: '13px',
       height: '100%',
       cursor: 'col-resize',
-      backgroundColor: this.state.isResizing ? '#e0e0e0' : 'transparent',
+      backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.MATERIAL_COLORS[500].grey : 'transparent',
       transition: 'background-color 0.2s',
-      ':hover': {
-        backgroundColor: '#f0f0f0'
-      }
     };
 
     const combinedContainerStyle = {
@@ -245,31 +256,44 @@ export default class CatalogList extends Component {
     };
 
     return (
-      <ContentContainer width={this.state.width} height={this.props.height} style={combinedContainerStyle}>
-        <ContentTitle>{this.context.translator.t('Catalog')}</ContentTitle>
-        {breadcrumbComponent}
-        <div style={searchContainer}>
-          <span style={searchText}>{this.context.translator.t('Search Element')}</span>
-          <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
-        </div>
-        { selectedHistory.size ? (
-          <div style={historyContainer}>
-            <span>{this.context.translator.t('Last Selected')}</span>
-            {selectedHistoryElements}
+      <div style={wrapperStyle}>
+        <ContentContainer width={this.state.width} height={this.props.height} style={combinedContainerStyle}>
+          <ContentTitle>{this.context.translator.t('Catalog')}</ContentTitle>
+          {breadcrumbComponent}
+          <div style={searchContainer}>
+            <span style={searchText}>{this.context.translator.t('Search Element')}</span>
+            <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
           </div>
-        ) : null}
-        <div style={itemsStyle}>
-          {this.state.matchString === '' ? [
-            turnBackButton,
-            categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>),
-            elementsToDisplay.map(elem => <CatalogItem key={elem.name} element={elem}/>)
-          ] : this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem}/>)}
-        </div>
+          { selectedHistory.size ? (
+            <div style={historyContainer}>
+              <span>{this.context.translator.t('Last Selected')}</span>
+              {selectedHistoryElements}
+            </div>
+          ) : null}
+          <div style={itemsStyle}>
+            {this.state.matchString === '' ? [
+              turnBackButton,
+              categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>),
+              elementsToDisplay.map(elem => <CatalogItem key={elem.name} element={elem}/>)
+            ] : this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem}/>)}
+          </div>
+          
+        </ContentContainer>
+        
         <div
-          style={{...resizeHandleStyle, backgroundColor: 'grey', height: '100%'}}
-          onMouseDown = { this.handleMouseDown }
+          style={{
+            ...resizeHandleStyle,
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            height: '100%',
+            zIndex: 11
+          }}
+          onMouseDown={this.handleMouseDown}
+          onMouseOver={this.handleMouseOver}
+          onMouseOut={this.handleMouseOut}
         />
-      </ContentContainer>
+      </div>
     );
   }
 }

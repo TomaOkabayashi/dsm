@@ -66,15 +66,15 @@ const mainContentStyle = {
   display: 'flex',
   flexFlow: 'row nowrap',
   marginTop: menubarH + utilitybarH,
-  height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`
+  height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`,
+  overflow: 'hidden'
 };
 
 const catalogListStyle = {
   position: 'relative',
-  marginRight: '50px'
 };
 const contentStyle = {
-  flex: '0 0 auto' 
+  flex: '0 0 auto'
 };
 const sidebarStyle = {
   position: 'fixed',
@@ -152,7 +152,7 @@ class ReactPlanner extends Component {
           {/* catalog on left side */}
           <div style={catalogListStyle}>
             <CatalogList width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? 0 : catalogW} 
-            height={catalogH} state={extractedState} {...props} />
+            height={catalogH + 30} state={extractedState} {...props} />
           </div>
 
           {/* the grid */}

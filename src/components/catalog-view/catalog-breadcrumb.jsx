@@ -33,8 +33,8 @@ const CatalogBreadcrumb = ({ names }) => {
     let lastElement = ind === names.length - 1;
 
     return <div key={ind} style={{ display: 'flex' }}>
-        <div style={ !lastElement ? breadcrumbTextStyle : breadcrumbLastTextStyle } onClick={name.action || null}>{name.name}</div>
-        { !lastElement ? <Arrow style={breadcrumbTabStyle} /> : null }
+        {/* <div style={ !lastElement ? breadcrumbTextStyle : breadcrumbLastTextStyle } onClick={name.action || null}>{name.name}</div>
+        { !lastElement ? <Arrow style={breadcrumbTabStyle} /> : null } */}
     </div>
   });
 

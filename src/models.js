@@ -303,7 +303,7 @@ export class State extends Record({
   scene: new Scene(),
   sceneHistory: new HistoryStructure(),
   catalog: new Catalog(),
-  catalogWidth: 200, //default catalog width on react-planner.jsx
+  catalogWidth: 250, //default catalog width on react-planner.jsx
   viewer2D: new Map(),
   mouse: new Map({x: 0, y: 0}),
   zoom: 0,
