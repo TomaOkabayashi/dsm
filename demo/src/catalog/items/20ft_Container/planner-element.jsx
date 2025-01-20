@@ -273,6 +273,17 @@ function makeDoorStructure() {
 const defaultFontSize = 20;
 const defaultColor = '#000000';
 
+function formatDisplayText(text) {
+  if (!text) return [];
+  
+  // Split text into chunks of 21 characters
+  let chunks = [];
+  for (let i = 0; i < text.length; i += 21) {
+    chunks.push(text.slice(i, i + 21));
+  }
+  return chunks;
+}
+
 function createElement() {
   const metadata = {
     // Required fields that must have a value - empty string placeholder
@@ -363,6 +374,7 @@ function createElement() {
       },
     },
     render2D: (element, layer, scene) => {
+      let displayText = formatDisplayText(element.name);
       let width = element.properties.getIn(['width', 'length']);
       let depth = element.properties.getIn(['depth', 'length']);
 
@@ -401,10 +413,16 @@ function createElement() {
           <rect key='1' x='0' y='0' width={width} height={depth} style={style} />
           <text key='2' x='0' y='0'
                 transform={`translate(${width/2}, ${depth/2}) scale(1,-1) rotate(${textRotation})`}
-                style={{textAnchor: 'middle', fontSize: `${fontSize}px`, fill: textColour}}
-                textLength={textLength * 0.95} // Set to slightly less than width to add some padding
-                lengthAdjust="spacingAndGlyphs">
-            {element.name}
+                style={{textAnchor: 'middle', fontSize: `${fontSize}px`, fill: textColour}}>
+            {displayText.map((chunk, index) => (
+              <tspan key={index} 
+                     x="0" 
+                     dy={index === 0 ? "0" : "1.2em"}
+                     textLength={textLength * 0.95}
+                     lengthAdjust="spacingAndGlyphs">
+                {chunk}
+              </tspan>
+            ))}
           </text>
         </g>
       );

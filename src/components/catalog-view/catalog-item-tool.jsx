@@ -1,22 +1,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {FaPlusCircle as IconAdd} from 'react-icons/fa';
 import * as SharedStyle from '../../shared-style';
+import { FaPencilAlt, FaDoorOpen } from "react-icons/fa";
 
 const STYLE_BOX = {
-  width: '8em', 
-  height: '8em',  
-  padding: '0.3em', // Reduced padding
-  background: '#f7f7f9',
+  width: '35px',
+  height: '35px',
+  background: SharedStyle.PRIMARY_COLOR.alt,
   border: '1px solid #e1e1e8',
   cursor: 'pointer',
   position: 'relative',
-  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', // Reduced shadow
+  boxShadow: '0 1px 6px 0 rgba(0, 0, 0, 0.11), 0 1px 4px 0 rgba(0, 0, 0, 0.11)',
   borderRadius: '2px',
   transition: 'all .15s ease-in-out',
   WebkitTransition: 'all .15s ease-in-out',
-  alignSelf: 'start',
-  justifySelf: 'start',
+  alignSelf: 'center',
+  justifySelf: 'center',
 };
 
 const STYLE_BOX_HOVER = {
@@ -30,47 +29,6 @@ const STYLE_TITLE = {
   display:'block',
   marginBottom:'.5em',
   textTransform: 'capitalize'
-};
-
-const STYLE_TITLE_HOVER = {
-  ...STYLE_TITLE,
-  color:SharedStyle.COLORS.white
-};
-
-const STYLE_IMAGE_CONTAINER = {
-  width: '100%',
-  height: '8em',
-  position:'relative',
-  overflow:'hidden',
-  border: 'solid 1px #e6e6e6',
-  padding:0,
-  margin:0,
-  marginBottom: '5px'
-};
-
-const STYLE_IMAGE = {
-  position:'absolute',
-  background: '#222',
-  width: '100%',
-  height: '100%',
-  backgroundSize: 'contain',
-  backgroundPosition:'50% 50%',
-  backgroundColor:SharedStyle.COLORS.white,
-  backgroundRepeat:'no-repeat',
-  transition: 'all .2s ease-in-out'
-};
-
-const STYLE_IMAGE_HOVER = {
-  ...STYLE_IMAGE,
-  transform: 'scale(1.2)'
-};
-
-const STYLE_PLUS_HOVER = {
-  marginTop:'1.5em',
-  color: SharedStyle.SECONDARY_COLOR.main,
-  fontSize: '2em',
-  opacity: '0.7',
-  width: '100%'
 };
 
 const STYLE_DESCRIPTION = {
@@ -104,7 +62,49 @@ const STYLE_TAG = {
   borderRadius: '3px'
 };
 
-export default class CatalogItem extends Component {
+const toolIconStyle = {
+  fontSize: '1.3em',
+  marginTop: '5px',
+  color: SharedStyle.COLORS.white,
+  flexShrink: 0
+};
+
+const STYLE_TOOLTIP = {
+  position: 'absolute',
+  width: '65px',
+  color: SharedStyle.COLORS.white,
+  background: SharedStyle.COLORS.black,
+  minHeight: '22px',
+  height: 'auto',
+  padding: '2px 2px',
+  textAlign: 'center',
+  visibility: 'visible',
+  borderRadius: '4px',
+  opacity: '0.8',
+  left: '100%',
+  top: '50%',
+  marginTop: '-11px',
+  marginLeft: '5px',
+  zIndex: '999',
+  fontSize: '11px',
+  whiteSpace: 'normal',
+  wordWrap: 'break-word'
+};
+
+const STYLE_TOOLTIP_PIN = {
+  position: 'absolute',
+  top: '50%',
+  right: '100%',
+  marginTop: '-4px',
+  marginRight: '-1px',
+  width: '0',
+  height: '0',
+  borderRight: '4px solid #000000',
+  borderTop: '4px solid transparent',
+  borderBottom: '4px solid transparent'
+};
+
+export default class CatalogItemTool extends Component {
 
   constructor(props) {
     super(props);
@@ -132,6 +132,7 @@ export default class CatalogItem extends Component {
   render() {
     let element = this.props.element;
     let hover = this.state.hover;
+    let IconComponent = this.props.icon || FaPencilAlt;
 
     return (
       <div
@@ -140,13 +141,13 @@ export default class CatalogItem extends Component {
         onMouseEnter={e => this.setState({hover: true})}
         onMouseLeave={e => this.setState({hover: false})}
       >
-        <b style={ !hover ? STYLE_TITLE : STYLE_TITLE_HOVER }>{element.info.title}</b>
-        {/* code for images on the items */}
-        <div style={ STYLE_IMAGE_CONTAINER }>
-          <div style={{...( !hover ? STYLE_IMAGE: STYLE_IMAGE_HOVER ), backgroundImage: 'url(' + element.info.image + ')'}}>
-            { hover ? <IconAdd style={STYLE_PLUS_HOVER} /> : null }
+        <IconComponent style={toolIconStyle}/>
+        {hover && (
+          <div style={STYLE_TOOLTIP}>
+            {element.info.title}
+            <div style={STYLE_TOOLTIP_PIN}></div>
           </div>
-        </div>
+        )}
         <ul style={STYLE_TAGS}>
           {element.info.tag.map((tag, index) => <li style={STYLE_TAG} key={index}>{tag}</li>)}
         </ul>
@@ -156,11 +157,12 @@ export default class CatalogItem extends Component {
   }
 }
 
-CatalogItem.propTypes = {
+CatalogItemTool.propTypes = {
   element: PropTypes.object.isRequired,
+  icon: PropTypes.elementType,
 };
 
-CatalogItem.contextTypes = {
+CatalogItemTool.contextTypes = {
   itemsActions: PropTypes.object.isRequired,
   linesActions: PropTypes.object.isRequired,
   holesActions: PropTypes.object.isRequired,

@@ -4,19 +4,19 @@ import {FaPlusCircle as IconAdd} from 'react-icons/fa';
 import * as SharedStyle from '../../shared-style';
 
 const STYLE_BOX = {
-  width: '8em', 
-  height: '8em',  
-  padding: '0.3em', // Reduced padding
+  width: '14em',
+  height: '14em',
+  padding: '0.625em',
   background: '#f7f7f9',
   border: '1px solid #e1e1e8',
   cursor: 'pointer',
   position: 'relative',
-  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', // Reduced shadow
+  boxShadow: '0 1px 6px 0 rgba(0, 0, 0, 0.11), 0 1px 4px 0 rgba(0, 0, 0, 0.11)',
   borderRadius: '2px',
   transition: 'all .15s ease-in-out',
   WebkitTransition: 'all .15s ease-in-out',
-  alignSelf: 'start',
-  justifySelf: 'start',
+  alignSelf: 'center',
+  justifySelf: 'center',
 };
 
 const STYLE_BOX_HOVER = {
@@ -104,7 +104,7 @@ const STYLE_TAG = {
   borderRadius: '3px'
 };
 
-export default class CatalogItem extends Component {
+export default class CatalogItemHoles extends Component {
 
   constructor(props) {
     super(props);
@@ -141,7 +141,6 @@ export default class CatalogItem extends Component {
         onMouseLeave={e => this.setState({hover: false})}
       >
         <b style={ !hover ? STYLE_TITLE : STYLE_TITLE_HOVER }>{element.info.title}</b>
-        {/* code for images on the items */}
         <div style={ STYLE_IMAGE_CONTAINER }>
           <div style={{...( !hover ? STYLE_IMAGE: STYLE_IMAGE_HOVER ), backgroundImage: 'url(' + element.info.image + ')'}}>
             { hover ? <IconAdd style={STYLE_PLUS_HOVER} /> : null }
@@ -156,11 +155,11 @@ export default class CatalogItem extends Component {
   }
 }
 
-CatalogItem.propTypes = {
+CatalogItemHoles.propTypes = {
   element: PropTypes.object.isRequired,
 };
 
-CatalogItem.contextTypes = {
+CatalogItemHoles.contextTypes = {
   itemsActions: PropTypes.object.isRequired,
   linesActions: PropTypes.object.isRequired,
   holesActions: PropTypes.object.isRequired,

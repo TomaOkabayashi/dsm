@@ -4,8 +4,8 @@ import {MdNavigateNext} from 'react-icons/md';
 import * as SharedStyle from '../../shared-style';
 
 const STYLE_BOX = {
-  width: '14em',
-  height: '14em',
+  width: '7em',
+  height: '7em',
   padding: '0.625em',
   background: '#f7f7f9',
   border: '1px solid #e1e1e8',

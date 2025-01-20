@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CatalogItem from './catalog-item';
+import CatalogItemTool from './catalog-item-tool';
+import CatalogItemHoles from './catalog-item-holes';
 import CatalogBreadcrumb from './catalog-breadcrumb';
 import CatalogPageItem from './catalog-page-item';
 import CatalogTurnBackPageItem from './catalog-turn-back-page-item';
@@ -8,19 +10,32 @@ import ContentContainer from '../style/content-container';
 import ContentTitle from '../style/content-title';
 import * as SharedStyle from '../../shared-style';
 import { MODE_3D_VIEW, MODE_3D_FIRST_PERSON } from '../../constants';
+import {MdSearch} from 'react-icons/md';
+import {FaPencilAlt, FaDoorOpen} from 'react-icons/fa';
+
 
 const containerStyle = {
+  flex: '1',
   height: '100%',
-  backgroundColor: '#FFF',
-  zIndex: 10,
+  backgroundColor: SharedStyle.PRIMARY_COLOR.main,
   overflowY: 'auto',
   overflowX: 'hidden',
-  paddingRight: '20px'
+  paddingRight: '15px'
 };
 
 const wrapperStyle = {
   position: 'relative',
-  height: '100%'
+  height: '100%',
+  display: 'flex'
+};
+
+const toolStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(14em, 1fr))',
+  gridGap: '10px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center'
 };
 
 const itemsStyle = {
@@ -30,11 +45,18 @@ const itemsStyle = {
   marginTop: '1em'
 };
 
+const itemsStyleFolder = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(14em, 1fr))',
+  gridGap: '10px',
+  marginTop: '1em'
+};
+
 const searchContainer = {
   width: '100%',
-  height: '3em',
-  padding: '0.625em',
-  background: '#f7f7f9',
+  // minWidth: '235px',
+  height: '2em',
+  background: '#222222',
   border: '1px solid #e1e1e8',
   cursor: 'pointer',
   position: 'relative',
@@ -42,20 +64,29 @@ const searchContainer = {
   borderRadius: '2px',
   transition: 'all .2s ease-in-out',
   WebkitTransition: 'all .2s ease-in-out',
-  marginBottom: '1em'
+  marginBottom: '1em',
+  display: 'flex',
+  alignItems: 'center',
+  paddingLeft: '3px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden'
 };
 
 const searchText = {
-  width: '8em',
-  display: 'inline-block'
+  display: 'flex',
+  alignItems: 'center',
+  color: SharedStyle.COLORS.white,
+  marginRight: '2px',
+  whiteSpace: 'nowrap',
+  flexShrink: 0
 };
 
 const searchInput = {
-  width: 'calc( 100% - 10em )',
   height: '2em',
-  margin: '0',
-  padding: '0 1em',
-  border: '1px solid #EEE'
+  borderLeft: '1px solid #EEE',
+  background: SharedStyle.PRIMARY_COLOR.main,
+  flex: 1,
+  minWidth: '50px'
 };
 
 const historyContainer = {
@@ -72,10 +103,28 @@ const historyElementStyle = {
   display: 'inline-block',
   cursor: 'pointer',
   backgroundColor: SharedStyle.PRIMARY_COLOR.alt,
-  color: SharedStyle.PRIMARY_COLOR.text_main,
+  color: SharedStyle.COLORS.white,
   textTransform: 'capitalize',
   margin: '0.25em',
   padding: '0 1em'
+};
+
+const searchIconStyle = {
+  fontSize: '1.3em',
+  marginRight: '2px',
+  color: SharedStyle.COLORS.white,
+  flexShrink: 0
+};
+
+const headerContainer = {
+  display: 'flex',
+  alignItems: 'center',
+  marginLeft: '-115px',
+};
+
+const gateHeaderContainer = {
+  ...headerContainer,
+  marginTop: '-5px'
 };
 
 export default class CatalogList extends Component {
@@ -123,9 +172,9 @@ export default class CatalogList extends Component {
   handleMouseMove(e) {
     if (!this.state.isResizing) return;
 
-    const minWidth = 200;
+    const minWidth = 235;
     const maxWidth = 800;
-    const newWidth = Math.min(Math.max(e.clientX - 50, minWidth), maxWidth);
+    const newWidth = Math.min(Math.max(e.clientX - 1, minWidth), maxWidth); // call it placebo, it feels better doing a 1 offset
     
     this.setState({ width: newWidth });
   }
@@ -238,57 +287,101 @@ export default class CatalogList extends Component {
 
     // Render css
     const resizeHandleStyle = {
-      position: 'absolute',
-      right: 0,
-      top: 0,
       width: '13px',
       height: '100%',
       cursor: 'col-resize',
-      backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.MATERIAL_COLORS[500].grey : 'transparent',
-      transition: 'background-color 0.2s',
+      backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.MATERIAL_COLORS[500].grey : SharedStyle.PRIMARY_COLOR.alt,
+      transition: 'background-color 0.2s'
     };
 
     const combinedContainerStyle = {
       ...containerStyle,
       ...this.props.style,
-      width: this.state.width,
+      width: this.state.width - 13,
       position: 'relative'
     };
 
     return (
       <div style={wrapperStyle}>
-        <ContentContainer width={this.state.width} height={this.props.height} style={combinedContainerStyle}>
-          <ContentTitle>{this.context.translator.t('Catalog')}</ContentTitle>
-          {breadcrumbComponent}
-          <div style={searchContainer}>
-            <span style={searchText}>{this.context.translator.t('Search Element')}</span>
-            <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
+        <ContentContainer width={this.state.width - 13} height={this.props.height} style={combinedContainerStyle}>
+
+          <div style={headerContainer}>
+            {/* Lines - the loading bay creator */}
+            <div style={toolStyle}>
+              {this.state.matchString === '' ? [
+                turnBackButton,
+                elementsToDisplay
+                  .filter(elem => elem.prototype === 'lines')
+                  .map(elem => <CatalogItemTool key={elem.name} element={elem} icon={FaPencilAlt}/>)
+              ] : this.state.matchedElements
+                  .filter(elem => elem.prototype === 'lines')
+                  .map(elem => <CatalogItemTool key={elem.name} element={elem} icon={FaPencilAlt}/>)}
+            </div>
+            <ContentTitle>{this.context.translator.t('Tool Chest')}</ContentTitle>
           </div>
+
+          {/* {breadcrumbComponent} could be use case for this in future. The render of this is commented out in the catalog-turn-back-page-item.jsx*/}
+          
+          {/* Access tool */}
+          <div style={gateHeaderContainer}>
+            {/* Holes - the access tool */}
+            <div style={toolStyle}>
+              {this.state.matchString === '' ? [
+                elementsToDisplay
+                  .filter(elem => elem.name === 'gate')
+                  .map(elem => <CatalogItemTool key={elem.name} element={elem} icon={FaDoorOpen}/>)
+              ] : this.state.matchedElements
+                  .filter(elem => elem.name === 'gate')
+                  .map(elem => <CatalogItemTool key={elem.name} element={elem} icon={FaDoorOpen}/>)}
+            </div>
+
+            <div style={searchContainer}>
+              <MdSearch style={searchIconStyle}/>
+              <span style={searchText}>{this.context.translator.t('Search')}</span>
+              <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
+            </div>
+          </div>
+
           { selectedHistory.size ? (
             <div style={historyContainer}>
               <span>{this.context.translator.t('Last Selected')}</span>
               {selectedHistoryElements}
             </div>
           ) : null}
+
+          {/* Items; containers */}
           <div style={itemsStyle}>
             {this.state.matchString === '' ? [
-              turnBackButton,
+              elementsToDisplay
+                .filter(elem => elem.prototype === 'items')
+                .map(elem => <CatalogItem key={elem.name} element={elem}/>)
+            ] : this.state.matchedElements
+                .filter(elem => elem.prototype === 'items')
+                .map(elem => <CatalogItem key={elem.name} element={elem}/>)}
+          </div>
+
+          {/* Windows and doors */}
+          <div style={itemsStyle}>
+            {this.state.matchString === '' ? [
+              elementsToDisplay
+                .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
+                .map(elem => <CatalogItemHoles key={elem.name} element={elem}/>)
+            ] : this.state.matchedElements
+                .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
+                .map(elem => <CatalogItemHoles key={elem.name} element={elem}/>)}
+          </div>
+
+          {/* The folders of different categrories */}
+          <div style={itemsStyleFolder}>
+            {this.state.matchString === '' ? [
               categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>),
-              elementsToDisplay.map(elem => <CatalogItem key={elem.name} element={elem}/>)
             ] : this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem}/>)}
           </div>
           
         </ContentContainer>
         
         <div
-          style={{
-            ...resizeHandleStyle,
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            height: '100%',
-            zIndex: 11
-          }}
+          style={resizeHandleStyle}
           onMouseDown={this.handleMouseDown}
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
