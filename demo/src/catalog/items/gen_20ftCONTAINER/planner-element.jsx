@@ -286,12 +286,14 @@ function formatDisplayText(text) {
 
 function createElement() {
   const metadata = {
-    description: '1.5m MINI',
+    description: '20ft CONTAINER',
+    tare: '3,750',
+    vgm: '6.5',
 
     originalDimensions: {
-      length: '1.7',
-      width: '1.9',
-      height: '2.9',
+      length: '6.1', 
+      width: '2.4',  
+      height: '2.6',
     },
   };
 

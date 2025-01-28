@@ -286,12 +286,14 @@ function formatDisplayText(text) {
 
 function createElement() {
   const metadata = {
-    description: '1.5m MINI',
+    description: '8000L TANK',
+    tare: '3,000',
+    vgm: '11.4',
 
     originalDimensions: {
-      length: '1.7',
-      width: '1.9',
-      height: '2.9',
+      length: '3.0',  // Will be like 2.2 from Excel
+      width: '2.4',   // Will be like 2.0 from Excel
+      height: '2.6',  // Will be like 2.5 from Excel
     },
   };
 

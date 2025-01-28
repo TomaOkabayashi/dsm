@@ -287,11 +287,13 @@ function formatDisplayText(text) {
 function createElement() {
   const metadata = {
     description: 'untitled',
+    tare: '1,000',
+    vgm: '1.0',
 
     originalDimensions: {
-      length: '2.0',  // Will be like 2.2 from Excel
-      width: '1.5',   // Will be like 2.0 from Excel
-      height: '1.6',  // Will be like 2.5 from Excel
+      length: '2.1',
+      width: '1.6',
+      height: '1.6',
     },
   };
 
@@ -339,7 +341,7 @@ function createElement() {
         },
       },
       width: {
-        label: `Width\u00A0\u00A0\u00A0 Orig: ${info.dimensions.width}`,
+        label: `Width\u00A0\u00A0\u00A0 Def: ${info.dimensions.width}`,
         type: 'length-measure',
         defaultValue: {
           length: info.dimensions.width,
@@ -347,7 +349,7 @@ function createElement() {
         },
       },
       depth: {
-        label: `Length\u00A0\u00A0\u00A0 Orig: ${info.dimensions.depth}`,
+        label: `Length\u00A0\u00A0\u00A0 Def: ${info.dimensions.depth}`,
         type: 'length-measure',
         defaultValue: {
           length: info.dimensions.depth,
@@ -355,7 +357,7 @@ function createElement() {
         },
       },
       height: {
-        label: `Height\u00A0\u00A0\u00A0 Orig: ${info.dimensions.height}`,
+        label: `Height\u00A0\u00A0\u00A0 Def: ${info.dimensions.height}`,
         type: 'length-measure',
         defaultValue: {
           length: info.dimensions.height,

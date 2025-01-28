@@ -9,7 +9,8 @@ const container_position = {
 }
 
 const STYLE_GRID_CELL = {
-  width: '140px',
+  minWidth: '140px',
+  width: 'fit-content',
   padding: '0.05em',
   background: SharedStyle.MATERIAL_COLORS[500].grey,
   border: `1px solid ${SharedStyle.COLORS.black}`,
@@ -23,7 +24,6 @@ const STYLE_GRID_CELL = {
 
 const CELL_STYLE = {
   whiteSpace: 'nowrap',
-  overflow: 'hidden',
   textOverflow: 'ellipsis',
   height: '25px',
   display: 'block',
