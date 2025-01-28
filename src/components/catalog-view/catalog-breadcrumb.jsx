@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import {MdArrowBack as Arrow} from 'react-icons/md';
 import * as SharedStyle from '../../shared-style';
 
+// This is pretty much useless, some text thing that pops up when you click on a page item
+// This is not being used right now
+
 const breadcrumbStyle = {
   margin: '1.5em',
   display: 'flex'
@@ -33,8 +36,8 @@ const CatalogBreadcrumb = ({ names }) => {
     let lastElement = ind === names.length - 1;
 
     return <div key={ind} style={{ display: 'flex' }}>
-        <div style={ !lastElement ? breadcrumbTextStyle : breadcrumbLastTextStyle } onClick={name.action || null}>{name.name}</div>
-        { !lastElement ? <Arrow style={breadcrumbTabStyle} /> : null }
+        {/* <div style={ !lastElement ? breadcrumbTextStyle : breadcrumbLastTextStyle } onClick={name.action || null}>{name.name}</div>
+        { !lastElement ? <Arrow style={breadcrumbTabStyle} /> : null } */}
     </div>
   });
 

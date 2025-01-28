@@ -1,23 +1,54 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CatalogItem from './catalog-item';
+import CatalogItemTool from './catalog-item-tool';
+import CatalogItemHoles from './catalog-item-holes';
 import CatalogBreadcrumb from './catalog-breadcrumb';
 import CatalogPageItem from './catalog-page-item';
 import CatalogTurnBackPageItem from './catalog-turn-back-page-item';
 import ContentContainer from '../style/content-container';
+import CatalogContainerPanel from './catalog-container-panel';
 import ContentTitle from '../style/content-title';
 import * as SharedStyle from '../../shared-style';
+import { MODE_3D_VIEW, MODE_3D_FIRST_PERSON } from '../../constants';
+import {MdSearch} from 'react-icons/md';
+import {FaPencilAlt, FaDoorOpen} from 'react-icons/fa';
+
+// this is the entire catalog structure
+
+const wrapperStyle = {
+  position: 'relative',
+  height: '100%',
+  display: 'flex'
+};
 
 const containerStyle = {
-  position: 'fixed',
-  width:'calc( 100% - 51px)',
-  height:'calc( 100% - 20px)',
-  backgroundColor:'#FFF',
-  padding:'1em',
-  left:50,
-  overflowY:'auto',
-  overflowX:'hidden',
-  zIndex:10
+  flex: '1',
+  height: '100%',
+  backgroundColor: SharedStyle.PRIMARY_COLOR.main,
+  overflowY: 'auto',
+  overflowX: 'auto',
+  paddingRight: '15px'
+};
+
+const toolBarBorder = {
+  position: 'absolute',
+  width: '2px',
+  height: '100%',
+  left: 35,
+  backgroundColor: SharedStyle.COLORS.black,
+  zIndex: 998
+};
+
+// Access tool and line tool
+const toolStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(14em, 1fr))',
+  gridGap: '10px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  marginLeft: '-115px',
 };
 
 const itemsStyle = {
@@ -27,37 +58,59 @@ const itemsStyle = {
   marginTop: '1em'
 };
 
+const itemsStyleFolder = {
+  display: 'flex',
+  gap: '3px',
+  marginTop: '22em',
+  alignItems: 'flex-start'
+};
+
 const searchContainer = {
   width: '100%',
-  height: '3em',
-  padding: '0.625em',
-  background: '#f7f7f9',
+  // minWidth: '235px',
+  marginLeft: '-5em',
+  height: '2em',
+  background: '#222222',
   border: '1px solid #e1e1e8',
   cursor: 'pointer',
-  position: 'relative',
+  position: 'flex',
   boxShadow: '0 1px 6px 0 rgba(0, 0, 0, 0.11), 0 1px 4px 0 rgba(0, 0, 0, 0.11)',
   borderRadius: '2px',
   transition: 'all .2s ease-in-out',
   WebkitTransition: 'all .2s ease-in-out',
-  marginBottom: '1em'
+  marginBottom: '1em',
+  display: 'flex',
+  alignItems: 'center',
+  paddingLeft: '3px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
 };
 
 const searchText = {
-  width: '8em',
-  display: 'inline-block'
+  display: 'flex',
+  alignItems: 'center',
+  color: SharedStyle.COLORS.white,
+  marginRight: '2px',
+  whiteSpace: 'nowrap',
+  flexShrink: 0
 };
 
 const searchInput = {
-  width: 'calc( 100% - 10em )',
   height: '2em',
-  margin: '0',
-  padding: '0 1em',
-  border: '1px solid #EEE'
+  borderLeft: '1px solid #EEE',
+  background: SharedStyle.PRIMARY_COLOR.main,
+  flex: 1,
+  minWidth: '50px',
+  width: '100%',
+  position: 'relative',
+  padding: '0 5px'
 };
 
 const historyContainer = {
   ...searchContainer,
-  padding: '0.2em 0.625em'
+  padding: '0.2em 0.625em',
+  marginLeft: '29px',
+  color: SharedStyle.COLORS.white,
 };
 
 const historyElementStyle = {
@@ -68,12 +121,94 @@ const historyElementStyle = {
   borderRadius: '1em',
   display: 'inline-block',
   cursor: 'pointer',
-  backgroundColor: SharedStyle.PRIMARY_COLOR.alt,
-  color: SharedStyle.PRIMARY_COLOR.text_main,
+  backgroundColor: SharedStyle.SECONDARY_COLOR.alt,
+  color: SharedStyle.COLORS.white,
   textTransform: 'capitalize',
   margin: '0.25em',
-  padding: '0 1em'
+  padding: '0 0.7em'
 };
+
+const searchIconStyle = {
+  fontSize: '1.3em',
+  marginLeft: '2px',
+  color: SharedStyle.COLORS.white,
+  flexShrink: 0
+};
+
+const lineBreakStyle = {
+  width: '100%',
+  height: '2px',
+  backgroundColor: SharedStyle.MATERIAL_COLORS[500].blue_grey,
+  margin: '1em 0',
+  minWidth: '900px',
+  marginLeft: '1.4em',
+};
+
+const headerContainer = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const gateHeaderContainer = {
+  ...headerContainer,
+  marginTop: '-5px'
+};
+
+// Container for head row of items with titles
+const container_position = {
+  marginLeft: '1.1em',
+}
+
+const COLUMN_MIN_WIDTHS = {
+  dest: '55px',      // DEST
+  con: '55px',       // CON
+  chkd: '55px',      // CHKD
+  container: '115px', // Hu/Container
+  desc: '265px',     // Packaging Mat Desc
+  length: '35px',    // L
+  width: '35px',     // W
+  height: '35px',    // H
+  tare: '50px',      // Tare
+  vgm: '35px',       // VGM
+  classCode: '65px'  // Class Code
+};
+
+const HEADER_GRID_CELL = {
+  width: 'auto',
+  minWidth: '900px',
+  padding: '0.4em',
+  background: SharedStyle.MATERIAL_COLORS[500].white_grey,
+  border: `1px solid ${SharedStyle.MATERIAL_COLORS[500].white_grey}`,
+  position: 'relative',
+  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+  borderRadius: '2px',
+  display: 'grid',
+  fontSize: '0.9em',
+  fontWeight: 'bold',
+  gridTemplateColumns: `minmax(${COLUMN_MIN_WIDTHS.dest}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.con}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.chkd}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.container}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.desc}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.length}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.width}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.height}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.tare}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.vgm}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.classCode}, max-content)`,
+};
+
+const HEADER_CELL = {
+  padding: '0.3em',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  height: '25px',
+  borderRight: 'solid 2px #000000',
+  minWidth: '50px',
+  maxWidth: 'max-content',
+};
+
 
 export default class CatalogList extends Component {
 
@@ -89,8 +224,60 @@ export default class CatalogList extends Component {
       categories: currentCategory.categories,
       elements: elementsToDisplay,
       matchString: '',
-      matchedElements: []
+      matchedElements: [],
+      width: props.width || 300, // Initial width
+      isResizing: false,
     };
+
+    // Bind methods
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseOver = this.handleMouseOver.bind(this);
+    this.handleMouseOut = this.handleMouseOut.bind(this);
+  }
+
+  // For the resize bar
+  componentDidMount() {
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mouseup', this.handleMouseUp);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
+  }
+
+  handleMouseDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ isResizing: true });
+    document.body.style.cursor = 'col-resize';
+  }
+
+  handleMouseMove(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!this.state.isResizing) return;
+    
+    const minWidth = 235;
+    const maxWidth = 800;
+    const newWidth = Math.min(Math.max(e.clientX - 1, minWidth), maxWidth); // call it placebo, it feels better doing a 1 offset
+    
+    this.setState({ width: newWidth });
+  }
+
+  handleMouseUp() {
+    this.setState({ isResizing: false });
+    document.body.style.cursor = 'default';
+  }
+
+  handleMouseOver() {
+    this.setState({ hovering: true});
+  }
+
+  handleMouseOut() {
+    this.setState({ hovering: false});
   }
 
   flattenCategories( categories ) {
@@ -145,6 +332,12 @@ export default class CatalogList extends Component {
   }
 
   render() {
+    let mode = this.props.state.get('mode');
+    
+    // Don't render in 3D modes
+    if (mode === MODE_3D_VIEW || mode === MODE_3D_FIRST_PERSON) {
+      return null;
+    }
 
     let page = this.props.state.catalog.page;
     let currentCategory = this.context.catalog.getCategory(page);
@@ -180,33 +373,166 @@ export default class CatalogList extends Component {
       <div key={ind} style={historyElementStyle} title={el.name} onClick={() => this.select(el) }>{el.name}</div>
     );
 
+    // Render css of the resize bar
+    const resizeHandleStyle = {
+      width: '13px',
+      height: '100%',
+      cursor: 'col-resize',
+      borderLeft: `solid 1px ${SharedStyle.COLORS.black}`,
+      backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.MATERIAL_COLORS[500].grey : SharedStyle.PRIMARY_COLOR.alt,
+      transition: 'background-color 0.2s',
+      zIndex: 998,
+    };
+
+    const combinedContainerStyle = {
+      ...containerStyle,
+      ...this.props.style,
+      width: this.state.width - 13,
+      position: 'relative'
+    };
+
     return (
-      <ContentContainer width={this.props.width} height={this.props.height} style={{...containerStyle, ...this.props.style}}>
-        <ContentTitle>{this.context.translator.t('Catalog')}</ContentTitle>
-        {breadcrumbComponent}
-        <div style={searchContainer}>
-          <span style={searchText}>{this.context.translator.t('Search Element')}</span>
-          <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
-        </div>
-        { selectedHistory.size ?
-          <div style={historyContainer}>
-            <span>{this.context.translator.t('Last Selected')}</span>
-            {selectedHistoryElements}
-          </div> :
-          null
-        }
-        <div style={itemsStyle}>
-          {
-            this.state.matchString === '' ? [
-              turnBackButton,
-              categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>),
-              elementsToDisplay.map(elem => <CatalogItem key={elem.name} element={elem}/>)
-            ] :
-            this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem}/>)
-          }
-        </div>
-      </ContentContainer>
-    )
+      <div style={wrapperStyle}>
+        <ContentContainer width={this.state.width - 13} height={this.props.height} style={combinedContainerStyle}>
+          
+          <div style={toolBarBorder}></div>
+          
+          <div style={headerContainer}>
+            {/* Lines - the loading bay creator - Always visible, not searchable*/}
+            <div style={toolStyle}>
+              {[
+                turnBackButton, // Only put one turnBackButton for single render
+                elementsToDisplay
+                  .filter(elem => elem.prototype === 'lines')
+                  .map(elem => <CatalogItemTool key={elem.name} element={elem} icon={FaPencilAlt}/>)
+              ]}
+            </div>
+            <ContentTitle>{this.context.translator.t('Tool Chest')}</ContentTitle>
+          </div>
+
+          {/* {breadcrumbComponent} could be use case for this in future. The render of this is commented out in the catalog-turn-back-page-item.jsx*/}
+          
+          {/* Access tool - not searchable */}
+          <div style={gateHeaderContainer}>
+            {/* Holes - the access tool */}
+            <div style={toolStyle}>
+              {elementsToDisplay
+                .filter(elem => elem.name === 'gate')
+                .map(elem => <CatalogItemTool key={elem.name} element={elem} icon={FaDoorOpen}/>)}
+            </div>
+
+            <div style={searchContainer}>
+              <MdSearch style={searchIconStyle}/>
+              <span style={searchText}>{this.context.translator.t('Search')}</span>
+              <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
+            </div>
+          </div>
+
+          { selectedHistory.size ? (
+            <div style={historyContainer}>
+              <span>{this.context.translator.t('Recent | ')}</span>
+              {selectedHistoryElements}
+            </div>
+          ) : null}
+
+
+          {/* Visible blue linebreak */}
+          <div style={lineBreakStyle} />
+
+          {/* Container Selection Panel */}
+          {/* For current catalog items: */}
+          <CatalogContainerPanel 
+            dataType="generic"
+            title="Generic Containers"
+            elements={elementsToDisplay}
+          />
+
+          {/* In the future, for CSV data: */}
+          {/* <CatalogContainerPanel 
+            dataType="csv"
+            title="CSV Import"
+            csvData={yourCsvData}
+          /> */}
+
+          <div style={lineBreakStyle} />
+
+
+
+
+
+
+          {/* Excel sheets header */}
+          <div style={container_position}>
+            <div style={HEADER_GRID_CELL}>
+              {['DEST','CON','CHKD','Hu/Container','Packaging Mat Desc','L','W','H','Tare','VGM','Class Code'].map((text, index) => (
+                <div key={index} style={HEADER_CELL}>
+                  {text}
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Items; containers - Searchable
+          <div style={itemsStyle}>
+            {this.state.matchString === '' ? 
+              elementsToDisplay
+                .filter(elem => elem.prototype === 'items')
+                .map(elem => <CatalogItem key={elem.name} element={elem}/>)
+            : this.state.matchedElements
+                .filter(elem => elem.prototype === 'items')
+                .map(elem => <CatalogItem key={elem.name} element={elem}/>)}
+          </div> */}
+          {/* OI READ THIS might be useful for the bottom bar below the catalog yeah? */}
+
+
+          {/* The last two chunks below
+          There are three folders; windows, doors, miscellaneous. They each have their respective 
+          elements it is super unfinished, the css layout is really bad. I do not have time to 
+          fix it right now.
+
+          To fix this, you need to:
+          1. Go to demo/src/catalog/mycatalog.js (where other categories like 'windows' and 
+          'doors' are registered) and add:
+            eg. catalog.registerCategory('containers', 'Containers', [/* your container elements *]); */}
+        
+
+          {/* 2. Then in CatalogList.jsx, wrap your custom UI (Container Panel, Excel headers) in:
+            eg. {page === 'containers' && (
+                  // Your container UI elements here
+                )}
+          This will make your custom UI only show up in the containers category page, just like 
+          how the windows only show up in the windows category. */}
+
+          {/* the actual items in the folder */}
+          {/* <div style={itemsStyle}>
+            {this.state.matchString === '' ? 
+              elementsToDisplay
+                .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
+                .map(elem => <CatalogItemHoles key={elem.name} element={elem}/>)
+            : this.state.matchedElements
+                .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
+                .map(elem => <CatalogItemHoles key={elem.name} element={elem}/>)}
+          </div> */}
+
+          {/* The folders of different categories; window, door, misc - Searchable */}
+          {/* <div style={itemsStyleFolder}>
+            {this.state.matchString === '' ? 
+              categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>)
+            : this.state.matchedElements
+                .filter(elem => elem.prototype !== 'lines' && elem.name !== 'gate')
+                .map(elem => <CatalogItem key={elem.name} element={elem}/>)}
+          </div> */}
+          
+        </ContentContainer>
+        
+        <div
+          style={resizeHandleStyle}
+          onMouseDown={this.handleMouseDown}
+          onMouseOver={this.handleMouseOver}
+          onMouseOut={this.handleMouseOut}
+        />
+      </div>
+    );
   }
 }
 

@@ -234,7 +234,7 @@ function makeArmchairMinLOD()
 
 export default {
   name: 'armchairs',
-  prototype: 'items',
+  prototype: 'holes',
 
   info: {
     tag: ['furnishings', 'wood'],

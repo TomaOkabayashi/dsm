@@ -4,7 +4,7 @@ import ImageFul from './imageful';
 
 export default {
   name: "image",
-  prototype: "items",
+  prototype: "holes",
 
   info: {
     title: "image",

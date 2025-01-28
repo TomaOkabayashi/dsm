@@ -18,7 +18,7 @@ const STYLE = {
 
 const STYLE_TOOLTIP = {
   position: 'absolute',
-  width: '140px',
+  width: '120px',
   color: SharedStyle.COLORS.white,
   background: SharedStyle.COLORS.black,
   height: '30px',

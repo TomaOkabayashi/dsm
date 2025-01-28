@@ -34,7 +34,8 @@ import {
   ADD_CIRCULAR_GUIDE,
   REMOVE_HORIZONTAL_GUIDE,
   REMOVE_VERTICAL_GUIDE,
-  REMOVE_CIRCULAR_GUIDE
+  REMOVE_CIRCULAR_GUIDE,
+  UPDATE_CATALOG_WIDTH
 } from '../constants';
 
 export function loadProject(sceneJSON) {
@@ -291,5 +292,12 @@ export function removeCircularGuide( guideID ) {
   return {
     type: REMOVE_CIRCULAR_GUIDE,
     guideID
+  };
+}
+
+export function updateCatalogWidth(width) {
+  return {
+    type: UPDATE_CATALOG_WIDTH,
+    width
   };
 }

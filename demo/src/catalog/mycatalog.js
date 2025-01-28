@@ -14,5 +14,6 @@ for( let x in Items ) catalog.registerElement( Items[x] );
 
 catalog.registerCategory('windows', 'Windows', [Holes.window, Holes.sashWindow, Holes.venetianBlindWindow, Holes.windowCurtain] );
 catalog.registerCategory('doors', 'Doors', [Holes.door, Holes.doorDouble, Holes.panicDoor, Holes.panicDoorDouble, Holes.slidingDoor] );
+catalog.registerCategory('miscellaneous', 'Miscellaneous', [Items.armchairs, Items.column, Items.columnSquare, Items.image, Items.simpleStair, Items.text3d,]);
 
 export default catalog;

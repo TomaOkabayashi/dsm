@@ -11,13 +11,12 @@ import * as SharedStyle from '../../shared-style';
 const logobarstyle = {
   position: 'absolute',
   top: 0,
-  backgroundColor: SharedStyle.MATERIAL_COLORS[500].grey,
   zIndex: '9001',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: '50px',
-  height: '50px'
+  width: '52px',
+  height: '52px'
 };
 
 const sortButtonsCb = (a, b) => {

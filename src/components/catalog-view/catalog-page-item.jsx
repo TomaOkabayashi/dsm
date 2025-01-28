@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import {MdNavigateNext} from 'react-icons/md';
 import * as SharedStyle from '../../shared-style';
 
+// This is the files for the window, door stuff
+
 const STYLE_BOX = {
-  width: '14em',
-  height: '14em',
-  padding: '0.625em',
+  width: '3em',
+  height: '3em',
+  padding: '0.3em',
   background: '#f7f7f9',
   border: '1px solid #e1e1e8',
   cursor: 'pointer',
@@ -25,22 +27,18 @@ const STYLE_BOX_HOVER = {
 };
 
 const STYLE_TITLE = {
-  width: '100%',
-  position: 'absolute',
+  fontSize: '0.8em',
   textAlign: 'center',
   display: 'block',
-  marginBottom: '.5em',
+  marginBottom: '-15px',
   padding:'1em',
-  textTransform: 'capitalize',
-  WebkitTransition: 'all .15s ease-in-out'
+  WebkitTransition: 'all .15s ease-in-out',
+  color: SharedStyle.COLORS.white,
 };
 
 const STYLE_TITLE_HOVERED = {
   ...STYLE_TITLE,
-  fontSize: '1.4em',
-  transform: 'translateY(-60px)',
-  color:'rgb(28, 166, 252)',
-  marginTop:'0.5em'
+  color: SharedStyle.SECONDARY_COLOR.main
 };
 
 const STYLE_NEXT_HOVER = {
@@ -61,6 +59,12 @@ const CONTAINER_DIV = {
   justifyContent: 'center'
 };
 
+const WRAPPER_DIV = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center'
+};
+
 export default class CatalogPageItem extends Component {
 
   constructor(props) {
@@ -77,22 +81,18 @@ export default class CatalogPageItem extends Component {
     let hover = this.state.hover;
 
     return (
-      <div
-        style={hover ? STYLE_BOX_HOVER : STYLE_BOX}
-        onClick={e => this.changePage(page.name)}
-        onMouseEnter={e => this.setState({hover: true})}
-        onMouseLeave={e => this.setState({hover: false})}
-      >
-        {hover ?
+      <div style={WRAPPER_DIV}>
+        <b style={hover ? STYLE_TITLE_HOVERED : STYLE_TITLE}>{page.label}</b>
+        <div
+          style={hover ? STYLE_BOX_HOVER : STYLE_BOX}
+          onClick={e => this.changePage(page.name)}
+          onMouseEnter={e => this.setState({hover: true})}
+          onMouseLeave={e => this.setState({hover: false})}
+        >
           <div style={CONTAINER_DIV}>
-            <b style={STYLE_TITLE_HOVERED}>{page.label}</b>
-            <MdNavigateNext style={STYLE_NEXT_HOVER}/>
+            {hover && <MdNavigateNext style={STYLE_NEXT_HOVER}/>}
           </div>
-          :
-          <div style={CONTAINER_DIV}>
-            <b style={STYLE_TITLE}>{page.label}</b>
-          </div>}
-
+        </div>
       </div>
     );
   }

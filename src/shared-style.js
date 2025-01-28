@@ -24,7 +24,8 @@ export const MATERIAL_COLORS = {
     purple: '#9C27B0',
     red: '#F44336',
     teal: '#009688',
-    yellow: '#FFEB3B'
+    yellow: '#FFEB3B',
+    white_grey: '#f7f7f9',
   }
 };
 

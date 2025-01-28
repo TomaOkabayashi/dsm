@@ -35,7 +35,8 @@ import {
   ADD_CIRCULAR_GUIDE,
   REMOVE_HORIZONTAL_GUIDE,
   REMOVE_VERTICAL_GUIDE,
-  REMOVE_CIRCULAR_GUIDE
+  REMOVE_CIRCULAR_GUIDE,
+  UPDATE_CATALOG_WIDTH,
 } from '../constants';
 
 import { Project } from '../class/export';
@@ -157,6 +158,9 @@ export default function (state, action) {
 
     case REMOVE_CIRCULAR_GUIDE:
       return Project.removeCircularGuide(state, action.guideID).updatedState;
+
+    case UPDATE_CATALOG_WIDTH:
+      return Project.setCatalogWidth(state, action.width).updatedState;
 
     default:
       return state;

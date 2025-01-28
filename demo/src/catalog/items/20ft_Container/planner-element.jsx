@@ -270,7 +270,7 @@ function makeDoorStructure() {
 //------------DOOR-----------
 
 
-const defaultFontSize = 20;
+const defaultFontSize = 30;
 const defaultColor = '#000000';
 
 function createElement() {
@@ -280,14 +280,14 @@ function createElement() {
     destination: 'FPSO', // DEST
     container: 'CWAY', // CON
     containerID: 'AORU770101-2', // Hu/Container
-    description: 'BIN,GENERAL WASTE,3M3', // Packaging Mat Desc 
+    description: 'container,15ft,open Top,1/2 heightee', // Packaging Mat Desc 
     tare: '1,020', // Tare
     vgm: '1.0', // VGM
 
     originalDimensions: {
-      length: '8',  // Will be like 2.2 from Excel
-      width: '2.4',   // Will be like 2.0 from Excel
-      height: '2.6',  // Will be like 2.5 from Excel
+      length: '2.0',  // Will be like 2.2 from Excel
+      width: '1.5',   // Will be like 2.0 from Excel
+      height: '1.6',  // Will be like 2.5 from Excel
     },
 
     // Optional or potentially unknown fields - null
@@ -305,12 +305,14 @@ function createElement() {
       width: metadata.originalDimensions.width * 100,
       height: metadata.originalDimensions.height * 100,
       depth: metadata.originalDimensions.length * 100,
-    }
+    },
+    metadata: metadata  // Add the metadata object to info
   };
 
   const element = {
     name: info.containerID, // what shows up on sidebar. Properties: [name] hashcode. Also shows up on the recent searches on catalog
     prototype: 'items',
+    type: 'container',
     metadata,
     info,
     properties: {
@@ -365,7 +367,24 @@ function createElement() {
     render2D: (element, layer, scene) => {
       let width = element.properties.getIn(['width', 'length']);
       let depth = element.properties.getIn(['depth', 'length']);
+      let rotation = ((element.rotation % 360) + 360) % 360;
+      
+      // Calculate chars per line based on rotation
+      let charsPerLine = (rotation >= 45 && rotation <= 120) || (rotation >= 235 && rotation <= 310) 
+          // Larger divisor = fewer characters per line
+          // Smaller divisor = more characters per line
+        ? Math.floor(depth / 17) // When container is sideways
+        : Math.floor(width / 17); // When container is vertical
 
+      // This ensures the number of characters stays within reasonable bounds
+      charsPerLine = Math.max(10, Math.min(charsPerLine, 30));
+      
+      // This splits the text into chunks based on charsPerLine
+      let displayText = [];
+      for (let i = 0; i < element.name.length; i += charsPerLine) {
+        displayText.push(element.name.slice(i, i + charsPerLine));
+      }
+      
       let fontSize = element.properties.get('fontSize') || defaultFontSize;
       let textColour = element.properties.get('textColor') || defaultColor;
       
@@ -376,24 +395,16 @@ function createElement() {
       };
 
       let textRotation = 0;
-      let textLength = width; //default to width
-      let rotation = ((element.rotation % 360) + 360) % 360;
-
       if (rotation >= 0 && rotation < 45) {
         textRotation = 0;
-        textLength = width;
       } else if (rotation >= 45 && rotation <= 120) {
         textRotation = 90;
-        textLength = depth * 0.8;
       } else if (rotation >= 235 && rotation <= 310) {
         textRotation = 270;
-        textLength = depth * 0.8;
       } else if (rotation > 310 && rotation <= 359) {
         textRotation = 0;
-        textLength = width;
       } else {
         textRotation = 180;
-        textLength = width;
       }
 
       return (
@@ -401,10 +412,14 @@ function createElement() {
           <rect key='1' x='0' y='0' width={width} height={depth} style={style} />
           <text key='2' x='0' y='0'
                 transform={`translate(${width/2}, ${depth/2}) scale(1,-1) rotate(${textRotation})`}
-                style={{textAnchor: 'middle', fontSize: `${fontSize}px`, fill: textColour}}
-                textLength={textLength * 0.95} // Set to slightly less than width to add some padding
-                lengthAdjust="spacingAndGlyphs">
-            {element.name}
+                style={{textAnchor: 'middle', fontSize: `${fontSize}px`, fill: textColour}}>
+            {displayText.map((chunk, index) => (
+              <tspan key={index} 
+                     x="0" 
+                     dy={index === 0 ? "0" : "1.2em"}>
+                {chunk}
+              </tspan>
+            ))}
           </text>
         </g>
       );

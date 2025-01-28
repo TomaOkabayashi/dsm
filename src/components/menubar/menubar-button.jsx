@@ -19,34 +19,37 @@ const STYLE = {
 
 const STYLE_TOOLTIP = {
   position: 'absolute',
-  width: '140px',
-  color: SharedStyle.COLORS.white,
-  background: SharedStyle.COLORS.black,
-  height: '30px',
-  lineHeight: '30px',
+  width: '100px',
+  color: 'transparent',
+  background: 'transparent',
+  height: '22px',
+  lineHeight: '22px',
   textAlign: 'center',
-  visibility: 'visible',
-  borderRadius: '6px',
-  opacity: '0.8',
+  visibility: 'hidden',
+  borderRadius: '4px',
+  opacity: '0',
   left: '100%',
   top: '50%',
-  marginTop: '-15px',
-  marginLeft: '15px',
+  marginTop: '-11px',
+  marginLeft: '5px',
   zIndex: '999',
-  fontSize: '12px'
+  fontSize: '11px'
 };
 
 const STYLE_TOOLTIP_PIN = {
   position: 'absolute',
   top: '50%',
   right: '100%',
-  marginTop: '-8px',
+  marginTop: '-4px',
+  marginRight: '-1px',
   width: '0',
   height: '0',
-  borderRight: '8px solid #000000',
-  borderTop: '8px solid transparent',
-  borderBottom: '8px solid transparent'
+  borderRight: '4px solid transparent',
+  borderTop: '4px solid transparent',
+  borderBottom: '4px solid transparent'
 };
+
+// both the tooltip styles are set as transparent and invisible right now
 
 export default class MenubarButton extends Component {
 

@@ -3,9 +3,9 @@ import * as React from "react";
 function CompanyLogo (){
     return (
         <div style={{
-            marginTop: '4px'
+            marginTop: '2.3px'
         }}>
-            <svg width="46" height="46" viewBox="0 0 107 106" fill="none">
+            <svg width="52" height="52" viewBox="0 0 107 106" fill="none">
             <path d="M107 0H0V106H107V0Z" fill="#444088"/>
             <path d="M20.6515 47.8568H26.8931L21.7928 61.1782H15.5868L20.6515 47.8568Z" fill="white"/>
             <path d="M24.0035 61.1782H29.7815L31.8502 55.5354L33.7405 61.1782H39.3045L44.2622 47.8568H38.4842L36.3085 53.8211L34.4895 47.8568H28.9612L24.0035 61.1782Z" fill="white"/>
