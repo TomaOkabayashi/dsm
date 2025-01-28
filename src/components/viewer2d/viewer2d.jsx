@@ -161,18 +161,27 @@ export default function Viewer2D(
 
     if (mode === constants.MODE_IDLE) {
       let elementData = extractElementData(event.target);
-      if (!elementData || !elementData.selected) return;
+      if (!elementData) return;
 
       switch (elementData.prototype) {
         case 'lines':
+          if (!elementData.selected) {
+            linesActions.selectLine(elementData.layer, elementData.id);
+          }
           linesActions.beginDraggingLine(elementData.layer, elementData.id, x, y, state.snapMask);
           break;
 
         case 'vertices':
+          if (!elementData.selected) {
+            verticesActions.selectVertex(elementData.layer, elementData.id);
+          }
           verticesActions.beginDraggingVertex(elementData.layer, elementData.id, x, y, state.snapMask);
           break;
 
         case 'items':
+          if (!elementData.selected) {
+            itemsActions.selectItem(elementData.layer, elementData.id);
+          }
           if (elementData.part === 'rotation-anchor')
             itemsActions.beginRotatingItem(elementData.layer, elementData.id, x, y);
           else
@@ -180,6 +189,9 @@ export default function Viewer2D(
           break;
 
         case 'holes':
+          if (!elementData.selected) {
+            holesActions.selectHole(elementData.layer, elementData.id);
+          }
           holesActions.beginDraggingHole(elementData.layer, elementData.id, x, y);
           break;
 

@@ -5,7 +5,11 @@ import * as SharedStyle from '../../shared-style';
 const STYLE = {
   color: SharedStyle.COLORS.white,
   fontWeight: 'bold',
-  fontSize: '12px'
+  fontSize: '13px',
+  marginLeft: '-20px',
+  marginBottom: '15px',
+  position: 'relative',
+  flexShrink: 0,
 };
 
 export default function ContentTitle({children, style = {}, ...rest}) {

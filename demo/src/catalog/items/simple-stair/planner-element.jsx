@@ -5,7 +5,7 @@ import convert from 'convert-units';
 
 export default {
   name: "simple-stair",
-  prototype: "items",
+  prototype: "holes",
 
   info: {
     title: "simple stair",

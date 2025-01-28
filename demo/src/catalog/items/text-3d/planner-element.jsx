@@ -10,7 +10,7 @@ const defaultColor = '#000000';
 
 export default {
   name: 'text',
-  prototype: 'items',
+  prototype: 'holes',
 
   info: {
     tag: ['text'],

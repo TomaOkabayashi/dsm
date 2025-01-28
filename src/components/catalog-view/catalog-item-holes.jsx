@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import {FaPlusCircle as IconAdd} from 'react-icons/fa';
 import * as SharedStyle from '../../shared-style';
 
+// This one thing is for the Loading Bay Access Tool
+
 const STYLE_BOX = {
   width: '14em',
   height: '14em',
@@ -115,12 +117,6 @@ export default class CatalogItemHoles extends Component {
     let element = this.props.element;
 
     switch (element.prototype) {
-      case 'lines':
-        this.context.linesActions.selectToolDrawingLine(element.name);
-        break;
-      case 'items':
-        this.context.itemsActions.selectToolDrawingItem(element.name);
-        break;
       case 'holes':
         this.context.holesActions.selectToolDrawingHole(element.name);
         break;

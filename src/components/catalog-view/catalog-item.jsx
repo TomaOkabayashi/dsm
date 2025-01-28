@@ -3,109 +3,67 @@ import PropTypes from 'prop-types';
 import {FaPlusCircle as IconAdd} from 'react-icons/fa';
 import * as SharedStyle from '../../shared-style';
 
-const STYLE_BOX = {
-  width: '8em', 
-  height: '8em',  
-  padding: '0.3em', // Reduced padding
-  background: '#f7f7f9',
-  border: '1px solid #e1e1e8',
-  cursor: 'pointer',
+// This is the template for the containers that come from the CSV
+
+const COLUMN_MIN_WIDTHS = {
+  dest: '55px',      // DEST
+  con: '55px',       // CON
+  chkd: '55px',      // CHKD
+  container: '115px', // Hu/Container
+  desc: '265px',     // Packaging Mat Desc
+  length: '35px',    // L
+  width: '35px',     // W
+  height: '35px',    // H
+  tare: '50px',      // Tare
+  vgm: '35px',       // VGM
+  classCode: '65px'  // Class Code
+};
+
+const container_position = {
+  marginLeft: '1.1em',
+}
+
+const STYLE_GRID_CELL = {
+  width: 'auto',
+  minWidth: '900px',
+  padding: '0.4em',
+  background: SharedStyle.MATERIAL_COLORS[500].white_grey,
+  border: `1px solid ${SharedStyle.MATERIAL_COLORS[500].white_grey}`,
   position: 'relative',
-  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', // Reduced shadow
+  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
   borderRadius: '2px',
-  transition: 'all .15s ease-in-out',
-  WebkitTransition: 'all .15s ease-in-out',
-  alignSelf: 'start',
-  justifySelf: 'start',
+  display: 'grid',
+  fontSize: '0.9em',
+  fontWeight: 'bold',
+  gridTemplateColumns: `minmax(${COLUMN_MIN_WIDTHS.dest}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.con}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.chkd}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.container}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.desc}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.length}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.width}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.height}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.tare}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.vgm}, max-content)
+                       minmax(${COLUMN_MIN_WIDTHS.classCode}, max-content)`,
 };
 
-const STYLE_BOX_HOVER = {
-  ...STYLE_BOX,
-  background: SharedStyle.SECONDARY_COLOR.main
-};
-
-const STYLE_TITLE = {
-  width:'100%',
-  textAlign:'center',
-  display:'block',
-  marginBottom:'.5em',
-  textTransform: 'capitalize'
-};
-
-const STYLE_TITLE_HOVER = {
-  ...STYLE_TITLE,
-  color:SharedStyle.COLORS.white
-};
-
-const STYLE_IMAGE_CONTAINER = {
-  width: '100%',
-  height: '8em',
-  position:'relative',
-  overflow:'hidden',
-  border: 'solid 1px #e6e6e6',
-  padding:0,
-  margin:0,
-  marginBottom: '5px'
-};
-
-const STYLE_IMAGE = {
-  position:'absolute',
-  background: '#222',
-  width: '100%',
-  height: '100%',
-  backgroundSize: 'contain',
-  backgroundPosition:'50% 50%',
-  backgroundColor:SharedStyle.COLORS.white,
-  backgroundRepeat:'no-repeat',
-  transition: 'all .2s ease-in-out'
-};
-
-const STYLE_IMAGE_HOVER = {
-  ...STYLE_IMAGE,
-  transform: 'scale(1.2)'
-};
-
-const STYLE_PLUS_HOVER = {
-  marginTop:'1.5em',
-  color: SharedStyle.SECONDARY_COLOR.main,
-  fontSize: '2em',
-  opacity: '0.7',
-  width: '100%'
-};
-
-const STYLE_DESCRIPTION = {
-  display: 'block',
-  display: '-webkit-box',
-  height: '2em',
-  margin: '0 auto',
-  fontSize: '0.75em',
-  fontStyle:'italic',
-  lineHeight: '1em',
-  WebkitLineClamp: '2',
-  WebkitBoxOrient: 'vertical',
+const CELL_STYLE = {
+  padding: '0.3em',
+  whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-};
-
-const STYLE_TAGS = {
-  listStyle: 'none',
-  margin: '0px',
-  padding: '0px',
-  fontSize: '11px',
-  marginBottom: '3px'
-};
-
-const STYLE_TAG = {
-  display: 'inline-block',
-  background: '#337ab7',
-  color: SharedStyle.COLORS.white,
-  padding: '1px 4px',
-  marginRight: '3px',
-  borderRadius: '3px'
+  height: '25px',
+  width: '100%',
+  borderRight: 'solid 2px #000000',
+  maxWidth: 'max-content',
+  minWidth: '100%',        // Force minimum width to match column
+  display: 'block',        // Changed to block for better text handling
+  whiteSpace: 'nowrap',    // Keep text on one line
+  textAlign: 'left' 
 };
 
 export default class CatalogItem extends Component {
-
   constructor(props) {
     super(props);
     this.state = {hover: false};
@@ -113,7 +71,6 @@ export default class CatalogItem extends Component {
 
   select() {
     let element = this.props.element;
-
     switch (element.prototype) {
       case 'lines':
         this.context.linesActions.selectToolDrawingLine(element.name);
@@ -125,32 +82,44 @@ export default class CatalogItem extends Component {
         this.context.holesActions.selectToolDrawingHole(element.name);
         break;
     }
-
     this.context.projectActions.pushLastSelectedCatalogElementToHistory(element);
   }
 
   render() {
     let element = this.props.element;
     let hover = this.state.hover;
-
+    let metadata = element.info.metadata || {};
+    let originalDimensions = metadata.originalDimensions || {};
+  
+    // Create array of metadata
+    const containerMetadata = [
+      metadata.destination,
+      metadata.container,
+      metadata.chkd,
+      metadata.containerID,
+      metadata.description,
+      originalDimensions.length,
+      originalDimensions.width,
+      originalDimensions.height,
+      metadata.tare,
+      metadata.vgm,
+      metadata.classCode
+    ];
+  
     return (
-      <div
-        style={hover ? STYLE_BOX_HOVER : STYLE_BOX}
-        onClick={e => this.select()}
-        onMouseEnter={e => this.setState({hover: true})}
-        onMouseLeave={e => this.setState({hover: false})}
-      >
-        <b style={ !hover ? STYLE_TITLE : STYLE_TITLE_HOVER }>{element.info.title}</b>
-        {/* code for images on the items */}
-        <div style={ STYLE_IMAGE_CONTAINER }>
-          <div style={{...( !hover ? STYLE_IMAGE: STYLE_IMAGE_HOVER ), backgroundImage: 'url(' + element.info.image + ')'}}>
-            { hover ? <IconAdd style={STYLE_PLUS_HOVER} /> : null }
-          </div>
+      <div style={container_position}>
+        <div
+          style={hover ? {...STYLE_GRID_CELL, background: SharedStyle.SECONDARY_COLOR.main, color: SharedStyle.COLORS.white} : STYLE_GRID_CELL}
+          onClick={e => this.select()}
+          onMouseEnter={e => this.setState({hover: true})}
+          onMouseLeave={e => this.setState({hover: false})}
+        >
+          {containerMetadata.map((text, index) => (
+            <div key={index} style={CELL_STYLE}>
+              {text || ''}
+            </div>
+          ))}
         </div>
-        <ul style={STYLE_TAGS}>
-          {element.info.tag.map((tag, index) => <li style={STYLE_TAG} key={index}>{tag}</li>)}
-        </ul>
-        <div style={STYLE_DESCRIPTION}>{element.info.description}</div>
       </div>
     );
   }

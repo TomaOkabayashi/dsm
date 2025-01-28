@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import * as SharedStyle from '../../shared-style';
 import { FaPencilAlt, FaDoorOpen } from "react-icons/fa";
 
+// This one thing is for the Loading Bay Creator
+
 const STYLE_BOX = {
   width: '35px',
   height: '35px',
@@ -117,12 +119,6 @@ export default class CatalogItemTool extends Component {
     switch (element.prototype) {
       case 'lines':
         this.context.linesActions.selectToolDrawingLine(element.name);
-        break;
-      case 'items':
-        this.context.itemsActions.selectToolDrawingItem(element.name);
-        break;
-      case 'holes':
-        this.context.holesActions.selectToolDrawingHole(element.name);
         break;
     }
 

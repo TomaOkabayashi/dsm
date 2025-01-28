@@ -5,7 +5,7 @@ const material = new Three.MeshLambertMaterial({color: 0xf5f4f4});
 
 export default {
   name: 'square column',
-  prototype: 'items',
+  prototype: 'holes',
 
   info: {
     tag: ['structure'],

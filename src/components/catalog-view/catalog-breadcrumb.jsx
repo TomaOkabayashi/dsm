@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import {MdArrowBack as Arrow} from 'react-icons/md';
 import * as SharedStyle from '../../shared-style';
 
+// This is pretty much useless, some text thing that pops up when you click on a page item
+// This is not being used right now
+
 const breadcrumbStyle = {
   margin: '1.5em',
   display: 'flex'

@@ -291,14 +291,14 @@ function createElement() {
     destination: 'FPSO', // DEST
     container: 'CWAY', // CON
     containerID: 'AORU770101-2', // Hu/Container
-    description: 'BIN,GENERAL WASTE,3M3', // Packaging Mat Desc 
+    description: 'container,15ft,open Top,1/2 heightee', // Packaging Mat Desc 
     tare: '1,020', // Tare
     vgm: '1.0', // VGM
 
     originalDimensions: {
-      length: '8',  // Will be like 2.2 from Excel
-      width: '2.4',   // Will be like 2.0 from Excel
-      height: '2.6',  // Will be like 2.5 from Excel
+      length: '2.0',  // Will be like 2.2 from Excel
+      width: '1.5',   // Will be like 2.0 from Excel
+      height: '1.6',  // Will be like 2.5 from Excel
     },
 
     // Optional or potentially unknown fields - null
@@ -316,12 +316,14 @@ function createElement() {
       width: metadata.originalDimensions.width * 100,
       height: metadata.originalDimensions.height * 100,
       depth: metadata.originalDimensions.length * 100,
-    }
+    },
+    metadata: metadata  // Add the metadata object to info
   };
 
   const element = {
     name: info.containerID, // what shows up on sidebar. Properties: [name] hashcode. Also shows up on the recent searches on catalog
     prototype: 'items',
+    type: 'container',
     metadata,
     info,
     properties: {

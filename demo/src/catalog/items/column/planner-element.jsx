@@ -66,7 +66,7 @@ function makeObjectMinLOD(RADIUS,HEIGHT) {
 }
 export default {
   name: 'round column',
-  prototype: 'items',
+  prototype: 'holes', //Changed all the prototypes because the containers use the prototype 'items'
 
   info: {
     tag: ['structure'],
