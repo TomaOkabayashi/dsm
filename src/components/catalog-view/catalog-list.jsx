@@ -480,8 +480,27 @@ export default class CatalogList extends Component {
           </div> */}
           {/* OI READ THIS might be useful for the bottom bar below the catalog yeah? */}
 
-          {/* Windows and doors - Searchable */}
-          <div style={itemsStyle}>
+
+          {/* The last two chunks below
+          There are three folders; windows, doors, miscellaneous. They each have their respective 
+          elements it is super unfinished, the css layout is really bad. I do not have time to 
+          fix it right now.
+
+          To fix this, you need to:
+          1. Go to demo/src/catalog/mycatalog.js (where other categories like 'windows' and 
+          'doors' are registered) and add:
+            eg. catalog.registerCategory('containers', 'Containers', [/* your container elements *]); */}
+        
+
+          {/* 2. Then in CatalogList.jsx, wrap your custom UI (Container Panel, Excel headers) in:
+            eg. {page === 'containers' && (
+                  // Your container UI elements here
+                )}
+          This will make your custom UI only show up in the containers category page, just like 
+          how the windows only show up in the windows category. */}
+
+          {/* the actual items in the folder */}
+          {/* <div style={itemsStyle}>
             {this.state.matchString === '' ? 
               elementsToDisplay
                 .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
@@ -489,16 +508,16 @@ export default class CatalogList extends Component {
             : this.state.matchedElements
                 .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
                 .map(elem => <CatalogItemHoles key={elem.name} element={elem}/>)}
-          </div>
+          </div> */}
 
-          {/* The folders of different categories - Searchable */}
-          <div style={itemsStyleFolder}>
+          {/* The folders of different categories; window, door, misc - Searchable */}
+          {/* <div style={itemsStyleFolder}>
             {this.state.matchString === '' ? 
               categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>)
             : this.state.matchedElements
                 .filter(elem => elem.prototype !== 'lines' && elem.name !== 'gate')
                 .map(elem => <CatalogItem key={elem.name} element={elem}/>)}
-          </div>
+          </div> */}
           
         </ContentContainer>
         

@@ -60,7 +60,7 @@ export default class CatalogContainerPanel extends Component {
                     ))}
                 </div>
             );
-      
+  
         case 'csv':
           return csvData.map((row, index) => (
             <div key={index} style={STYLE_GRID_CELL}>

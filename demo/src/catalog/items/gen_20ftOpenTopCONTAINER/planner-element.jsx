@@ -270,19 +270,8 @@ function makeDoorStructure() {
 //------------DOOR-----------
 
 
-const defaultFontSize = 20;
+const defaultFontSize = 30;
 const defaultColor = '#000000';
-
-function formatDisplayText(text) {
-  if (!text) return [];
-  
-  // Split text into chunks of 21 characters
-  let chunks = [];
-  for (let i = 0; i < text.length; i += 21) {
-    chunks.push(text.slice(i, i + 21));
-  }
-  return chunks;
-}
 
 function createElement() {
   const metadata = {
@@ -381,10 +370,26 @@ function createElement() {
       // figure this out later
     },
     render2D: (element, layer, scene) => {
-      let displayText = formatDisplayText(element.name);
       let width = element.properties.getIn(['width', 'length']);
       let depth = element.properties.getIn(['depth', 'length']);
+      let rotation = ((element.rotation % 360) + 360) % 360;
+      
+      // Calculate chars per line based on rotation
+      let charsPerLine = (rotation >= 45 && rotation <= 120) || (rotation >= 235 && rotation <= 310) 
+          // Larger divisor = fewer characters per line
+          // Smaller divisor = more characters per line
+        ? Math.floor(depth / 17) // When container is sideways
+        : Math.floor(width / 17); // When container is vertical
 
+      // This ensures the number of characters stays within reasonable bounds
+      charsPerLine = Math.max(10, Math.min(charsPerLine, 30));
+      
+      // This splits the text into chunks based on charsPerLine
+      let displayText = [];
+      for (let i = 0; i < element.name.length; i += charsPerLine) {
+        displayText.push(element.name.slice(i, i + charsPerLine));
+      }
+      
       let fontSize = element.properties.get('fontSize') || defaultFontSize;
       let textColour = element.properties.get('textColor') || defaultColor;
       
@@ -395,24 +400,16 @@ function createElement() {
       };
 
       let textRotation = 0;
-      let textLength = width; //default to width
-      let rotation = ((element.rotation % 360) + 360) % 360;
-
       if (rotation >= 0 && rotation < 45) {
         textRotation = 0;
-        textLength = width;
       } else if (rotation >= 45 && rotation <= 120) {
         textRotation = 90;
-        textLength = depth * 0.8;
       } else if (rotation >= 235 && rotation <= 310) {
         textRotation = 270;
-        textLength = depth * 0.8;
       } else if (rotation > 310 && rotation <= 359) {
         textRotation = 0;
-        textLength = width;
       } else {
         textRotation = 180;
-        textLength = width;
       }
 
       return (
@@ -424,9 +421,7 @@ function createElement() {
             {displayText.map((chunk, index) => (
               <tspan key={index} 
                      x="0" 
-                     dy={index === 0 ? "0" : "1.2em"}
-                     textLength={textLength * 0.95}
-                     lengthAdjust="spacingAndGlyphs">
+                     dy={index === 0 ? "0" : "1.2em"}>
                 {chunk}
               </tspan>
             ))}
