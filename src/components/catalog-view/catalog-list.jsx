@@ -249,13 +249,17 @@ export default class CatalogList extends Component {
   }
 
   handleMouseDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
     this.setState({ isResizing: true });
     document.body.style.cursor = 'col-resize';
   }
 
   handleMouseMove(e) {
+    e.preventDefault();
+    e.stopPropagation();
     if (!this.state.isResizing) return;
-
+    
     const minWidth = 235;
     const maxWidth = 800;
     const newWidth = Math.min(Math.max(e.clientX - 1, minWidth), maxWidth); // call it placebo, it feels better doing a 1 offset
