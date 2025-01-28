@@ -66,20 +66,34 @@ const CELL_STYLE = {
 export default class CatalogItem extends Component {
   constructor(props) {
     super(props);
-    this.state = {hover: false};
+    this.state = {
+      hover: false,
+      mouseDown: false
+    };
   }
 
-  select() {
+  // The mouseUp is handled in viewer2d.jsx at onMouseUp
+  componentDidMount() {
+    document.addEventListener('mouseup-planner-event', this.handleGlobalMouseUp);
+  }
+
+  componentDidMount() {
+    document.removeEventListener('mouseup-planner-event', this.handleGlobalMouseUp);
+  }
+
+  handleGlobalMouseUp() {
+    this.setState({ mouseDown: false });
+  }
+
+  select(e) {
+    // Prevent text selection and scrolling
+    e.preventDefault();
+    e.stopPropagation();
+    
     let element = this.props.element;
     switch (element.prototype) {
-      case 'lines':
-        this.context.linesActions.selectToolDrawingLine(element.name);
-        break;
       case 'items':
         this.context.itemsActions.selectToolDrawingItem(element.name);
-        break;
-      case 'holes':
-        this.context.holesActions.selectToolDrawingHole(element.name);
         break;
     }
     this.context.projectActions.pushLastSelectedCatalogElementToHistory(element);
@@ -109,8 +123,11 @@ export default class CatalogItem extends Component {
     return (
       <div style={container_position}>
         <div
-          style={hover ? {...STYLE_GRID_CELL, background: SharedStyle.SECONDARY_COLOR.main, color: SharedStyle.COLORS.white} : STYLE_GRID_CELL}
-          onClick={e => this.select()}
+          style={(hover || this.state.mouseDown) ? {...STYLE_GRID_CELL, background: SharedStyle.SECONDARY_COLOR.main, color: SharedStyle.COLORS.white} : STYLE_GRID_CELL}
+          onMouseDown={e => {
+            this.setState({mouseDown: true});
+            this.select(e);
+          }}
           onMouseEnter={e => this.setState({hover: true})}
           onMouseLeave={e => this.setState({hover: false})}
         >
