@@ -280,7 +280,7 @@ function createElement() {
     destination: 'FPSO', // DEST
     container: 'CWAY', // CON
     containerID: 'AORU770101-2', // Hu/Container
-    description: 'container,15ft,open Top,1/2 heightee', // Packaging Mat Desc 
+    description: 'container,15ft,open Top,1/2 height', // Packaging Mat Desc 
     tare: '1,020', // Tare
     vgm: '1.0', // VGM
 
@@ -312,7 +312,7 @@ function createElement() {
   const element = {
     name: info.containerID, // what shows up on sidebar. Properties: [name] hashcode. Also shows up on the recent searches on catalog
     prototype: 'items',
-    type: 'container',
+    type: 'csv',
     metadata,
     info,
     properties: {

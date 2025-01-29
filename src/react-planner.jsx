@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import * as SharedStyle from './shared-style';
 
 import Translator from './translator/translator';
 import Catalog from './catalog/catalog';
@@ -73,17 +74,33 @@ const mainContentStyle = {
 const catalogListStyle = {
   position: 'relative',
 };
+
 const contentStyle = {
-  flex: '0 0 auto'
-};
-const sidebarStyle = {
-  position: 'fixed',
-  right: 0,
-  top: menubarH + utilitybarH,
-  width: sidebarW,
-  height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`
+  flex: '1 1 auto',
+  position: 'relative',
+  overflow: 'hidden'
 };
 
+const sidebarStyle = {
+  width: sidebarW,
+  height: '100%',
+  backgroundColor: SharedStyle.PRIMARY_COLOR.main,
+  borderLeft: `1px solid ${SharedStyle.COLORS.black}`,
+  zIndex: 10,
+  overflowY: 'auto'
+};
+
+const bottomSidebarStyle = {
+  position: 'absolute',
+  bottom: footerBarH,
+  left: 0,
+  right: sidebarW,
+  height: '200px', // You can adjust this height
+  backgroundColor: SharedStyle.PRIMARY_COLOR.main,
+  borderTop: `1px solid ${SharedStyle.COLORS.black}`,
+  zIndex: 9,
+  overflowY: 'auto'
+};
 
 class ReactPlanner extends Component {
 
@@ -119,11 +136,12 @@ class ReactPlanner extends Component {
 
     const catalogWidth = extractedState.get('catalogWidth') || 200;
 
-    let catalogW = catalogWidth;
+    // the dimensions are at the top of file
+    let catalogW = catalogWidth - 10; //some overhead
     let catalogH = height - footerBarH - menubarH - utilitybarH;
     let contentW = width - sidebarW - catalogW;
     let in3DMode = width - sidebarW;
-    //let toolbarH = height - footerBarH - menubarH - utilitybarH;
+    // let toolbarH = height - footerBarH - menubarH - utilitybarH;
     let contentH = height - footerBarH - menubarH - utilitybarH;
     let sidebarH = height - footerBarH - menubarH - utilitybarH;
 
@@ -147,18 +165,23 @@ class ReactPlanner extends Component {
 
         {/* main content */}
         <div style={mainContentStyle}>
-          {/*<Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} />*/}
+          {/* <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} /> */}
 
           {/* catalog on left side */}
           <div style={catalogListStyle}>
             <CatalogList width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? 0 : catalogW} 
-            height={catalogH + 30} state={extractedState} {...props} />
+            height={catalogH} state={extractedState} {...props} />
           </div>
 
           {/* the grid */}
           <div style={contentStyle}>
             <Content width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? in3DMode : contentW} 
             height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
+            
+            {/* bottom sidebar */}
+            {/* <div style={bottomSidebarStyle}>
+              <Sidebar width="100%" height="100%" state={extractedState} {...props} />
+            </div> */}
           </div>
 
           {/* right sidebar */}

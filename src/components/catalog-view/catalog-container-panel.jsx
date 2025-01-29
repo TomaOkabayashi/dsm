@@ -61,16 +61,34 @@ export default class CatalogContainerPanel extends Component {
                 </div>
             );
   
+        // case 'csv':
+        //   return csvData.map((row, index) => (
+        //     <div key={index} style={STYLE_GRID_CELL}>
+        //       {Object.values(row).map((value, i) => (
+        //         <div key={i} style={CELL_STYLE}>
+        //           {value}
+        //         </div>
+        //       ))}
+        //     </div>
+        //   ));
         case 'csv':
-          return csvData.map((row, index) => (
-            <div key={index} style={STYLE_GRID_CELL}>
-              {Object.values(row).map((value, i) => (
-                <div key={i} style={CELL_STYLE}>
-                  {value}
+            const csvElements = elements.filter(elem => elem.type === 'csv');
+            return (
+                <div style={{ 
+                    display: 'grid',
+                    gridTemplateColumns: '160px 160px',  // Fixed width columns
+                    gap: '0.2em',
+                    overflowX: 'auto'  // Allows horizontal scroll if container is too small
+                  }}>
+                {csvElements.map((elem) => (
+                    <CatalogItem 
+                        key={elem.name} 
+                        element={elem}
+                    />
+                    ))}
                 </div>
-              ))}
-            </div>
-          ));
+            );
+  
       
         default:
           return null;

@@ -30,7 +30,8 @@ export const MATERIAL_COLORS = {
 };
 
 export const PRIMARY_COLOR = {
-  main: '#353535', // main layout
+  main: '#2E2E2E', // main layout
+  oldMain: '#353535', // main layout
   alt: '#2E2F33', // color of the side bar (only two thirds of it for somereason)
   icon: '#ffffff', // colour of icons on toolbar
   border: '1px solid #555',

@@ -22,15 +22,6 @@ const wrapperStyle = {
   display: 'flex'
 };
 
-const containerStyle = {
-  flex: '1',
-  height: '100%',
-  backgroundColor: SharedStyle.PRIMARY_COLOR.main,
-  overflowY: 'auto',
-  overflowX: 'auto',
-  paddingRight: '15px'
-};
-
 const toolBarBorder = {
   position: 'absolute',
   width: '2px',
@@ -38,6 +29,11 @@ const toolBarBorder = {
   left: 35,
   backgroundColor: SharedStyle.COLORS.black,
   zIndex: 998
+};
+
+const headerContainer = {
+  display: 'flex',
+  alignItems: 'center',
 };
 
 // Access tool and line tool
@@ -51,18 +47,9 @@ const toolStyle = {
   marginLeft: '-115px',
 };
 
-const itemsStyle = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(14em, 1fr))',
-  gridGap: '10px',
-  marginTop: '1em'
-};
-
-const itemsStyleFolder = {
-  display: 'flex',
-  gap: '3px',
-  marginTop: '22em',
-  alignItems: 'flex-start'
+const gateHeaderContainer = {
+  ...headerContainer,
+  marginTop: '-5px'
 };
 
 const searchContainer = {
@@ -72,18 +59,22 @@ const searchContainer = {
   height: '2em',
   background: '#222222',
   border: '1px solid #e1e1e8',
-  cursor: 'pointer',
   position: 'flex',
   boxShadow: '0 1px 6px 0 rgba(0, 0, 0, 0.11), 0 1px 4px 0 rgba(0, 0, 0, 0.11)',
   borderRadius: '2px',
-  transition: 'all .2s ease-in-out',
-  WebkitTransition: 'all .2s ease-in-out',
   marginBottom: '1em',
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '3px',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
+};
+
+const searchIconStyle = {
+  fontSize: '1.3em',
+  marginLeft: '2px',
+  color: SharedStyle.COLORS.white,
+  flexShrink: 0
 };
 
 const searchText = {
@@ -106,11 +97,22 @@ const searchInput = {
   padding: '0 5px'
 };
 
+
 const historyContainer = {
-  ...searchContainer,
-  padding: '0.2em 0.625em',
-  marginLeft: '29px',
   color: SharedStyle.COLORS.white,
+  height: '2em',
+  marginLeft: '29px',
+  background: '#222222',
+  border: '1px solid #e1e1e8',
+  position: 'flex',
+  boxShadow: '0 1px 6px 0 rgba(0, 0, 0, 0.11), 0 1px 4px 0 rgba(0, 0, 0, 0.11)',
+  borderRadius: '2px',
+  marginBottom: '1em',
+  display: 'flex',
+  alignItems: 'center',
+  paddingLeft: '3px',
+  whiteSpace: 'nowrap',
+  overflowX: 'auto',
 };
 
 const historyElementStyle = {
@@ -128,13 +130,6 @@ const historyElementStyle = {
   padding: '0 0.7em'
 };
 
-const searchIconStyle = {
-  fontSize: '1.3em',
-  marginLeft: '2px',
-  color: SharedStyle.COLORS.white,
-  flexShrink: 0
-};
-
 const lineBreakStyle = {
   width: '100%',
   height: '2px',
@@ -144,20 +139,50 @@ const lineBreakStyle = {
   marginLeft: '1.4em',
 };
 
-const headerContainer = {
-  display: 'flex',
-  alignItems: 'center',
+const container_position = {
+  marginLeft: '1.2em',
+}
+
+const tempGridCell = {
+  width: 'auto',
+  minWidth: '300px',
+  background: SharedStyle.MATERIAL_COLORS[500].blue_grey,
+  border: `1px solid ${SharedStyle.MATERIAL_COLORS[500].white_grey}`,
+  position: 'relative',
+  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+  borderRadius: '2px',
+  fontSize: '1em',
+  fontWeight: 'bold',
 };
 
-const gateHeaderContainer = {
-  ...headerContainer,
-  marginTop: '-5px'
+const tempCell = {
+  padding: '0.3em',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  height: '25px',
+  minWidth: '50px',
+  maxWidth: 'max-content',
+  marginLeft: '0.3em',
+};
+
+
+const itemsStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(14em, 1fr))',
+  gridGap: '10px',
+  marginTop: '1em'
+};
+
+const itemsStyleFolder = {
+  display: 'flex',
+  gap: '3px',
+  marginTop: '22em',
+  alignItems: 'flex-start'
 };
 
 // Container for head row of items with titles
-const container_position = {
-  marginLeft: '1.1em',
-}
+
 
 const COLUMN_MIN_WIDTHS = {
   dest: '55px',      // DEST
@@ -373,35 +398,42 @@ export default class CatalogList extends Component {
       <div key={ind} style={historyElementStyle} title={el.name} onClick={() => this.select(el) }>{el.name}</div>
     );
 
+    // the entire left sidebar
+    const adjustableContainerStyle = {
+      ...this.props.style,
+      width: this.state.width - 13,
+      flex: '1',
+      height: '100%',
+      backgroundColor: SharedStyle.PRIMARY_COLOR.main,
+      borderRight: `solid 1px ${SharedStyle.COLORS.black}`,
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      paddingRight: '15px',
+      position: 'relative'
+    };
+
     // Render css of the resize bar
     const resizeHandleStyle = {
-      width: '13px',
+      width: '4px',
       height: '100%',
       cursor: 'col-resize',
-      borderLeft: `solid 1px ${SharedStyle.COLORS.black}`,
-      backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.MATERIAL_COLORS[500].grey : SharedStyle.PRIMARY_COLOR.alt,
+      backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
       transition: 'background-color 0.2s',
       zIndex: 998,
     };
 
-    const combinedContainerStyle = {
-      ...containerStyle,
-      ...this.props.style,
-      width: this.state.width - 13,
-      position: 'relative'
-    };
-
     return (
       <div style={wrapperStyle}>
-        <ContentContainer width={this.state.width - 13} height={this.props.height} style={combinedContainerStyle}>
+        <ContentContainer width={this.state.width - 13} height={this.props.height} style={adjustableContainerStyle}>
           
+          {/* Black tool border, far left side*/}
           <div style={toolBarBorder}></div>
           
           <div style={headerContainer}>
-            {/* Lines - the loading bay creator - Always visible, not searchable*/}
+            {/* The loading bay creator - Always visible, not searchable*/}
             <div style={toolStyle}>
               {[
-                turnBackButton, // Only put one turnBackButton for single render
+                turnBackButton, // Only put one turnBackButton for single render. Used for the windows, door, misc
                 elementsToDisplay
                   .filter(elem => elem.prototype === 'lines')
                   .map(elem => <CatalogItemTool key={elem.name} element={elem} icon={FaPencilAlt}/>)
@@ -412,15 +444,15 @@ export default class CatalogList extends Component {
 
           {/* {breadcrumbComponent} could be use case for this in future. The render of this is commented out in the catalog-turn-back-page-item.jsx*/}
           
-          {/* Access tool - not searchable */}
           <div style={gateHeaderContainer}>
-            {/* Holes - the access tool */}
+            {/* Access tool - not searchable */}
             <div style={toolStyle}>
               {elementsToDisplay
                 .filter(elem => elem.name === 'gate')
                 .map(elem => <CatalogItemTool key={elem.name} element={elem} icon={FaDoorOpen}/>)}
             </div>
 
+            {/* Search bar */}
             <div style={searchContainer}>
               <MdSearch style={searchIconStyle}/>
               <span style={searchText}>{this.context.translator.t('Search')}</span>
@@ -428,6 +460,7 @@ export default class CatalogList extends Component {
             </div>
           </div>
 
+          {/* Recent bar */}
           { selectedHistory.size ? (
             <div style={historyContainer}>
               <span>{this.context.translator.t('Recent | ')}</span>
@@ -435,34 +468,44 @@ export default class CatalogList extends Component {
             </div>
           ) : null}
 
-
-          {/* Visible blue linebreak */}
           <div style={lineBreakStyle} />
 
-          {/* Container Selection Panel */}
-          {/* For current catalog items: */}
+          {/* Generic Containers Panel */}
           <CatalogContainerPanel 
             dataType="generic"
             title="Generic Containers"
             elements={elementsToDisplay}
           />
 
-          {/* In the future, for CSV data: */}
-          {/* <CatalogContainerPanel 
-            dataType="csv"
-            title="CSV Import"
-            csvData={yourCsvData}
-          /> */}
+          <div style={lineBreakStyle} />
 
+          {/* Manifest title bar */}
+          <div style={container_position}>
+            <div style={tempGridCell}>
+              {['Manifest'].map((text, index) => (
+                <div key={index} style={tempCell}>
+                  {text}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <CatalogContainerPanel 
+            dataType="csv" //make this csv
+            title="Brewster.csv"
+            elements={elementsToDisplay}
+          />
+          
           <div style={lineBreakStyle} />
 
 
 
 
 
+          {/* Excel sheets header 
+          put this in the csv panel container */}
 
-          {/* Excel sheets header */}
-          <div style={container_position}>
+          {/* <div style={container_position}>
             <div style={HEADER_GRID_CELL}>
               {['DEST','CON','CHKD','Hu/Container','Packaging Mat Desc','L','W','H','Tare','VGM','Class Code'].map((text, index) => (
                 <div key={index} style={HEADER_CELL}>
@@ -470,7 +513,7 @@ export default class CatalogList extends Component {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
           
           {/* Items; containers - Searchable
           <div style={itemsStyle}>
@@ -525,6 +568,7 @@ export default class CatalogList extends Component {
           
         </ContentContainer>
         
+        {/* Adjustable size border */}
         <div
           style={resizeHandleStyle}
           onMouseDown={this.handleMouseDown}
