@@ -292,9 +292,9 @@ function createElement() {
     description: metadata.description, // The description shown in the catalog
     image: null,
     dimensions: {
-      width: metadata.originalDimensions.width * 100,
-      height: metadata.originalDimensions.height * 100,
-      depth: metadata.originalDimensions.length * 100,
+      width: Math.trunc(metadata.originalDimensions.width * 100),
+      height: Math.trunc(metadata.originalDimensions.height * 100),
+      depth: Math.round(metadata.originalDimensions.length * 100), // without round its 459.9999
     },
     metadata: metadata  // Add the metadata object to info
   };

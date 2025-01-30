@@ -302,9 +302,9 @@ function createElement() {
     image: null,
     containerID: metadata.containerID,
     dimensions: {
-      width: metadata.originalDimensions.width * 100,
-      height: metadata.originalDimensions.height * 100,
-      depth: metadata.originalDimensions.length * 100,
+      width: Math.trunc(metadata.originalDimensions.width * 100),
+      height: Math.trunc(metadata.originalDimensions.height * 100),
+      depth: Math.trunc(metadata.originalDimensions.length * 100),
     },
     metadata: metadata  // Add the metadata object to info
   };

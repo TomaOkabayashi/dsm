@@ -2,28 +2,45 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FormNumberInput from '../../../style/form-number-input';
 import FormTextInput from '../../../style/form-text-input';
+import * as SharedStyle from '../../../../shared-style';
 
 const tableStyle = {width: '100%', borderSpacing: '2px 0', marginBottom: '3px'};
 const firstTdStyle = {width: '5.45em', fontSize: '1.1em', textTransform:'capitalize'};
 const inputStyle = { textAlign: 'left' };
+const nameStyle = {
+  display: 'inline-block',
+  width: '100%',
+  padding: '5px',
+  border: `1px solid ${SharedStyle.COLORS.black}`,
+  borderRadius: '2px',
+  backgroundColor: SharedStyle.COLORS.white,
+  color: SharedStyle.COLORS.black,
+  fontSize: '14px',
+  textAlign: 'left'
+};
 
 export default function ItemAttributesEditor({element, onUpdate, attributeFormData, state, ...rest}, {translator}) {
   let name = attributeFormData.has('name') ? attributeFormData.get('name') : element.name;
   let renderedX = attributeFormData.has('x') ? attributeFormData.get('x') : element.x;
   let renderedY = attributeFormData.has('y') ? attributeFormData.get('y') : element.y;
   let renderedR = attributeFormData.has('rotation') ? attributeFormData.get('rotation') : element.rotation;
+  let checkType = attributeFormData.has('type') ? attributeFormData.get('type') : element.type;
+
+  console.log('Element type:', element.type, 'Element:', element);
 
   return (
     <table style={tableStyle}>
       <tbody>
         <tr>
-          <td style={firstTdStyle}>{translator.t('Name')}</td>
+          <td style={firstTdStyle}>Name</td>
           <td>
-            <FormTextInput
+     
+              <FormTextInput
               value={name}
               onChange={event => onUpdate('name', event.target.value)}
               style={inputStyle}
             />
+            
           </td>
         </tr>
         <tr>

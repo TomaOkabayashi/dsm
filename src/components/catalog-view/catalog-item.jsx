@@ -70,14 +70,16 @@ export default class CatalogItem extends Component {
       hover: false,
       mouseDown: false
     };
+    this.handleGlobalMouseUp = this.handleGlobalMouseUp.bind(this);
   }
 
+  // Just so the background change when mouseDown reverts back to normal
   // The mouseUp is handled in viewer2d.jsx at onMouseUp
   componentDidMount() {
     document.addEventListener('mouseup-planner-event', this.handleGlobalMouseUp);
   }
 
-  componentDidMount() {
+  componentWillUnmount() {
     document.removeEventListener('mouseup-planner-event', this.handleGlobalMouseUp);
   }
 
