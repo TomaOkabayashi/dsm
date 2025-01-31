@@ -9,7 +9,7 @@ import PanelGroups from './panel-groups';
 import PanelLayerElements from './panel-layer-elements';
 import * as SharedStyle from '../../shared-style';
 import If from '../../utils/react-if';
-import ContentContainer from '../style/content-container';
+import SidebarContentContainer from '../style/sidebar-content-container';
 
 const wrapperStyle = {
   position: 'relative',
@@ -23,7 +23,6 @@ const STYLE = {
   display: 'block',
   overflowY: 'auto',
   overflowX: 'hidden',
-  borderRight: `solid 1px ${SharedStyle.COLORS.black}`,
 };
 
 const sortButtonsCb = (a, b) => {
@@ -47,7 +46,9 @@ export default class Sidebar extends Component {
     this.state = {
       width: props.width || 300,
       isResizing: false,
-      hovering: false
+      hovering: false,
+      initialX: null,
+      initialWidth: null
     };
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -79,13 +80,13 @@ export default class Sidebar extends Component {
     e.stopPropagation();
     if (!this.state.isResizing) return;
     
-    const minWidth = 235;
+    const minWidth = 280;
     const maxWidth = 800;
-    const newWidth = Math.min(Math.max(e.clientX - 1, minWidth), maxWidth);
+    // Calculate from right edge of window to mouse position
+    const newWidth = Math.min(Math.max(window.innerWidth - e.clientX, minWidth), maxWidth);
     
     this.setState({ width: newWidth });
-    // Update redux state
-    this.context.projectActions.setSidebarWidth(newWidth);
+    this.context.projectActions.updateSidebarWidth(newWidth);
   }
 
   handleMouseUp() {
@@ -139,25 +140,25 @@ export default class Sidebar extends Component {
     // the entire right sidebar
     const adjustableContainerStyle = {
       ...STYLE,
-      width: this.state.width - 13,
-      flex: '1',
+      width: this.state.width,
       height: '100%',
-      borderLeft: `solid 1px ${SharedStyle.COLORS.black}`,
+      
       overflowY: 'auto',
       overflowX: 'hidden',
-      paddingRight: '15px',
       position: 'relative'
     };
 
     const resizeHandleStyle = {
+      position: 'absolute',
+      left: 0,
+      top: 0,
       width: '4px',
       height: '100%',
       cursor: 'col-resize',
       backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
       transition: 'background-color 0.2s',
       zIndex: 998,
-      position: 'absolute',
-      left: '4px'
+      borderRight: `solid 1px ${SharedStyle.COLORS.black}`,
     };
 
     return (
@@ -170,20 +171,20 @@ export default class Sidebar extends Component {
           e.stopPropagation();
         }}
       >
-        <ContentContainer 
-          width={this.state.width - 13} 
+        <div
+          style={resizeHandleStyle}
+          onMouseDown={this.handleMouseDown}
+          onMouseOver={this.handleMouseOver}
+          onMouseOut={this.handleMouseOut}
+        />
+        <SidebarContentContainer 
+          width={this.state.width} 
           height={height} 
           style={adjustableContainerStyle}
           className="sidebar"
         >
-          <div
-            style={resizeHandleStyle}
-            onMouseDown={this.handleMouseDown}
-            onMouseOver={this.handleMouseOver}
-            onMouseOut={this.handleMouseOut}
-          />
           {sorter.sort(sortButtonsCb).map(mapButtonsCb)}
-        </ContentContainer>
+        </SidebarContentContainer>
       </div>
     );
   }

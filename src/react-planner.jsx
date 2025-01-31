@@ -83,7 +83,6 @@ const contentStyle = {
 const sidebarStyle = {
   height: '100%',
   backgroundColor: SharedStyle.PRIMARY_COLOR.main,
-  borderLeft: `1px solid ${SharedStyle.COLORS.black}`,
   zIndex: 10,
   overflowY: 'auto'
 };
@@ -132,7 +131,7 @@ class ReactPlanner extends Component {
     let mode = extractedState.get('mode');
 
     const catalogWidth = extractedState.get('catalogWidth') || 200;
-    const sidebarWidth = extractedState.get('sidebarWidth') || 300;
+    const sidebarWidth = extractedState.get('sidebarWidth') || 280;
 
     // the dimensions are at the top of file
     let catalogW = catalogWidth - 10; //some overhead
