@@ -164,6 +164,11 @@ export default class Sidebar extends Component {
       <div 
         style={wrapperStyle}
         onKeyDown={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          // Stop the click event from reaching the main container
+          // This prevents the blur effect when clicking within the sidebar
+          e.stopPropagation();
+        }}
       >
         <ContentContainer 
           width={this.state.width - 13} 

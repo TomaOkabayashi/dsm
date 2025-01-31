@@ -145,7 +145,15 @@ class ReactPlanner extends Component {
     let sidebarH = height - footerBarH - menubarH - utilitybarH;
 
     return (
-      <div style={{...wrapperStyle, height}}>
+      <div
+        style={{...wrapperStyle, height}}
+        onClick={() => {
+          // When clicking anywhere in the main container, blur any focused elements
+          if (document.activeElement) {
+            document.activeElement.blur();
+          }
+        }}
+      >
         
         {/* The company logo */}
         <div style={logobarStyle}>

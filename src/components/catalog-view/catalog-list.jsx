@@ -431,7 +431,14 @@ export default class CatalogList extends Component {
     }
 
     return (
-      <div style={wrapperStyle}>
+      <div 
+        style={wrapperStyle}
+        onClick={(e) => {
+          // stop the clicker event from react-planner reaching the container
+          // prevents blur effect
+          e.stopPropagation();
+        }}
+      >
         <ContentContainer width={this.state.width - 13} height={this.props.height} style={adjustableContainerStyle}>
           
           {/* Black tool border, far left side*/}
