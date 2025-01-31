@@ -289,7 +289,10 @@ export default class CatalogList extends Component {
     const maxWidth = 800;
     const newWidth = Math.min(Math.max(e.clientX - 1, minWidth), maxWidth); // call it placebo, it feels better doing a 1 offset
     
+    // Update local state
     this.setState({ width: newWidth });
+    // Update redux state
+    this.context.projectActions.updateCatalogWidth(newWidth);
   }
 
   handleMouseUp() {
@@ -422,6 +425,11 @@ export default class CatalogList extends Component {
       zIndex: 998,
     };
 
+    const preventEventBubbling = e => {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     return (
       <div style={wrapperStyle}>
         <ContentContainer width={this.state.width - 13} height={this.props.height} style={adjustableContainerStyle}>
@@ -453,10 +461,16 @@ export default class CatalogList extends Component {
             </div>
 
             {/* Search bar */}
-            <div style={searchContainer}>
+            <div
+              style={searchContainer}
+              onKeyDown={(e) => e.stopPropagation()} // capture events at the div level
+            >
               <MdSearch style={searchIconStyle}/>
               <span style={searchText}>{this.context.translator.t('Search')}</span>
-              <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
+              <input type="text" style={searchInput} 
+                onChange={( e ) => {this.matcharray( e.target.value ); 
+                }}
+              />
             </div>
           </div>
 
@@ -547,7 +561,7 @@ export default class CatalogList extends Component {
           how the windows only show up in the windows category. */}
 
           {/* the actual items in the folder */}
-          {/* <div style={itemsStyle}>
+          <div style={itemsStyle}>
             {this.state.matchString === '' ? 
               elementsToDisplay
                 .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
@@ -555,16 +569,16 @@ export default class CatalogList extends Component {
             : this.state.matchedElements
                 .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
                 .map(elem => <CatalogItemHoles key={elem.name} element={elem}/>)}
-          </div> */}
+          </div>
 
           {/* The folders of different categories; window, door, misc - Searchable */}
-          {/* <div style={itemsStyleFolder}>
+          <div style={itemsStyleFolder}>
             {this.state.matchString === '' ? 
               categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>)
             : this.state.matchedElements
                 .filter(elem => elem.prototype !== 'lines' && elem.name !== 'gate')
                 .map(elem => <CatalogItem key={elem.name} element={elem}/>)}
-          </div> */}
+          </div>
           
         </ContentContainer>
         

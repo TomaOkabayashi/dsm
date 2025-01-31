@@ -37,6 +37,7 @@ import {
   REMOVE_VERTICAL_GUIDE,
   REMOVE_CIRCULAR_GUIDE,
   UPDATE_CATALOG_WIDTH,
+  UPDATE_SIDEBAR_WIDTH,
 } from '../constants';
 
 import { Project } from '../class/export';
@@ -162,8 +163,10 @@ export default function (state, action) {
     case UPDATE_CATALOG_WIDTH:
       return Project.setCatalogWidth(state, action.width).updatedState;
 
+    case UPDATE_SIDEBAR_WIDTH:
+      return Project.setSidebarWidth(state, action.width).updateState;
+
     default:
       return state;
-
   }
 }

@@ -34,7 +34,6 @@ const logobarW = 50;
 const menubarH = 25;
 const utilitybarH = 25;
 const toolbarW = 50;
-const sidebarW = 300;
 const footerBarH= 31;
 
 const wrapperStyle = {
@@ -82,7 +81,6 @@ const contentStyle = {
 };
 
 const sidebarStyle = {
-  width: sidebarW,
   height: '100%',
   backgroundColor: SharedStyle.PRIMARY_COLOR.main,
   borderLeft: `1px solid ${SharedStyle.COLORS.black}`,
@@ -94,7 +92,6 @@ const bottomSidebarStyle = {
   position: 'absolute',
   bottom: footerBarH,
   left: 0,
-  right: sidebarW,
   height: '200px', // You can adjust this height
   backgroundColor: SharedStyle.PRIMARY_COLOR.main,
   borderTop: `1px solid ${SharedStyle.COLORS.black}`,
@@ -135,9 +132,11 @@ class ReactPlanner extends Component {
     let mode = extractedState.get('mode');
 
     const catalogWidth = extractedState.get('catalogWidth') || 200;
+    const sidebarWidth = extractedState.get('sidebarWidth') || 300;
 
     // the dimensions are at the top of file
     let catalogW = catalogWidth - 10; //some overhead
+    let sidebarW = sidebarWidth;
     let catalogH = height - footerBarH - menubarH - utilitybarH;
     let contentW = width - sidebarW - catalogW;
     let in3DMode = width - sidebarW;
