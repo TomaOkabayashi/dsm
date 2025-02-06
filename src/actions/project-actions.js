@@ -37,6 +37,8 @@ import {
   REMOVE_CIRCULAR_GUIDE,
   UPDATE_CATALOG_WIDTH,
   UPDATE_SIDEBAR_WIDTH,
+  UPDATE_MARKUPSLIST_WIDTH,
+  UPDATE_MARKUPSLIST_HEIGHT,
 } from '../constants';
 
 export function loadProject(sceneJSON) {
@@ -307,5 +309,19 @@ export function updateSidebarWidth(width) {
   return {
     type: UPDATE_SIDEBAR_WIDTH,
     width
+  };
+}
+
+export function updateMarkupsListWidth(width) {
+  return {
+    type: UPDATE_MARKUPSLIST_WIDTH,
+    width
+  };
+}
+
+export function updateMarkupsListHeight(height) {
+  return {
+    type: UPDATE_MARKUPSLIST_HEIGHT,
+    height
   };
 }

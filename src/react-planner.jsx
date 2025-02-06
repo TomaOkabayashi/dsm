@@ -13,8 +13,9 @@ import {
   MenubarComponents,
   UtilitybarComponents,
   ToolbarComponents,
-  Content,
   SidebarComponents,
+  MarkupsListComponents,
+  Content,
   FooterBarComponents
 } from './components/export';
 import {VERSION} from './version';
@@ -27,6 +28,7 @@ const {Menubar} = MenubarComponents;
 const {Utilitybar} = UtilitybarComponents;
 const {Toolbar} = ToolbarComponents;
 const {Sidebar} = SidebarComponents;
+const {MarkupsList} = MarkupsListComponents;
 const {FooterBar} = FooterBarComponents;
 
 const logobarH = 50;
@@ -49,12 +51,14 @@ const logobarStyle = {
   height: '50px',
   width: '50px'
 };
+
 const menubarStyle = {
   position: 'absolute',
   top: 0,
   left: logobarW,
   width: 'calc(100% - 50px)'
 };
+
 const utilitybarStyle = {
   position: 'absolute',
   top: menubarH,
@@ -62,40 +66,15 @@ const utilitybarStyle = {
   width: 'calc(100% - 50px)'
 };
 
-const mainContentStyle = {
-  display: 'flex',
-  flexFlow: 'row nowrap',
-  marginTop: menubarH + utilitybarH,
-  height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`,
-  overflow: 'hidden'
-};
-
 const catalogListStyle = {
   position: 'relative',
+  height: '100%'
 };
 
 const contentStyle = {
   flex: '1 1 auto',
   position: 'relative',
   overflow: 'hidden'
-};
-
-const sidebarStyle = {
-  height: '100%',
-  backgroundColor: SharedStyle.PRIMARY_COLOR.main,
-  zIndex: 10,
-  overflowY: 'auto'
-};
-
-const bottomSidebarStyle = {
-  position: 'absolute',
-  bottom: footerBarH,
-  left: 0,
-  height: '200px', // You can adjust this height
-  backgroundColor: SharedStyle.PRIMARY_COLOR.main,
-  borderTop: `1px solid ${SharedStyle.COLORS.black}`,
-  zIndex: 9,
-  overflowY: 'auto'
 };
 
 class ReactPlanner extends Component {
@@ -132,16 +111,74 @@ class ReactPlanner extends Component {
 
     const catalogWidth = extractedState.get('catalogWidth') || 200;
     const sidebarWidth = extractedState.get('sidebarWidth') || 280;
+    const markupsListHeight = extractedState.get('markupsListHeight') || 265;
 
-    // the dimensions are at the top of file
-    let catalogW = catalogWidth - 10; //some overhead
+    let markupsListH = markupsListHeight;
+    let markupsListW = width - sidebarWidth;
+
+    // left sidebar
+    let catalogW = catalogWidth - 10; //some overhead, very pragmatic solution
+    let catalogH = height - markupsListH - footerBarH - menubarH - utilitybarH;
+
+    // right sidebar
     let sidebarW = sidebarWidth;
-    let catalogH = height - footerBarH - menubarH - utilitybarH;
+    let sidebarH = height - markupsListH - footerBarH - menubarH - utilitybarH;
+
+    // grid
     let contentW = width - sidebarW - catalogW;
-    let in3DMode = width - sidebarW;
-    // let toolbarH = height - footerBarH - menubarH - utilitybarH;
     let contentH = height - footerBarH - menubarH - utilitybarH;
-    let sidebarH = height - footerBarH - menubarH - utilitybarH;
+
+    // 3D mode
+    let in3DModeW = width - sidebarW;
+
+    // catalog (leftsidebar) and content (grid)
+    const mainContentRowStyle = {
+      display: 'flex',
+      flexFlow: 'row nowrap',
+      marginTop: menubarH + utilitybarH,
+      height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`,
+      overflow: 'hidden',
+      postition: 'relative',
+    };
+
+    const rightContainerStyle = {
+      display: 'flex',
+      flexDirection: 'row',
+      height: '100%',
+      position: 'relative'
+    }
+
+    const sidebarContainerStyle = {
+      height: 'calc(100% + 20px)',
+      position: 'relative',
+      zIndex: 1000
+    }
+
+    const sidebarStyle = {
+      height: '100%',
+      backgroundColor: SharedStyle.PRIMARY_COLOR.main,
+      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      flex: 1,
+    };
+
+    const markupContainerStyle = {
+      width: `calc(100% - ${sidebarWidth}px)`,
+      bottom: 0,
+      position: 'absolute',
+      zIndex: 500,
+      left: 0
+    };
+    
+    const markupsListStyle = {
+      position: 'relative',
+      backgroundColor: SharedStyle.PRIMARY_COLOR.main,
+      zIndex: 10,
+      overflowY: 'auto',
+      overflowX: 'auto',
+      width: '100%'
+    };
 
     return (
       <div
@@ -153,7 +190,6 @@ class ReactPlanner extends Component {
           }
         }}
       >
-        
         {/* The company logo */}
         <div style={logobarStyle}>
           <Logobar width={logobarW} height={logobarH} state={extractedState} {...props} />
@@ -170,34 +206,40 @@ class ReactPlanner extends Component {
         </div>
 
         {/* main content */}
-        <div style={mainContentStyle}>
-          {/* <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} /> */}
+          <div style={mainContentRowStyle}>
 
-          {/* catalog on left side */}
-          <div style={catalogListStyle}>
-            <CatalogList width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? 0 : catalogW} 
-            height={catalogH} state={extractedState} {...props} />
+            {/* catalog on left side */}
+            <div style={catalogListStyle}>
+              <CatalogList width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? 0 : catalogW} 
+              height={catalogH} state={extractedState} {...props} />
+            </div>
+
+            {/* the grid */}
+            <div style={contentStyle}>
+              <Content width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? in3DModeW : contentW} 
+              height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
+            </div>
+
+            {/* right column containing sidebar and markup list */}
+            <div style={rightContainerStyle}>
+              {/* right sidebar */}
+              <div style={sidebarContainerStyle}>
+                <div style={sidebarStyle}>
+                  <Sidebar width={sidebarW} height='100%' state={extractedState} {...props} />
+                </div>
+              </div>
+
+            </div>
           </div>
 
-          {/* the grid */}
-          <div style={contentStyle}>
-            <Content width={mode === MODE_3D_FIRST_PERSON || mode === MODE_3D_VIEW ? in3DMode : contentW} 
-            height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
-            
-            {/* bottom sidebar */}
-            {/* <div style={bottomSidebarStyle}>
-              <Sidebar width="100%" height="100%" state={extractedState} {...props} />
-            </div> */}
-          </div>
-
-          {/* right sidebar */}
-          <div style={sidebarStyle}>
-            <Sidebar width={sidebarW} height={sidebarH} state={extractedState} {...props} />
+        <div style={markupContainerStyle}>
+          {/* markups List */}
+          <div style={markupsListStyle}>
+            <MarkupsList width={markupsListW} height={markupsListHeight} state={extractedState} {...props} />
           </div>
         </div>
-
+          
         <FooterBar width={width} height={footerBarH} state={extractedState} {...props} />
-
       </div>
     );
   }

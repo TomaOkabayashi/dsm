@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import PanelElementEditor from './panel-element-editor/panel-element-editor';
-import PanelGroupEditor from './panel-group-editor';
-import PanelMultiElementsEditor from './panel-element-editor/panel-multi-elements-editor';
-import PanelLayers from './panel-layers';
-import PanelGuides from './panel-guides';
-import PanelGroups from './panel-groups';
+import PanelLayerElements from './panel-layer-elements';
 import * as SharedStyle from '../../shared-style';
 import If from '../../utils/react-if';
 import SidebarContentContainer from '../style/sidebar-content-container';
@@ -13,15 +8,17 @@ import SidebarContentContainer from '../style/sidebar-content-container';
 const wrapperStyle = {
   position: 'relative',
   height: '100%',
+  marginLeft: '35px',
+  width: '70%',
   display: 'flex',
-  flexDirection: 'row'
+  flexDirection: 'row',
 };
 
 const STYLE = {
   backgroundColor: SharedStyle.PRIMARY_COLOR.main,
   display: 'block',
   overflowY: 'auto',
-  overflowX: 'hidden',
+  overflowX: 'auto',
 };
 
 const sortButtonsCb = (a, b) => {
@@ -38,23 +35,24 @@ const sortButtonsCb = (a, b) => {
 
 const mapButtonsCb = (el, ind) => <If key={ind} condition={el.condition} style={{ position: 'relative' }}>{el.dom}</If>;
 
-export default class Sidebar extends Component {
+export default class MarkupsList extends Component {
   constructor(props) {
     super(props);
     
     this.state = {
       width: props.width || 300,
-      isResizing: false,
-      hovering: false,
-      initialX: null,
-      initialWidth: null
+      height: props.height || 300,
+      isResizingHeight: false,
+      hoveringHeight: false,
+      dragStartY: null,
+      dragStartHeight: null
     };
 
-    this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.handleMouseOver = this.handleMouseOver.bind(this);
-    this.handleMouseOut = this.handleMouseOut.bind(this);
+    this.handleHeightMouseDown = this.handleHeightMouseDown.bind(this);
+    this.handleHeightMouseOver = this.handleHeightMouseOver.bind(this);
+    this.handleHeightMouseOut = this.handleHeightMouseOut.bind(this);
   }
 
   componentDidMount() {
@@ -67,42 +65,49 @@ export default class Sidebar extends Component {
     document.removeEventListener('mouseup', this.handleMouseUp);
   }
 
-  handleMouseDown(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.setState({ isResizing: true });
-    document.body.style.cursor = 'col-resize';
-  }
-
   handleMouseMove(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!this.state.isResizing) return;
-    
-    const minWidth = 280;
-    const maxWidth = 650;
-    // Calculate from right edge of window to mouse position
-    const newWidth = Math.min(Math.max(window.innerWidth - e.clientX, minWidth), maxWidth);
-    
-    this.setState({ width: newWidth });
-    this.context.projectActions.updateSidebarWidth(newWidth);
+    if (this.state.isResizingHeight) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const deltaY = this.state.dragStartY - e.clientY;
+      const newHeight = Math.min(Math.max(this.state.dragStartHeight + deltaY, 39), 500);
+      
+      this.setState({ height: newHeight });
+      this.context.projectActions.updateMarkupsListHeight(newHeight);
+    }
   }
 
   handleMouseUp() {
-    this.setState({ isResizing: false });
+    this.setState({ 
+      isResizingHeight: false,
+      dragStartY: null,
+      dragStartHeight: null
+    });
     document.body.style.cursor = 'default';
   }
 
-  handleMouseOver() {
-    this.setState({ hovering: true });
+  handleHeightMouseDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ 
+      isResizingHeight: true,
+      dragStartY: e.clientY,
+      dragStartHeight: this.state.height
+    });
+    document.body.style.cursor = 'row-resize';
   }
 
-  handleMouseOut() {
-    this.setState({ hovering: false });
+  handleHeightMouseOver() {
+    this.setState({ hoveringHeight: true });
+  }
+
+  handleHeightMouseOut() {
+    this.setState({ hoveringHeight: false });
   }
 
   render() {
-    let { state, height, sidebarComponents } = this.props;
+    let { state, sidebarComponents } = this.props;
     let selectedLayer = state.getIn(['scene', 'selectedLayer']);
     let selected = state.getIn(['scene', 'layers', selectedLayer, 'selected']);
 
@@ -116,10 +121,7 @@ export default class Sidebar extends Component {
     let selectedGroup = state.getIn(['scene', 'groups']).findEntry( g => g.get('selected') );
 
     let sorter = [
-      { index: 0, condition: true, dom: <PanelGuides state={state}/> },
-      { index: 1, condition: true, dom: <PanelLayers state={state} /> },
-      { index: 4, condition: !multiselected, dom: <PanelElementEditor state={state} /> },
-      { index: 6, condition: !!selectedGroup, dom: <PanelGroupEditor state={state} groupID={selectedGroup ? selectedGroup[0] : null} /> }
+      { index: 1, condition: true, dom: <PanelLayerElements mode={state.mode} layers={state.scene.layers} selectedLayer={state.scene.selectedLayer} /> }
     ];
 
     sorter = sorter.concat(sidebarComponents.map((Component, key) => {
@@ -135,50 +137,45 @@ export default class Sidebar extends Component {
         };
     }));
 
-    // the entire right sidebar
     const adjustableContainerStyle = {
       ...STYLE,
       width: this.state.width,
+      height: this.state.height,
       flex: '1',
       overflowY: 'auto',
       overflowX: 'hidden',
       position: 'relative',
     };
 
-    const resizeHandleStyle = {
+    const heightResizeHandleStyle = {
       position: 'absolute',
-      left: 0,
-      top: 0,
-      width: '5px',
-      height: '100%',
-      cursor: 'col-resize',
-      backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
+      top: 1,
+      width: 'calc(100% + 320px)',
+      height: '5px',
+      cursor: 'row-resize',
+      backgroundColor: (this.state.hoveringHeight || this.state.isResizingHeight) ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
       transition: 'background-color 0.2s',
-      zIndex: 998,
-      borderRight: `solid 1px ${SharedStyle.COLORS.black}`,
+      zIndex: 400,
+      borderTop: `solid 1px ${SharedStyle.COLORS.black}`,
     };
 
     return (
       <div 
         style={wrapperStyle}
         onKeyDown={(e) => e.stopPropagation()}
-        onClick={(e) => {
-          // Stop the click event from reaching the main container
-          // This prevents the blur effect when clicking within the sidebar
-          e.stopPropagation();
-        }}
+        onClick={(e) => e.stopPropagation()}
       >
         <div
-          style={resizeHandleStyle}
-          onMouseDown={this.handleMouseDown}
-          onMouseOver={this.handleMouseOver}
-          onMouseOut={this.handleMouseOut}
+          style={heightResizeHandleStyle}
+          onMouseDown={this.handleHeightMouseDown}
+          onMouseOver={this.handleHeightMouseOver}
+          onMouseOut={this.handleHeightMouseOut}
         />
         <SidebarContentContainer 
           width={this.state.width} 
-          height={height} 
+          height={this.state.height} 
           style={adjustableContainerStyle}
-          className="sidebar"
+          className="markupsList"
         >
           {sorter.sort(sortButtonsCb).map(mapButtonsCb)}
         </SidebarContentContainer>
@@ -187,13 +184,13 @@ export default class Sidebar extends Component {
   }
 }
 
-Sidebar.propTypes = {
+MarkupsList.propTypes = {
   state: PropTypes.object.isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   style: PropTypes.object
 };
 
-Sidebar.contextTypes = {
+MarkupsList.contextTypes = {
   projectActions: PropTypes.object.isRequired
 };

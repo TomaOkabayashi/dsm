@@ -412,7 +412,7 @@ export default class CatalogList extends Component {
       overflowY: 'auto',
       overflowX: 'hidden',
       paddingRight: '15px',
-      position: 'relative'
+      position: 'relative',
     };
 
     // Render css of the resize bar
@@ -422,7 +422,7 @@ export default class CatalogList extends Component {
       cursor: 'col-resize',
       backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
       transition: 'background-color 0.2s',
-      zIndex: 998,
+      zIndex: 300,
     };
 
     const preventEventBubbling = e => {

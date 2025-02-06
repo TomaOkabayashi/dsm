@@ -38,6 +38,8 @@ import {
   REMOVE_CIRCULAR_GUIDE,
   UPDATE_CATALOG_WIDTH,
   UPDATE_SIDEBAR_WIDTH,
+  UPDATE_MARKUPSLIST_WIDTH,
+  UPDATE_MARKUPSLIST_HEIGHT,
 } from '../constants';
 
 import { Project } from '../class/export';
@@ -165,6 +167,12 @@ export default function (state, action) {
 
     case UPDATE_SIDEBAR_WIDTH:
       return Project.setSidebarWidth(state, action.width).updateState;
+
+    case UPDATE_MARKUPSLIST_WIDTH:
+    return Project.setMarkupsListWidth(state, action.width).updateState;
+
+    case UPDATE_MARKUPSLIST_HEIGHT:
+    return Project.setMarkupsListHeight(state, action.height).updateState;
 
     default:
       return state;

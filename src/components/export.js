@@ -1,9 +1,10 @@
 import * as LogobarComponents from  './logobar/export';
 import * as MenubarComponents from './menubar/export';
 import * as UtilitybarComponents from './utilitybar/export';
-import * as ToolbarComponents from './toolbar/export';
-import Content from './content';
+import * as ToolbarComponents from './toolbar/export'; // Not currently used
 import SidebarComponents from './sidebar/export';
+import MarkupsListComponents from './markups-list/export';
+import Content from './content';
 import FooterBarComponents from './footerbar/export';
 import Viewer2DComponents from './viewer2d/export';
 import StyleComponents from './style/export';
@@ -13,11 +14,12 @@ export {
   MenubarComponents,
   UtilitybarComponents,
   ToolbarComponents,
-  Content,
   SidebarComponents,
+  MarkupsListComponents,
+  Content,
   FooterBarComponents,
   Viewer2DComponents,
-  StyleComponents
+  StyleComponents,
 };
 
 export default {
@@ -25,8 +27,9 @@ export default {
   MenubarComponents,
   UtilitybarComponents,
   ToolbarComponents,
-  Content,
   SidebarComponents,
+  MarkupsListComponents,
+  Content,
   FooterBarComponents,
   Viewer2DComponents,
   StyleComponents
