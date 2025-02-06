@@ -216,7 +216,14 @@ class Line{
 
     let { updatedState, lines } = Line.addFromPoints( state, layerID, type, points, oldProperties, oldHoles );
 
-    return { updatedState, lines };
+    state = updatedState;
+
+    // Select the newly created line(s)
+    if (lines && lines.size > 0) {
+      state = Line.select(state, layerID, lines.first().id).updatedState;
+    }
+
+    return { updatedState: state, lines };
   }
 
   static replaceVertex ( state, layerID, lineID, vertexIndex, x, y ) {

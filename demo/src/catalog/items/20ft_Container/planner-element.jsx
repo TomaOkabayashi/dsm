@@ -280,7 +280,7 @@ function createElement() {
     destination: 'FPSO', // DEST
     container: 'CWAY', // CON
     containerID: 'AORU770101-2', // Hu/Container
-    description: 'container,15ft,open Top,1/2 heightee', // Packaging Mat Desc 
+    description: 'container,15ft,open Top,1/2 height', // Packaging Mat Desc 
     tare: '1,020', // Tare
     vgm: '1.0', // VGM
 
@@ -302,9 +302,9 @@ function createElement() {
     image: null,
     containerID: metadata.containerID,
     dimensions: {
-      width: metadata.originalDimensions.width * 100,
-      height: metadata.originalDimensions.height * 100,
-      depth: metadata.originalDimensions.length * 100,
+      width: Math.trunc(metadata.originalDimensions.width * 100),
+      height: Math.trunc(metadata.originalDimensions.height * 100),
+      depth: Math.trunc(metadata.originalDimensions.length * 100),
     },
     metadata: metadata  // Add the metadata object to info
   };
@@ -312,7 +312,7 @@ function createElement() {
   const element = {
     name: info.containerID, // what shows up on sidebar. Properties: [name] hashcode. Also shows up on the recent searches on catalog
     prototype: 'items',
-    type: 'container',
+    type: 'csv',
     metadata,
     info,
     properties: {

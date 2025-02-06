@@ -317,6 +317,24 @@ class Project{
     };
   }
 
+  static setSidebarWidth(state, width) {
+    return { 
+      updatedState: state.set('sidebarWidth', width) 
+    };
+  }
+
+  static setMarkupsListWidth(state, width) {
+    return { 
+      updatedState: state.set('markupsListWidth', width) 
+    };
+  }
+
+  static setMarkupsListHeight(state, height) {
+    return { 
+      updatedState: state.set('markupsListHeight', height) 
+    };
+  }
+
 }
 
 export { Project as default };
