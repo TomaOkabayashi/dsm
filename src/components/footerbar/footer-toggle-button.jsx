@@ -11,7 +11,6 @@ const toggleButtonStyle = {
   userSelect: 'none',
   border: '1px solid transparent',
   margin: '0px -1px 0 5px',
-  borderRadius: '2px',
   display: 'inline-block',
   justifyContent: 'center',
   alignItems: 'center',
