@@ -49,7 +49,7 @@ const toolStyle = {
 
 const gateHeaderContainer = {
   ...headerContainer,
-  marginTop: '-5px'
+  marginTop: '-7px'
 };
 
 const searchContainer = {
@@ -146,11 +146,10 @@ const container_position = {
 const tempGridCell = {
   width: 'auto',
   minWidth: '300px',
+  height: '27px',
   background: SharedStyle.MATERIAL_COLORS[500].blue_grey,
   border: `1px solid ${SharedStyle.MATERIAL_COLORS[500].white_grey}`,
   position: 'relative',
-  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-  borderRadius: '2px',
   fontSize: '1em',
   fontWeight: 'bold',
 };
@@ -179,59 +178,6 @@ const itemsStyleFolder = {
   gap: '3px',
   marginTop: '22em',
   alignItems: 'flex-start'
-};
-
-// Container for head row of items with titles
-
-
-const COLUMN_MIN_WIDTHS = {
-  dest: '55px',      // DEST
-  con: '55px',       // CON
-  chkd: '55px',      // CHKD
-  container: '115px', // Hu/Container
-  desc: '265px',     // Packaging Mat Desc
-  length: '35px',    // L
-  width: '35px',     // W
-  height: '35px',    // H
-  tare: '50px',      // Tare
-  vgm: '35px',       // VGM
-  classCode: '65px'  // Class Code
-};
-
-const HEADER_GRID_CELL = {
-  width: 'auto',
-  minWidth: '900px',
-  padding: '0.4em',
-  background: SharedStyle.MATERIAL_COLORS[500].white_grey,
-  border: `1px solid ${SharedStyle.MATERIAL_COLORS[500].white_grey}`,
-  position: 'relative',
-  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-  borderRadius: '2px',
-  display: 'grid',
-  fontSize: '0.9em',
-  fontWeight: 'bold',
-  gridTemplateColumns: `minmax(${COLUMN_MIN_WIDTHS.dest}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.con}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.chkd}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.container}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.desc}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.length}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.width}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.height}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.tare}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.vgm}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.classCode}, max-content)`,
-};
-
-const HEADER_CELL = {
-  padding: '0.3em',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  height: '25px',
-  borderRight: 'solid 2px #000000',
-  minWidth: '50px',
-  maxWidth: 'max-content',
 };
 
 
@@ -519,21 +465,6 @@ export default class CatalogList extends Component {
           <div style={lineBreakStyle} />
 
 
-
-
-
-          {/* Excel sheets header 
-          put this in the csv panel container */}
-
-          {/* <div style={container_position}>
-            <div style={HEADER_GRID_CELL}>
-              {['DEST','CON','CHKD','Hu/Container','Packaging Mat Desc','L','W','H','Tare','VGM','Class Code'].map((text, index) => (
-                <div key={index} style={HEADER_CELL}>
-                  {text}
-                </div>
-              ))}
-            </div>
-          </div> */}
           
           {/* Items; containers - Searchable
           <div style={itemsStyle}>

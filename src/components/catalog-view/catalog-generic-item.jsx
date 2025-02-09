@@ -16,7 +16,6 @@ const STYLE_GRID_CELL = {
   border: `1px solid ${SharedStyle.COLORS.black}`,
   position: 'center',
   boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-  borderRadius: '2px',
   display: 'grid',
   fontSize: '0.8em',
   fontWeight: 'bold',

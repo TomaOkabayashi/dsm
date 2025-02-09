@@ -5,47 +5,29 @@ import * as SharedStyle from '../../shared-style';
 
 // This is the template for the containers that come from the CSV
 
-const COLUMN_MIN_WIDTHS = {
-  dest: '55px',      // DEST
-  con: '55px',       // CON
-  chkd: '55px',      // CHKD
-  container: '115px', // Hu/Container
-  desc: '265px',     // Packaging Mat Desc
-  length: '35px',    // L
-  width: '35px',     // W
-  height: '35px',    // H
-  tare: '50px',      // Tare
-  vgm: '35px',       // VGM
-  classCode: '65px'  // Class Code
+const COLUMN_WIDTHS = {
+  dest: '50px',
+  con: '50px',
+  container: '110px',
+  desc: '220px',
 };
-
 const container_position = {
-  marginLeft: '1.1em',
+  marginLeft: '1em',
 }
 
 const STYLE_GRID_CELL = {
   width: 'auto',
-  minWidth: '900px',
+  minWidth: '450px',
   padding: '0.4em',
   background: SharedStyle.MATERIAL_COLORS[500].white_grey,
   border: `1px solid ${SharedStyle.MATERIAL_COLORS[500].white_grey}`,
   position: 'relative',
   boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-  borderRadius: '2px',
   display: 'grid',
-  fontSize: '0.9em',
+  fontSize: '0.8em',
   fontWeight: 'bold',
-  gridTemplateColumns: `minmax(${COLUMN_MIN_WIDTHS.dest}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.con}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.chkd}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.container}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.desc}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.length}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.width}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.height}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.tare}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.vgm}, max-content)
-                       minmax(${COLUMN_MIN_WIDTHS.classCode}, max-content)`,
+  gridTemplateColumns: `${COLUMN_WIDTHS.dest} ${COLUMN_WIDTHS.con} ${COLUMN_WIDTHS.container} ${COLUMN_WIDTHS.desc}`,
+  gap: '2px'
 };
 
 const CELL_STYLE = {
@@ -61,6 +43,24 @@ const CELL_STYLE = {
   display: 'block',        // Changed to block for better text handling
   whiteSpace: 'nowrap',    // Keep text on one line
   textAlign: 'left' 
+};
+
+const HEADER_GRID_CELL = {
+  ...STYLE_GRID_CELL,
+  background: `${SharedStyle.MATERIAL_COLORS[500].grey}`,
+  color: SharedStyle.COLORS.white,
+  fontWeight: 'bold',
+  fontSize: '0.8em',
+  cursor: 'default',
+  marginBottom: '4px'
+};
+
+const HEADER_CELL = {
+  ...CELL_STYLE,
+  padding: '0.4em',
+  paddingLeft: '6px',
+  paddingTop: '4px',
+  fontWeight: 'bold',
 };
 
 export default class CatalogItem extends Component {
@@ -111,25 +111,27 @@ export default class CatalogItem extends Component {
     let element = this.props.element;
     let hover = this.state.hover;
     let metadata = element.info.metadata || {};
-    let originalDimensions = metadata.originalDimensions || {};
   
     // Create array of metadata
     const containerMetadata = [
       metadata.destination,
       metadata.container,
-      metadata.chkd,
       metadata.containerID,
       metadata.description,
-      originalDimensions.length,
-      originalDimensions.width,
-      originalDimensions.height,
-      metadata.tare,
-      metadata.vgm,
-      metadata.classCode
     ];
 
     return (
       <div style={container_position}>
+        {/* Header Row */}
+        <div style={HEADER_GRID_CELL}>
+          {['DEST','CON','Hu/Container','Packaging Mat Desc'].map((text, index) => (
+            <div key={index} style={HEADER_CELL}>
+              {text}
+            </div>
+          ))}
+        </div>
+
+        {/* Item Row */}
         <div
           style={(hover || this.state.mouseDown) ? {...STYLE_GRID_CELL, background: SharedStyle.SECONDARY_COLOR.main, color: SharedStyle.COLORS.white} : STYLE_GRID_CELL}
           onMouseDown={e => {

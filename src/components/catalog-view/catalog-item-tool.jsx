@@ -13,9 +13,6 @@ const STYLE_BOX = {
   cursor: 'pointer',
   position: 'relative',
   boxShadow: '0 1px 6px 0 rgba(0, 0, 0, 0.11), 0 1px 4px 0 rgba(0, 0, 0, 0.11)',
-  borderRadius: '2px',
-  transition: 'all .15s ease-in-out',
-  WebkitTransition: 'all .15s ease-in-out',
   alignSelf: 'center',
   justifySelf: 'center',
 };
@@ -61,7 +58,6 @@ const STYLE_TAG = {
   color: SharedStyle.COLORS.white,
   padding: '1px 4px',
   marginRight: '3px',
-  borderRadius: '3px'
 };
 
 const toolIconStyle = {
