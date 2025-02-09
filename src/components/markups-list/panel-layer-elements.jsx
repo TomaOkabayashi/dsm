@@ -19,12 +19,14 @@ const VISIBILITY_MODE = {
 
 const contentArea = {
   height: 'auto',
-  maxHeight: '15em',
   overflowY: 'auto',
-  padding: '0.25em 1.15em',
-  cursor: 'pointer',
+  overflowX: 'hidden',
+  paddingLeft: '4em',
+  paddingBottom: '5em',
   marginBottom: '1em',
-  userSelect: 'none'
+  userSelect: 'none',
+  width: '100%',
+  boxSizing: 'border-box',
 };
 
 const elementStyle = {
@@ -44,14 +46,59 @@ const elementSelectedStyle = {
   borderColor: SharedStyle.SECONDARY_COLOR.main,
 };
 
+const itemElementStyle = elementStyle;
+
+const itemElementSelectedStyle = elementSelectedStyle;
+
 const categoryDividerStyle = {
   paddingBottom: '0.5em',
   borderBottom: '1px solid #888',
+  fontSize: '11px',
+  fontWeight: 'bold',
 };
 
-const tableSearchStyle = {width: '100%', marginTop: '0.8em'};
+const tableSearchStyle = {width: '100%', marginTop: '0.1em'};
 const searchIconStyle = {fontSize: '1.5em'};
-const searchInputStyle = {fontSize: '1em', width: '100%', height: '1em', padding: '1em 0.5em'};
+const searchInputStyle = {fontSize: '1em', width: '50%', height: '1em', padding: '1em 0.5em'};
+
+const COLUMN_WIDTHS = {
+  dest: '40px',
+  con: '40px',
+  chkd: '42px',
+  container: '120px',
+  desc: '190px',
+  length: '30px',
+  width: '30px',
+  height: '30px',
+  tare: '40px',
+  vgm: '40px',
+  classCode: '70px'
+};
+
+const HEADER_GRID_CELL = {
+  width: '100%',
+  height: '30px',
+  padding: '0.4em',
+  background: `${SharedStyle.MATERIAL_COLORS[500].grey}80`,
+  position: 'relative',
+  display: 'grid',
+  fontSize: '11px',
+  fontWeight: 'bold',
+  color: SharedStyle.COLORS.white,
+  gridTemplateColumns: `${COLUMN_WIDTHS.dest} ${COLUMN_WIDTHS.con} ${COLUMN_WIDTHS.chkd} ${COLUMN_WIDTHS.container} ${COLUMN_WIDTHS.desc} ${COLUMN_WIDTHS.length} ${COLUMN_WIDTHS.width} ${COLUMN_WIDTHS.height} ${COLUMN_WIDTHS.tare} ${COLUMN_WIDTHS.vgm} ${COLUMN_WIDTHS.classCode}`,
+  gap: '2px'
+};
+
+const HEADER_CELL = {
+  width: '100%',
+  paddingLeft: '6px',
+  paddingTop: '4px',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  fontSize: '11px',
+  borderLeft: `2px solid ${SharedStyle.COLORS.black}`,
+};
 
 export default class PanelLayerElement extends Component {
 
@@ -151,38 +198,131 @@ export default class PanelLayerElement extends Component {
       <Panel name={this.context.translator.t('Elements on layer {0}', layer.name)}>
         <div style={contentArea} onWheel={e => e.stopPropagation()}>
 
+          {/* Markups List header and search function */}
           <table style={tableSearchStyle}>
             <tbody>
             <tr>
-              <td><MdSearch style={searchIconStyle}/></td>
-              <td><input type="text" style={searchInputStyle} onChange={(e) => {
+              <tr>
+              <td style={{fontWeight: 'bold', fontSize: 15, paddingRight: '10px'}}>Markups List</td>
+              <td style={{width: '2em'}}><MdSearch style={searchIconStyle}/></td>
+              <td style={{width: '80%'}}><input type="text" style={searchInputStyle} onChange={(e) => {
                 this.matcharray(e.target.value);
               }}/></td>
+              </tr>
             </tr>
             </tbody>
           </table>
 
+          {/* Items header and column header */}
+          {/* Temporary solution to the border underneath the header. Make a separate container for that in the future*/}
+          <p style={{...categoryDividerStyle, borderTop: `1px solid ${SharedStyle.MATERIAL_COLORS[500].grey}`, paddingTop: '10px'}}>{this.context.translator.t('CSV Containers')}</p>
+          <div style={HEADER_GRID_CELL}>
+            {['DEST','CON','CHKD','Hu/Container','Packaging Mat Desc','L','W','H','Tare','VGM','Class Code'].map((text, index) => (
+              <div key={index} style={HEADER_CELL}>
+                {text}
+              </div>
+            ))}
+          </div>
+          
+          {/* Containers from CSV */}
           {
             this.state.matchedElements.items.count() ?
               <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Items')}</p>
                 {
-                  this.state.matchedElements.items.entrySeq().map(([itemID, item]) => {
+                  this.state.matchedElements.items.entrySeq()
+                    .filter(([itemID, item]) => {
+                      const info = item.get('info').toJS();
+                      return !info.tag || info.tag[0] !== 'example test container';
+                    })
+                    .map(([itemID, item]) => {
+                    const info = item.get('info').toJS();
+                    const metadata = info.metadata;
+                    const dimensions = info.dimensions;
+                    
+                    const values = [
+                      metadata.destination || 'null',  // DEST
+                      metadata.container || 'null',    // CON
+                      metadata.chkd || 'null',        // CHKD
+                      metadata.containerID || 'null',  // Hu/Container
+                      metadata.description || 'null',  // Packaging Mat Desc
+                      dimensions.depth || 'null',      // L (depth is length in the UI)
+                      dimensions.width || 'null',      // W
+                      dimensions.height || 'null',     // H
+                      metadata.tare || 'null',        // Tare
+                      metadata.vgm || 'null',         // VGM
+                      metadata.classCode || 'null'     // Class Code
+                    ];
+
+                    const gridStyle = {
+                      display: 'grid',
+                      gridTemplateColumns: `${COLUMN_WIDTHS.dest} ${COLUMN_WIDTHS.con} ${COLUMN_WIDTHS.chkd} ${COLUMN_WIDTHS.container} ${COLUMN_WIDTHS.desc} ${COLUMN_WIDTHS.length} ${COLUMN_WIDTHS.width} ${COLUMN_WIDTHS.height} ${COLUMN_WIDTHS.tare} ${COLUMN_WIDTHS.vgm} ${COLUMN_WIDTHS.classCode}`,
+                      gap: '2px',
+                      padding: '0.4em',
+                      margin: '4px 0',
+                      backgroundColor: item.selected ? SharedStyle.SECONDARY_COLOR.main : '#ffffff',
+                      color: item.selected ? '#ffffff' : '#000000',
+                    };
+
+                    const cellStyle = {
+                      width: '100%',
+                      paddingLeft: '6px',
+                      paddingTop: '2px',
+                      paddingBottom: '2px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      fontSize: '11px',
+                      borderLeft: `2px solid ${SharedStyle.COLORS.black}`,
+                    };
+
+                    console.log('Item structure:', item.toJS());
                     return (
                       <div
                         key={itemID}
                         onClick={e => this.context.itemsActions.selectItem(layer.id, item.id)}
-                        style={item.selected ? elementSelectedStyle : elementStyle}
+                        style={gridStyle}
                       >
-                        {item.name}
+                        {values.map((value, index) => (
+                          <div key={index} style={cellStyle}>
+                            {value}
+                          </div>
+                        ))}
                       </div>
-                    )
+                    );
                   })
                 }
               </div>
               : null
           }
 
+          {/* Generic Containers */}
+          {
+            this.state.matchedElements.items.count() ?
+              <div>
+                <p style={categoryDividerStyle}>{this.context.translator.t('Generic Containers')}</p>
+                {
+                  this.state.matchedElements.items.entrySeq()
+                    .filter(([itemID, item]) => {
+                      const info = item.get('info').toJS();
+                      return info.tag && info.tag[0] === 'example test container';
+                    })
+                    .map(([itemID, item]) => {
+                      return (
+                        <div
+                          key={itemID}
+                          onClick={e => this.context.itemsActions.selectItem(layer.id, item.id)}
+                          style={item.selected ? elementSelectedStyle : elementStyle}
+                        >
+                          {item.name}
+                        </div>
+                      )
+                    })
+                }
+              </div>
+              : null
+          }
+
+          {/* Areas, the loading bays */}
           {
             this.state.matchedElements.areas.count() ?
               <div>
@@ -204,10 +344,11 @@ export default class PanelLayerElement extends Component {
               : null
           }
 
+          {/* Access tool gates in area walls*/}
           {
             this.state.matchedElements.holes.count() ?
               <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Holes')}</p>
+                <p style={categoryDividerStyle}>{this.context.translator.t('Gates')}</p>
                 {
                   this.state.matchedElements.holes.entrySeq().map(([holeID, hole]) => {
                     return (
@@ -225,6 +366,7 @@ export default class PanelLayerElement extends Component {
               : null
           }
 
+          {/* The vertices that make up the areas/loading bays */}
           {
             this.state.matchedElements.lines.count() ?
               <div>

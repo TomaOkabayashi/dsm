@@ -6,7 +6,10 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 const STYLE = {
   borderTop: '1px solid #222',
   borderBottom: '1px solid #48494E',
-  userSelect: 'none'
+  userSelect: 'none',
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
 };
 const STYLE_TITLE = {
   fontSize: '11px',
@@ -20,11 +23,14 @@ const STYLE_TITLE = {
 };
 const STYLE_CONTENT = {
   fontSize: '11px',
-  color: SharedStyle.PRIMARY_COLOR.text_alt,
+  color: SharedStyle.COLORS.white,
   border: '1px solid #222',
   padding: '0px',
+  height: '100%',
+  flex: 1,
   backgroundColor: SharedStyle.PRIMARY_COLOR.alt,
-  textShadow: '-1px -1px 2px rgba(0, 0, 0, 1)'
+  display: 'flex',
+  flexDirection: 'column',
 };
 const STYLE_ARROW = {
   float: 'right'
@@ -40,12 +46,10 @@ export default class Panel extends Component {
   }
 
   render() {
-
-    let { name, headComponents, children } = this.props;
-
+    let { name, headComponents, children, style } = this.props;
 
     return (
-      <div style={STYLE}>
+      <div style={{...STYLE, ...style}}>
         <div style={STYLE_CONTENT}>
           {children}
         </div>
@@ -56,4 +60,5 @@ export default class Panel extends Component {
 
 Panel.propTypes = {
   headComponents: PropTypes.array,
+  style: PropTypes.object
 };

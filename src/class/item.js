@@ -20,6 +20,7 @@ class Item{
 
   static create( state, layerID, type, x, y, width, height, rotation ) {
     let itemID = IDBroker.acquireID();
+    let element = state.catalog.getIn(['elements', type]);
 
     let item = state.catalog.factoryElement(type, {
       id: itemID,
@@ -30,6 +31,8 @@ class Item{
       x,
       y,
       rotation,
+      metadata: element.get('metadata'),
+      info: element.get('info')
     });
 
     state = state.setIn(['scene', 'layers', layerID, 'items', itemID], item);

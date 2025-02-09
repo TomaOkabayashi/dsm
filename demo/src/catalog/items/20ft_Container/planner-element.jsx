@@ -297,7 +297,7 @@ function createElement() {
 
   const info = {
     title: metadata.description, // The name field in the sidebar and catalog name
-    tag: [metadata.destination, 'example test container'],
+    tag: [metadata.destination],
     description: metadata.description, // The description shown in the catalog
     image: null,
     containerID: metadata.containerID,
