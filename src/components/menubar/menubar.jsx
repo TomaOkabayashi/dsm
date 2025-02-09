@@ -1,40 +1,36 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { MdSettings, MdUndo, MdDirectionsRun } from 'react-icons/md';
-import { FaFile, FaMousePointer, FaPlus } from 'react-icons/fa';
 import MenubarButton from './menubar-button';
 import MenubarSaveButton from './menubar-save-button';
 import MenubarLoadButton from './menubar-load-button';
 import If from '../../utils/react-if';
 import {
-  MODE_IDLE,
-  MODE_3D_VIEW,
-  MODE_3D_FIRST_PERSON,
   MODE_VIEWING_CATALOG,
+  MODE_3D_VIEW,
   MODE_CONFIGURING_PROJECT
 } from '../../constants';
 import * as SharedStyle from '../../shared-style';
 
-const iconTextStyle = {
-  fontSize: '19px', // this the text size for the icon 3d, needs fixing. Fix with the other icons too
-  textDecoration: 'none',
-  fontWeight: 'bold',
-  margin: '0px',
-  userSelect: 'none'
-};
-
-const Icon2D = ( {style} ) => <p style={{...iconTextStyle, ...style}}>2D</p>;
-const Icon3D = ( {style} ) => <p style={{...iconTextStyle, ...style}}>3D</p>;
-
 const menubarstyle = {
   position: 'absolute',
   top: 0,
+  left: 0,
+  right: 0,
   backgroundColor: SharedStyle.PRIMARY_COLOR.main,
-  border: '1px solid #000000',
+  borderBottom: '1px solid rgba(0,0,0,0.2)',
   display: 'flex',
-  width: '100%',
+  alignItems: 'stretch',
   height: '25px',
-  whiteSpace: 'noWrap',
+  padding: '0 4px',
+  zIndex: 10,
+  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+};
+
+const menuGroupStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  height: '100%',
+  marginRight: '-1px',
 };
 
 const sortButtonsCb = (a, b) => {
@@ -51,18 +47,13 @@ const sortButtonsCb = (a, b) => {
 
 const mapButtonsCb = (el, ind) => {
   return (
-    <If
-      key={ind}
-      condition={el.condition}
-      style={{ position: 'relative' }}
-    >
+    <If key={ind} condition={el.condition}>
       {el.dom}
     </If>
   );
 };
 
 export default class Menubar extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.state = {};
@@ -76,87 +67,87 @@ export default class Menubar extends Component {
   }
 
   render() {
-
     let {
-      props: { state, width, height, menubarButtons, allowProjectFileSupport },
+      props: { state, menubarButtons, allowProjectFileSupport },
       context: { projectActions, viewer3DActions, translator }
     } = this;
 
     let mode = state.get('mode');
-    let alterate = state.get('alterate');
-    let alterateColor = alterate ? SharedStyle.MATERIAL_COLORS[500].orange : '';
-
     
     let sorter = [
       {
-        index: 1, condition: allowProjectFileSupport, dom: <MenubarButton
+        index: 1,
+        condition: allowProjectFileSupport,
+        dom: <MenubarButton
           active={false}
-          tooltip={translator.t('New project')}
-          onClick={event => confirm(translator.t('Would you want to start a new Project?')) ? projectActions.newProject() : null}>
-          <span style={{...iconTextStyle}}>New</span>
+          onClick={event => confirm(translator.t('Would you want to start a new Project?')) ? projectActions.newProject() : null}
+        >
+          New
         </MenubarButton>
       },
       {
-        index: 2, condition: allowProjectFileSupport,
+        index: 2,
+        condition: allowProjectFileSupport,
         dom: <MenubarLoadButton state={state} />
       },
       {
-        index: 3, condition: allowProjectFileSupport,
+        index: 3,
+        condition: allowProjectFileSupport,
         dom: <MenubarSaveButton state={state} />
       },
-
-      // screenshot button
-      ...menubarButtons.map((Component, key) => ({
+      {
         index: 4,
         condition: true,
-        dom: <div style={{
-          padding: '0 10px 0 10px',
-          margin: '0 50px 0 50px',
-          display: 'flex',
-          alignItems: 'center',
-          height: '100%',
-        }}>
-          {React.createElement(Component, { mode, state, key})}
+        dom: <div style={menuGroupStyle}>
+          {menubarButtons.map((Component, key) => 
+            React.createElement(Component, { mode, state, key })
+          )}
         </div>
-      })),
-
+      },
       {
-        index: 5, condition: true,
+        index: 5,
+        condition: true,
         dom: <MenubarButton
           active={[MODE_VIEWING_CATALOG].includes(mode)}
-          tooltip={translator.t('get rid of this')}
-          onClick={event => projectActions.openCatalog()}>
-          <span style={{...iconTextStyle}}>Import Excel</span>
+          onClick={event => projectActions.openCatalog()}
+        >
+          Import Excel
         </MenubarButton>
       },
       {
-        index: 7, condition: true, dom: <MenubarButton
+        index: 6,
+        condition: true,
+        dom: <MenubarButton
           active={[MODE_3D_VIEW].includes(mode)}
-          tooltip={translator.t('get rid of this')}
-          onClick={event => viewer3DActions.selectTool3DView()}>
-          <span style={{...iconTextStyle}}>Export as Excel</span>
+          onClick={event => viewer3DActions.selectTool3DView()}
+        >
+          Export Excel
         </MenubarButton>
       },
       {
-        index: 8, condition: true, dom: <MenubarButton
+        index: 7,
+        condition: true,
+        dom: <MenubarButton
           active={[MODE_3D_VIEW].includes(mode)}
-          tooltip={translator.t('get rid of this')}
-          onClick={event => viewer3DActions.selectTool3DView()}>
-          <span style={{...iconTextStyle}}>Create PDF Report</span>
+          onClick={event => viewer3DActions.selectTool3DView()}
+        >
+          PDF Report
         </MenubarButton>
       },
       {
-        index: 9, condition: true, dom: <MenubarButton
+        index: 8,
+        condition: true,
+        dom: <MenubarButton
           active={[MODE_CONFIGURING_PROJECT].includes(mode)}
-          tooltip={translator.t('Color')}
-          onClick={event => projectActions.openProjectConfigurator()}>
-          <span style={{...iconTextStyle}}>Display</span>
+          onClick={event => projectActions.openProjectConfigurator()}
+        >
+          Display
         </MenubarButton>
       },
     ];
     
     return (
-      <aside style={{ ...menubarstyle, maxWidth: width, maxHeight: height }} className='menubar'>
+      <aside style={menubarstyle} className='menubar'>
         {sorter.sort(sortButtonsCb).map(mapButtonsCb)}
       </aside>
     )

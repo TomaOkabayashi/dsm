@@ -50,7 +50,6 @@ const coordStyle = {
 
 const zoomStyle = {
   ...leftTextStyle,
-
   fontSize: 14,
   paddingTop: 4,
 }

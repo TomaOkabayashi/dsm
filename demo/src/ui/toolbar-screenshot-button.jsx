@@ -21,15 +21,6 @@ const {
   MODE_3D_VIEW
 } = ReactPlannerConstants;
 
-const iconTextStyle = {
-  fontSize: '19px', // this the text size for the icon 3d, needs fixing. Fix with the other icons too
-  textDecoration: 'none',
-  fontWeight: 'bold',
-  margin: '0px',
-  userSelect: 'none'
-};
-
-
 const { MenubarButton } = ReactPlannerComponents.MenubarComponents;
 
 export default function MenubarScreenshotButton({mode}, {translator}) {
@@ -48,7 +39,6 @@ export default function MenubarScreenshotButton({mode}, {translator}) {
     fileOutputLink.click();
     document.body.removeChild(fileOutputLink);
   };
-
 
   let saveScreenshotToFile = event => {
     event.preventDefault();
@@ -102,10 +92,11 @@ export default function MenubarScreenshotButton({mode}, {translator}) {
 
   if ([MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode)) {
     return (
-      <MenubarButton active={false} 
-        //tooltip={translator.t('Export As PNG')} 
-        onClick={saveScreenshotToFile}>
-        <span style={{...iconTextStyle}}>Save as PNG</span>
+      <MenubarButton 
+        active={false} 
+        onClick={saveScreenshotToFile}
+      >
+        Save as PNG
       </MenubarButton>
     );
   }
@@ -123,18 +114,17 @@ export default function MenubarScreenshotButton({mode}, {translator}) {
       MODE_DRAWING_ITEM,
       MODE_DRAGGING_HOLE,
       MODE_ROTATING_ITEM].includes(mode)) {
-
     return (
-      <MenubarButton active={false} 
-        //tooltip={translator.t('Export As PNG')} 
-        onClick={saveSVGScreenshotToFile}>
-        <span style={{...iconTextStyle}}>Save as PNG</span>
+      <MenubarButton 
+        active={false} 
+        onClick={saveSVGScreenshotToFile}
+      >
+        Save as PNG
       </MenubarButton>
     );
   }
 
   return null;
-
 }
 
 MenubarScreenshotButton.propTypes = {

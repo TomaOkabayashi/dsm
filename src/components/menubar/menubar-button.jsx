@@ -5,54 +5,33 @@ import * as SharedStyle from '../../shared-style';
 //http://www.cssportal.com/css-tooltip-generator/
 
 const STYLE = {
-  width: '170px', //space between the icons
-  height: '25px', // height of the menu bar
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginRight: '5px',
-  fontSize: '25px',
-  position: 'relative',
-  cursor: 'pointer',
-  whiteSpace: 'nowrap',
+  button: {
+    height: 'calc(100% - 4px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0 8px',
+    transition: 'all 0.1s ease',
+    position: 'relative',
+    userSelect: 'none',
+    backgroundColor: 'transparent',
+    margin: '2px',
+    borderRadius: '2px',
+    minWidth: '50px',
+  },
+  buttonContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '13.5px',
+    fontWeight: '400',
+    color: '#fff',
+    width: '100%',
+    textAlign: 'center',
+  },
 };
-
-const STYLE_TOOLTIP = {
-  position: 'absolute',
-  width: '100px',
-  color: 'transparent',
-  background: 'transparent',
-  height: '22px',
-  lineHeight: '22px',
-  textAlign: 'center',
-  visibility: 'hidden',
-  borderRadius: '4px',
-  opacity: '0',
-  left: '100%',
-  top: '50%',
-  marginTop: '-11px',
-  marginLeft: '5px',
-  zIndex: '999',
-  fontSize: '11px'
-};
-
-const STYLE_TOOLTIP_PIN = {
-  position: 'absolute',
-  top: '50%',
-  right: '100%',
-  marginTop: '-4px',
-  marginRight: '-1px',
-  width: '0',
-  height: '0',
-  borderRight: '4px solid transparent',
-  borderTop: '4px solid transparent',
-  borderBottom: '4px solid transparent'
-};
-
-// both the tooltip styles are set as transparent and invisible right now
 
 export default class MenubarButton extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.state = { active: false };
@@ -60,25 +39,22 @@ export default class MenubarButton extends Component {
 
   render() {
     let { state, props } = this;
-    let color = props.active || state.active ? SharedStyle.SECONDARY_COLOR.icon : SharedStyle.PRIMARY_COLOR.icon;
+    let buttonStyle = {
+      ...STYLE.button,
+      backgroundColor: props.active || state.active ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+      borderColor: props.active || state.active ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.15)',
+    };
 
     return (
-      <div style={STYLE}
+      <div 
+        style={buttonStyle}
         onMouseOver={event => this.setState({ active: true })}
-        onMouseOut={event => this.setState({ active: false })}>
-        <div style={{ color }} onClick={props.onClick}>
+        onMouseOut={event => this.setState({ active: false })}
+        onClick={props.onClick}
+      >
+        <div style={STYLE.buttonContent}>
           {props.children}
         </div>
-
-        {
-          state.active ?
-          <div style={STYLE_TOOLTIP}>
-            <span style={STYLE_TOOLTIP_PIN} />
-            {props.tooltip}
-          </div>
-          : null
-        }
-
       </div>
     )
   }
@@ -86,6 +62,5 @@ export default class MenubarButton extends Component {
 
 MenubarButton.propTypes = {
   active: PropTypes.bool.isRequired,
-  tooltip: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired
 };

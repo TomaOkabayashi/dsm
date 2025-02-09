@@ -33,7 +33,6 @@ const contentContainerStyleActive = {
   zIndex:0,
   padding:0,
   margin:0,
-  transition:'all 300ms ease'
 };
 
 const contentContainerStyleInactive = {

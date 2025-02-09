@@ -14,7 +14,6 @@ const panelStyle = {
   marginLeft: '1.2em',
   marginBottom: '1em',
   border: '1px solid #e1e1e8',
-  borderRadius: '2px',
   minWidth: '300px',
   zIndex: 1,
 };

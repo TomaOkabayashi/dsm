@@ -5,46 +5,54 @@ import * as SharedStyle from '../../shared-style';
 //http://www.cssportal.com/css-tooltip-generator/
 
 const STYLE = {
-  width: '65px', // width between buttons on bar
-  height: '25px', // height of the menu bar
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginRight: '5px',
-  fontSize: '25px',
-  position: 'relative',
-  cursor: 'pointer'
-};
-
-const STYLE_TOOLTIP = {
-  position: 'absolute',
-  width: '120px',
-  color: SharedStyle.COLORS.white,
-  background: SharedStyle.COLORS.black,
-  height: '30px',
-  lineHeight: '30px',
-  textAlign: 'center',
-  visibility: 'visible',
-  borderRadius: '6px',
-  opacity: '0.8',
-  left: '100%',
-  top: '50%',
-  marginTop: '-15px',
-  marginLeft: '15px',
-  zIndex: '999',
-  fontSize: '12px'
-};
-
-const STYLE_TOOLTIP_PIN = {
-  position: 'absolute',
-  top: '50%',
-  right: '100%',
-  marginTop: '-8px',
-  width: '0',
-  height: '0',
-  borderRight: '8px solid #000000',
-  borderTop: '8px solid transparent',
-  borderBottom: '8px solid transparent'
+  button: {
+    width: '54px',// width between buttons on bar
+    height: '25px', // height of the menu bar
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: '5px',
+    margin: '2px',
+    position: 'relative',
+    cursor: 'pointer',
+    borderRadius: '4px',
+    transition: 'background-color 0.1s ease',
+    backgroundColor: 'transparent',
+  },
+  buttonContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '22px',
+    color: '#fff',
+  },
+  tooltip: {
+    position: 'absolute',
+    padding: '6px 8px',
+    backgroundColor: SharedStyle.COLORS.black,
+    color: SharedStyle.COLORS.white,
+    fontSize: '11px',
+    borderRadius: '4px',
+    whiteSpace: 'nowrap',
+    visibility: 'hidden',
+    opacity: '0.9',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    top: 'calc(100% + 5px)',
+    zIndex: '999',
+    transition: 'opacity 0.15s ease, visibility 0.15s ease',
+  },
+  tooltipArrow: {
+    position: 'absolute',
+    top: '-4px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '0',
+    height: '0',
+    borderLeft: '4px solid transparent',
+    borderRight: '4px solid transparent',
+    borderBottom: '4px solid ' + SharedStyle.COLORS.black,
+  }
 };
 
 export default class UtilitybarButton extends Component {
@@ -56,25 +64,32 @@ export default class UtilitybarButton extends Component {
 
   render() {
     let { state, props } = this;
-    let color = props.active || state.active ? SharedStyle.SECONDARY_COLOR.icon : SharedStyle.PRIMARY_COLOR.icon;
+    let buttonStyle = {
+      ...STYLE.button,
+      backgroundColor: props.active || state.active ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+    };
 
     return (
-      <div style={STYLE}
+      <div 
+        style={buttonStyle}
         onMouseOver={event => this.setState({ active: true })}
-        onMouseOut={event => this.setState({ active: false })}>
-        <div style={{ color }} onClick={props.onClick}>
+        onMouseOut={event => this.setState({ active: false })}
+        onClick={props.onClick}
+      >
+        <div style={STYLE.buttonContent}>
           {props.children}
         </div>
 
-        {
-          state.active ?
-          <div style={STYLE_TOOLTIP}>
-            <span style={STYLE_TOOLTIP_PIN} />
+        {props.tooltip && (
+          <div style={{
+            ...STYLE.tooltip,
+            visibility: state.active ? 'visible' : 'hidden',
+            opacity: state.active ? 0.9 : 0,
+          }}>
+            <div style={STYLE.tooltipArrow} />
             {props.tooltip}
           </div>
-          : null
-        }
-
+        )}
       </div>
     )
   }
