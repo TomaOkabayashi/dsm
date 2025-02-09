@@ -4,12 +4,12 @@ import PanelLayerElements from './panel-layer-elements';
 import * as SharedStyle from '../../shared-style';
 import If from '../../utils/react-if';
 import SidebarContentContainer from '../style/sidebar-content-container';
+import { IoMdMenu } from "react-icons/io";
 
 const wrapperStyle = {
   position: 'relative',
   height: '100%',
-  marginLeft: '35px',
-  width: '70%',
+  width: '100%',
   display: 'flex',
   flexDirection: 'row',
 };
@@ -18,7 +18,7 @@ const STYLE = {
   backgroundColor: SharedStyle.PRIMARY_COLOR.main,
   display: 'block',
   overflowY: 'auto',
-  overflowX: 'auto',
+  overflowX: 'hidden',
 };
 
 const sortButtonsCb = (a, b) => {
@@ -45,7 +45,8 @@ export default class MarkupsList extends Component {
       isResizingHeight: false,
       hoveringHeight: false,
       dragStartY: null,
-      dragStartHeight: null
+      dragStartHeight: null,
+      isMenuHovered: false
     };
 
     this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -145,6 +146,7 @@ export default class MarkupsList extends Component {
       overflowY: 'auto',
       overflowX: 'hidden',
       position: 'relative',
+      zIndex: 1,
     };
 
     const heightResizeHandleStyle = {
@@ -154,9 +156,17 @@ export default class MarkupsList extends Component {
       height: '5px',
       cursor: 'row-resize',
       backgroundColor: (this.state.hoveringHeight || this.state.isResizingHeight) ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
-      transition: 'background-color 0.2s',
-      zIndex: 400,
+      zIndex: (this.state.hoveringHeight || this.state.isResizingHeight) ? 801 : 400,
       borderTop: `solid 1px ${SharedStyle.COLORS.black}`,
+    };
+
+    const toolBarBorder = {
+      position: 'absolute',
+      width: '2px',
+      height: '100%',
+      left: 35,
+      backgroundColor: SharedStyle.COLORS.black,
+      zIndex: 800
     };
 
     return (
@@ -165,12 +175,32 @@ export default class MarkupsList extends Component {
         onKeyDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Burger Menu Icon */}
+        {/* have not added the markuplist close down to the icon */}
+        <div 
+          style={{
+            position: 'absolute',
+            left: '2px',
+            top: '3px',
+            fontSize: '24px',
+            backgroundColor: this.state.isMenuHovered ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
+            lineHeight: 0,
+            zIndex: 500,
+            padding: '4px',
+          }}
+          onMouseEnter={() => this.setState({ isMenuHovered: true })}
+          onMouseLeave={() => this.setState({ isMenuHovered: false })}
+        >
+          <IoMdMenu />
+        </div>
+
         <div
           style={heightResizeHandleStyle}
           onMouseDown={this.handleHeightMouseDown}
           onMouseOver={this.handleHeightMouseOver}
           onMouseOut={this.handleHeightMouseOut}
         />
+        <div style={toolBarBorder}></div>
         <SidebarContentContainer 
           width={this.state.width} 
           height={this.state.height} 

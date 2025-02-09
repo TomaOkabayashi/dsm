@@ -78,7 +78,7 @@ export default class CatalogContainerPanel extends Component {
                     display: 'grid',
                     gridTemplateColumns: '160px 160px',  // Fixed width columns
                     gap: '0.2em',
-                    overflowX: 'auto'  // Allows horizontal scroll if container is too small
+                    overflowX: 'auto'
                   }}>
                 {csvElements.map((elem) => (
                     <CatalogItem 

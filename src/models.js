@@ -139,12 +139,16 @@ export class Item extends Record({
   prototype: 'items',
   x: 0,
   y: 0,
-  rotation: 0
+  rotation: 0,
+  metadata: new Map(),
+  info: new Map()
 }, 'Item') {
   constructor(json = {}) {
     super({
       ...json,
-      properties: fromJS(json.properties || {})
+      properties: fromJS(json.properties || {}),
+      metadata: fromJS(json.metadata || {}),
+      info: fromJS(json.info || {})
     });
   }
 }
@@ -274,7 +278,12 @@ export class Catalog extends Record({
         return new Area(options).merge({properties});
 
       case 'items':
-        return new Item(options).merge({properties});
+        return new Item({
+          ...options,
+          properties,
+          metadata: fromJS(element.metadata || {}),
+          info: fromJS(element.info || {})
+        });
 
       default:
         throw new Error('prototype not valid');

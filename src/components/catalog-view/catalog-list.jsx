@@ -421,7 +421,6 @@ export default class CatalogList extends Component {
       height: '100%',
       cursor: 'col-resize',
       backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
-      transition: 'background-color 0.2s',
       zIndex: 300,
     };
 

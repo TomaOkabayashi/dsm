@@ -139,19 +139,20 @@ class ReactPlanner extends Component {
       height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`,
       overflow: 'hidden',
       postition: 'relative',
+      zIndex: 180,
     };
 
     const rightContainerStyle = {
       display: 'flex',
       flexDirection: 'row',
       height: '100%',
-      position: 'relative'
+      position: 'relative',
+      zIndex: 300
     }
 
     const sidebarContainerStyle = {
       height: 'calc(100% + 20px)',
       position: 'relative',
-      zIndex: 1000
     }
 
     const sidebarStyle = {
@@ -167,17 +168,17 @@ class ReactPlanner extends Component {
       width: `calc(100% - ${sidebarWidth}px)`,
       bottom: 0,
       position: 'absolute',
-      zIndex: 500,
+      zIndex: 181,
       left: 0
     };
     
     const markupsListStyle = {
       position: 'relative',
       backgroundColor: SharedStyle.PRIMARY_COLOR.main,
-      zIndex: 10,
       overflowY: 'auto',
-      overflowX: 'auto',
-      width: '100%'
+      overflowX: 'hidden',
+      width: '100%',
+      zIndex: 181,
     };
 
     return (

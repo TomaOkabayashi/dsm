@@ -143,6 +143,7 @@ export default class Sidebar extends Component {
       overflowY: 'auto',
       overflowX: 'hidden',
       position: 'relative',
+      zIndex: 997,
     };
 
     const resizeHandleStyle = {
@@ -153,7 +154,6 @@ export default class Sidebar extends Component {
       height: '100%',
       cursor: 'col-resize',
       backgroundColor: (this.state.hovering || this.state.isResizing) ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
-      transition: 'background-color 0.2s',
       zIndex: 998,
       borderRight: `solid 1px ${SharedStyle.COLORS.black}`,
     };
