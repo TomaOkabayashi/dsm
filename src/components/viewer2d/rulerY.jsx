@@ -58,19 +58,19 @@ export default class RulerY extends Component {
       display: 'flex',
       alignItems: 'flex-end',
       height: '100%',
-      right: '3px'
+      right: '6px'
     }
 
     // these were initially different but they are the same now
     // so they are redundant but keeping for potential future tweaks
     let textStyleZoomOut = {
       position: 'relative',
-      right: '3px'
+      right: '6px'
     }
 
     let textStyleZoomIn = {
       position: 'relative',
-      right: '3px'
+      right: '6px'
     }
 
     let rulerStyle = {
