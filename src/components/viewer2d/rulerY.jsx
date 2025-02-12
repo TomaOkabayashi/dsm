@@ -89,7 +89,7 @@ export default class RulerY extends Component {
       borderTop: '5px solid transparent',
       borderBottom: '5px solid transparent',
       borderLeft: '8px solid ' + this.props.markerColor,
-      zIndex: 9001
+      zIndex: 80
     };
 
     let rulerContainer = {
