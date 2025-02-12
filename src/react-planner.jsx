@@ -177,7 +177,7 @@ class ReactPlanner extends Component {
       position: 'relative',
       backgroundColor: SharedStyle.PRIMARY_COLOR.main,
       overflowY: 'auto',
-      overflowX: 'auto',
+      overflowX: 'hidden',
       width: '100%'
     };
 

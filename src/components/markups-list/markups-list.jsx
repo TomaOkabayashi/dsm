@@ -54,6 +54,7 @@ export default class MarkupsList extends Component {
     this.handleHeightMouseDown = this.handleHeightMouseDown.bind(this);
     this.handleHeightMouseOver = this.handleHeightMouseOver.bind(this);
     this.handleHeightMouseOut = this.handleHeightMouseOut.bind(this);
+    this.toggleHeight = this.toggleHeight.bind(this);
   }
 
   componentDidMount() {
@@ -72,7 +73,7 @@ export default class MarkupsList extends Component {
       e.stopPropagation();
       
       const deltaY = this.state.dragStartY - e.clientY;
-      const newHeight = Math.min(Math.max(this.state.dragStartHeight + deltaY, 39), 500);
+      const newHeight = Math.min(Math.max(this.state.dragStartHeight + deltaY, 50), 480);
       
       this.setState({ height: newHeight });
       this.context.projectActions.updateMarkupsListHeight(newHeight);
@@ -105,6 +106,12 @@ export default class MarkupsList extends Component {
 
   handleHeightMouseOut() {
     this.setState({ hoveringHeight: false });
+  }
+
+  toggleHeight() {
+    const burgerIconToggleHeight = this.state.height === 50 ? 265 : 50;
+    this.setState({ height: burgerIconToggleHeight});
+    this.context.projectActions.updateMarkupsListHeight(burgerIconToggleHeight);
   }
 
   render() {
@@ -160,6 +167,18 @@ export default class MarkupsList extends Component {
       borderTop: `solid 1px ${SharedStyle.COLORS.black}`,
     };
 
+    const burgerIcon = {
+      position: 'absolute',
+      left: '1px',
+      top: this.state.height === 50 ? '-34px' : '2px', // if the container is at the bottom, force the icon 34px higher
+      borderRight: this.state.height === 50 ? `2px solid ${SharedStyle.COLORS.black}` : 'none', // black border forms if at the bottom to keep the illusion of the black bar
+      fontSize: '24px',
+      backgroundColor: this.state.isMenuHovered ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.SECONDARY_COLOR.lightMain,
+      lineHeight: 0,
+      zIndex: 500,
+      padding: '5px',
+    }
+
     const toolBarBorder = {
       position: 'absolute',
       width: '2px',
@@ -169,27 +188,26 @@ export default class MarkupsList extends Component {
       zIndex: 800
     };
 
+    // For the burger icon, if the wrapper is at height 50, we push the wrapper container size 34px and push the icon up
+    const dynamicWrapperStyle = {
+      ...wrapperStyle,
+      top: this.state.height === 50 ? 34 : 0,
+      paddingBottom: 21,
+    };
+
     return (
       <div 
-        style={wrapperStyle}
+        style={dynamicWrapperStyle}
         onKeyDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Burger Menu Icon */}
         {/* have not added the markuplist close down to the icon */}
         <div 
-          style={{
-            position: 'absolute',
-            left: '2px',
-            top: '3px',
-            fontSize: '24px',
-            backgroundColor: this.state.isMenuHovered ? SharedStyle.SECONDARY_COLOR.main : SharedStyle.PRIMARY_COLOR.main,
-            lineHeight: 0,
-            zIndex: 500,
-            padding: '4px',
-          }}
+          style={{...burgerIcon}}
           onMouseEnter={() => this.setState({ isMenuHovered: true })}
           onMouseLeave={() => this.setState({ isMenuHovered: false })}
+          onClick={this.toggleHeight}
         >
           <IoMdMenu />
         </div>
