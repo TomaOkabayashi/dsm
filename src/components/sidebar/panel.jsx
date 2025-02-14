@@ -36,7 +36,7 @@ export default class Panel extends Component {
     super(props, context);
 
     this.state = {
-      opened: props.hasOwnProperty('opened') ? props.opened : false,
+      opened: props.hasOwnProperty('opened') ? props.opened : true,
       hover: false
     };
   }
