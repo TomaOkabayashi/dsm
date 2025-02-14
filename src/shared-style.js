@@ -42,6 +42,7 @@ export const PRIMARY_COLOR = {
 
 export const SECONDARY_COLOR = {
   main: '#1CA6FC', // text colour of hover of texts on sidebar
+  lightMain: '#4DB5FD', // the default colour of the burger icon on the left side
   alt: '#444088', // text colour of box and footer
   icon: '#1dafe6', // colour of hover of texts on toolbar
   border: '1px solid #FFF'

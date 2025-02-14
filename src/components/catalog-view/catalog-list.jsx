@@ -34,6 +34,7 @@ const toolBarBorder = {
 const headerContainer = {
   display: 'flex',
   alignItems: 'center',
+  marginTop: '-2px',
 };
 
 // Access tool and line tool
@@ -44,12 +45,12 @@ const toolStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   textAlign: 'center',
-  marginLeft: '-115px',
+  marginLeft: '-114.5px',
 };
 
 const gateHeaderContainer = {
   ...headerContainer,
-  marginTop: '-7px'
+  marginTop: '-8px'
 };
 
 const searchContainer = {
@@ -465,20 +466,6 @@ export default class CatalogList extends Component {
           <div style={lineBreakStyle} />
 
 
-          
-          {/* Items; containers - Searchable
-          <div style={itemsStyle}>
-            {this.state.matchString === '' ? 
-              elementsToDisplay
-                .filter(elem => elem.prototype === 'items')
-                .map(elem => <CatalogItem key={elem.name} element={elem}/>)
-            : this.state.matchedElements
-                .filter(elem => elem.prototype === 'items')
-                .map(elem => <CatalogItem key={elem.name} element={elem}/>)}
-          </div> */}
-          {/* OI READ THIS might be useful for the bottom bar below the catalog yeah? */}
-
-
           {/* The last two chunks below
           There are three folders; windows, doors, miscellaneous. They each have their respective 
           elements it is super unfinished, the css layout is really bad. I do not have time to 
@@ -498,7 +485,7 @@ export default class CatalogList extends Component {
           how the windows only show up in the windows category. */}
 
           {/* the actual items in the folder */}
-          <div style={itemsStyle}>
+          {/* <div style={itemsStyle}>
             {this.state.matchString === '' ? 
               elementsToDisplay
                 .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
@@ -506,16 +493,16 @@ export default class CatalogList extends Component {
             : this.state.matchedElements
                 .filter(elem => elem.prototype === 'holes' && elem.name !== 'gate')
                 .map(elem => <CatalogItemHoles key={elem.name} element={elem}/>)}
-          </div>
+          </div> */}
 
           {/* The folders of different categories; window, door, misc - Searchable */}
-          <div style={itemsStyleFolder}>
+          {/* <div style={itemsStyleFolder}>
             {this.state.matchString === '' ? 
               categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>)
             : this.state.matchedElements
                 .filter(elem => elem.prototype !== 'lines' && elem.name !== 'gate')
                 .map(elem => <CatalogItem key={elem.name} element={elem}/>)}
-          </div>
+          </div> */}
           
         </ContentContainer>
         

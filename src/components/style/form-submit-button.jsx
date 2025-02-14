@@ -3,14 +3,12 @@ import Button from './button';
 import * as SharedStyle from '../../shared-style';
 
 const STYLE = {
-  borderColor: "#415375",
-  backgroundColor: "#415375",
+  backgroundColor: "#4B6087",
   color: SharedStyle.COLORS.white
 };
 
 const STYLE_HOVER = {
-  borderColor: "#1f3149",
-  backgroundColor: "#1f3149",
+  backgroundColor: SharedStyle.SECONDARY_COLOR.main,
   color: SharedStyle.COLORS.white
 };
 

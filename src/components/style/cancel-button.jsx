@@ -1,14 +1,13 @@
 import React from 'react';
 import Button from './button';
+import * as SharedStyle from '../../shared-style';
 
 const STYLE = {
-  borderColor: "#adadad",
-  backgroundColor: "#e6e6e6"
+  backgroundColor: SharedStyle.MATERIAL_COLORS[500].white_grey,
 };
 
 const STYLE_HOVER = {
-  backgroundColor: "#d4d4d4",
-  borderColor: "#8c8c8c"
+  backgroundColor: SharedStyle.MATERIAL_COLORS[500].grey,
 };
 
 export default function CancelButton({children, ...rest}) {

@@ -68,7 +68,8 @@ const utilitybarStyle = {
 
 const catalogListStyle = {
   position: 'relative',
-  height: '100%'
+  height: '100%',
+  zIndex: 1
 };
 
 const contentStyle = {
@@ -132,6 +133,7 @@ class ReactPlanner extends Component {
     let in3DModeW = width - sidebarW;
 
     // catalog (leftsidebar) and content (grid)
+    // Don't add zIndex to this, messes the rightSidebar layer
     const mainContentRowStyle = {
       display: 'flex',
       flexFlow: 'row nowrap',
@@ -139,7 +141,6 @@ class ReactPlanner extends Component {
       height: `calc(100% - ${(menubarH + utilitybarH + footerBarH)}px)`,
       overflow: 'hidden',
       postition: 'relative',
-      zIndex: 180,
     };
 
     const rightContainerStyle = {
@@ -147,7 +148,7 @@ class ReactPlanner extends Component {
       flexDirection: 'row',
       height: '100%',
       position: 'relative',
-      zIndex: 300
+      zIndex: 100
     }
 
     const sidebarContainerStyle = {
@@ -168,7 +169,7 @@ class ReactPlanner extends Component {
       width: `calc(100% - ${sidebarWidth}px)`,
       bottom: 0,
       position: 'absolute',
-      zIndex: 181,
+      zIndex: 99,
       left: 0
     };
     
@@ -177,8 +178,7 @@ class ReactPlanner extends Component {
       backgroundColor: SharedStyle.PRIMARY_COLOR.main,
       overflowY: 'auto',
       overflowX: 'hidden',
-      width: '100%',
-      zIndex: 181,
+      width: '100%'
     };
 
     return (

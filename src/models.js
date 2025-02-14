@@ -199,7 +199,7 @@ export class Group extends Record({
 
 
 export const DefaultLayers = new Map({
-  'layer-1': new Layer({id: 'layer-1', name: 'default'})
+  'layer-1': new Layer({id: 'layer-1', name: 'Layer 1'})
 });
 
 
@@ -315,7 +315,7 @@ export class State extends Record({
   catalogWidth: 250, //default catalog width on react-planner.jsx
   viewer2D: new Map(),
   mouse: new Map({x: 0, y: 0}),
-  zoom: 0,
+  zoom: -10,
   snapMask: SNAP_MASK,
   snapElements: new List(),
   activeSnapElement: null,

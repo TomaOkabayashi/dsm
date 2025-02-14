@@ -18,11 +18,9 @@ const BASE_STYLE = {
   fontSize: "14px",
   color: SharedStyle.COLORS.black,
   fonWeight: "400px",
-  transition: "background-color 175ms ease, border 175ms ease",
   outline: "none",
-  borderRadius: "2px",
-  borderWidth: "1px",
-  borderType: "solid",
+  border: "none",
+  boxShadow: "none",
   width: '100%'
 };
 
@@ -63,11 +61,9 @@ Button.defaultProps = {
   size: "normal",
   style: {
     backgroundColor: "#e6e6e6",
-    borderColor: "#adadad",
   },
   styleHover: {
     backgroundColor: "#d4d4d4",
-    borderColor: "#8c8c8c"
   },
 };
 
